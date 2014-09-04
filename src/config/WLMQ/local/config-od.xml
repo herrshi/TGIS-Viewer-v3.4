@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+				  config="widgets/Navigation/NavigationWidget.xml"
+				  url="widgets/Navigation/NavigationWidget.swf" />
+		    
+	<widget left="3" bottom="3"
+				  config="widgets/Coordinate/CoordinateWidget.xml" 
+				  url="widgets/Coordinate/CoordinateWidget.swf" />
+
+	<map top="0" 
+			  scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+					  url="http://{serverip}/arcgis/rest/services/wlmq/wlmq_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="ODStartTextOverlay" preload="open"
+				config="widgets/Overlay/WLMQ/TextOverlayWidget-odStart.xml" 
+				url="widgets/Overlay/TextOverlayWidget.swf" />
+		
+		<widget label="ODEndTextOverlay" preload="open"
+				config="widgets/Overlay/WLMQ/PointOverlayWidget-odEnd.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+				
+		<widget label="ODStartPointOverlay" preload="open"
+				config="widgets/Overlay/WLMQ/PointOverlayWidget-odStart.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="ODEndPointOverlay" preload="open"
+				config="widgets/Overlay/WLMQ/TextOverlayWidget-odEnd.xml" 
+				url="widgets/Overlay/TextOverlayWidget.swf" />
+						
+		<widget label="ODOverlay" preload="open"
+				config="widgets/Overlay/WLMQ/PolylineOverlayWidget-od.xml" 
+				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+	</widgetcontainer>
+
+</configuration>

@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+<!-- 普陀社会资源页面地图 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip>
+	
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+				   config="widgets/Navigation/NavigationWidget.xml"
+				   url="widgets/Navigation/NavigationWidget.swf" />
+	
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" initialextent="121.3151 31.2159 121.4531 31.3089"
+			   scalebarvisible="false" esrilogovisible="false"
+			   doubleclickzoomenabled="true">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true" 
+					   url="http://{serverip}/arcgis/rest/services/putuo/pt_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="社会资源" type="dynamic" visible="true" 
+					   url="http://{serverip}/arcgis/rest/services/putuo/pt_live/MapServer" >
+				<sublayer id="2" popupconfig="popups/PuTuo/PopUp-SheHuiShiPin.xml"/>
+				<sublayer id="3" popupconfig="popups/PuTuo/PopUp-GongAnShiPin.xml"/>	
+				<sublayer id="4" popupconfig="popups/PuTuo/PopUp-GaoQingKaKou.xml"/>
+				<sublayer id="6" popupconfig="popups/PuTuo/PopUp-ShiChang.xml"/>	
+				<sublayer id="7" popupconfig="popups/PuTuo/PopUp-ATM.xml"/>	
+				<sublayer id="8" popupconfig="popups/PuTuo/PopUp-GongGongDianHua.xml"/>	
+				<sublayer id="9" popupconfig="popups/PuTuo/PopUp-XiaoFangShuan.xml"/>	
+				<sublayer id="11" popupconfig="popups/PuTuo/PopUp-JiaYouQiZhan.xml"/>	
+				<sublayer id="12" popupconfig="popups/PuTuo/PopUp-YiYuan.xml"/>		
+				<sublayer id="13" popupconfig="popups/PuTuo/PopUp-DaXingShangChang.xml"/>	
+				<sublayer id="14" popupconfig="popups/PuTuo/PopUp-JuWeiHui.xml"/>	
+				<sublayer id="16" popupconfig="popups/PuTuo/PopUp-JinYinShiPinDian.xml"/>	
+				<sublayer id="18" popupconfig="popups/PuTuo/PopUp-24hBianLiDian.xml"/>
+				<sublayer id="19" popupconfig="popups/PuTuo/PopUp-XueXiao.xml"/>	
+				<sublayer id="20" popupconfig="popups/PuTuo/PopUp-YinHang.xml"/>	
+				<sublayer id="21" popupconfig="popups/PuTuo/PopUp-DianDangHang.xml"/>	
+				<sublayer id="23" popupconfig="popups/PuTuo/PopUp-JingWuShi.xml"/>	
+				<sublayer id="24" popupconfig="popups/PuTuo/PopUp-YouZheng.xml"/>	
+				<sublayer id="25" popupconfig="popups/PuTuo/PopUp-ZhengQuan.xml"/>		
+				<sublayer id="26" popupconfig="popups/PuTuo/PopUp-BaoXian.xml"/>	
+				<sublayer id="28" popupconfig="popups/PuTuo/PopUp-XiaoQu.xml"/>	
+				<sublayer id="32" popupconfig="popups/PuTuo/PopUp-DaSha.xml"/>		   
+			</layer>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="float">
+		<widget label="社会资源" preload="open" right="20" top="20"
+				config="widgets/ControlPanel/PuTuo/TreeControlPanelWidget-SocialResource.xml"
+				url="widgets/ControlPanel/TreeControlPanelWidget.swf" />
+		
+		<widget label="视频资源"  right="20" top="20"
+				config="widgets/ControlPanel/PuTuo/TreeControlPanelWidget-VideoResource.xml"
+				url="widgets/ControlPanel/TreeControlPanelWidget.swf" />
+				
+		<widget label="图层过滤" preload="open" 
+				url="widgets/LayerSymbolFilter/LayerSymbolFilterWidget.swf"/>
+				
+		<widget label="房屋查询" 
+				config="widgets/Identify/PuTuo/IdentifyWidget.xml"
+				url="widgets/Identify/IdentifyWidget.swf" />
+		
+		<widget label="获取坐标"  preload="open"
+				config="widgets/GetDeviceCoordinate/PuTuo/GetDeviceCoordinateWidget.xml" 
+				url="widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.swf"/>
+	</widgetcontainer>
+</configuration>

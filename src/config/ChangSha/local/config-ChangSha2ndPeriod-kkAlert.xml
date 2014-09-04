@@ -1,0 +1,87 @@
+<?xml version="1.0" ?>
+<!-- 首页的地图 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"
+		url="widgets/Navigation/NavigationWidget.swf" />
+
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 		config="widgets/Coordinate/CoordinateWidget.xml" url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" center="112.9894 28.185" scale="96000"
+		scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="矢量图" type="tiled" visible="true"
+				url="http://{serverip}/arcgis/rest/services/changsha/changsha_base/MapServer" />
+			<layer label="航拍图" type="tiled" visible="false"
+				url="http://{serverip}/arcgis/rest/services/changsha/changsha_aerial/MapServer" />
+			<layer label="卫星图" type="tiled" visible="false"
+				url="http://{serverip}/arcgis/rest/services/changsha/changsha_satellite/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="电子警察" type="feature" visible="true"
+				url="http://{serverip}/arcgis/rest/services/changsha/changsha_device/FeatureServer/2"
+				popupconfig="popups/ChangSha/PopUp-dzjc.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol
+						url="assets/images/mapIcons/DianZiJingCha-grey.png" height="26"
+						width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol
+							url="assets/images/mapIcons/DianZiJingCha-blue.png" height="26"
+							width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol
+							url="assets/images/mapIcons/DianZiJingCha-red.png" height="26"
+							width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol
+							url="assets/images/mapIcons/DianZiJingCha-yellow.png" height="26"
+							width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+
+			
+			
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="KKAlertOverlay" preload="open"
+				config="widgets/Overlay/ChangSha/PointOverlayWidget-kkAlert.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="GetDeviceCoordinate" preload="open" 
+				config="widgets/GetDeviceCoordinate/ChangSha/GetDeviceCoordinateWidget.xml"
+				url="widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.swf"/>
+	</widgetcontainer>
+	
+	<widgetcontainer layout="vertical">
+		<widget label="底图切换" preload="open"
+				config="widgets\MapSwitcher\MapSwitcherWidget.xml"
+				url="widgets\MapSwitcher\MapSwitcherWidget.swf"/>
+	</widgetcontainer>
+</configuration>

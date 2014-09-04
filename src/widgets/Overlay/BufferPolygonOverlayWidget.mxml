@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   xmlns:esri="http://www.esri.com/2008/ags"
+					   layout="absolute" 
+					   creationComplete="this_creationCompleteHandler(event)" 
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.geometry.Geometry;
+			import com.esri.ags.geometry.Polygon;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.symbols.SimpleFillSymbol;
+			import com.esri.ags.symbols.SimpleLineSymbol;
+			import com.esri.ags.symbols.Symbol;
+			import com.esri.ags.tasks.GeometryService;
+			import com.esri.ags.tasks.GeometryServiceSingleton;
+			
+			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
+			import mx.rpc.Fault;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.utils.SymbolParser;
+			
+			private var _bufferLayer:GraphicsLayer;
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				geometryService.url = GeometryServiceSingleton.instance.url;
+				geometryService.token = GeometryServiceSingleton.instance.token;
+				geometryService.proxyURL = GeometryServiceSingleton.instance.proxyURL;
+				
+				_bufferLayer = new GraphicsLayer();
+				map.addLayer( _bufferLayer );
+				
+				AppEvent.addListener( AppEvent.DRAW_BUFFER, appevent_drawBufferHandler );
+				AppEvent.addListener( AppEvent.DELETE_ALL_BUFFER, appevent_clearBufferHandler );
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					var symbolParser:SymbolParser = new SymbolParser();
+					var drawSymbol:Symbol = symbolParser.parseSymbol( configXML );
+					if ( !drawSymbol )
+					{
+						var selectionColor:Number = getStyle( "selectionColor" );
+						drawSymbol = new SimpleFillSymbol( "solid", selectionColor, 0.2, 
+							new SimpleLineSymbol( "solid", selectionColor, 1, 2 ) );
+					}
+					_bufferLayer.symbol = drawSymbol;
+				}
+				
+			}
+			
+			private function appevent_drawBufferHandler( event:AppEvent ):void
+			{
+				var centerGeometry:Geometry = event.data.geometry;
+				centerGeometry.spatialReference  = map.spatialReference;
+				var distance:Number = event.data.distance;
+				
+				bufferParam.geometries = [ centerGeometry ];
+				bufferParam.distances = [ distance ];
+				geometryService.buffer( bufferParam, 
+					new AsyncResponder( geometryService_bufferCompleteHandler, faultHandler, null ) );
+			}
+			
+			private function geometryService_bufferCompleteHandler( item:Object, token:Object = null ):void
+			{
+				var bufferResultArray:Array = item as Array;
+				for ( var i:uint = 0; i < bufferResultArray.length; i++ )
+				{
+					var bufferPolygon:Polygon = bufferResultArray[i] as Polygon;
+					bufferPolygon.spatialReference = map.spatialReference;
+					_bufferLayer.add( new Graphic( bufferPolygon ) );
+				}
+			}
+			
+			private function faultHandler( fault:Fault, token:Object ):void
+			{
+				var strInfo: String = "Error: ";
+				strInfo += "Fault Code: " + fault.faultCode + "\n";
+				strInfo += "Fault Info: " + fault.faultString + "\n";
+				strInfo += "Fault Detail: " + fault.faultDetail;
+				showError( strInfo );
+			}
+			
+			private function appevent_clearBufferHandler( event:AppEvent ):void
+			{
+				_bufferLayer.clear();
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<esri:GeometryService id="geometryService"/>
+		
+		<esri:BufferParameters id="bufferParam" 
+							   unit="{GeometryService.UNIT_METER}" 
+							   outSpatialReference="{map.spatialReference}"
+							   geodesic="true"/>
+	</fx:Declarations>
+</TGISViewer:BaseWidget>

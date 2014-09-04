@@ -1,0 +1,192 @@
+<?xml version="1.0" ?>
+<configuration>
+	<title>ArcGIS Viewer for Flex</title>
+	<subtitle>a configurable web mapping application</subtitle>
+	<logo>assets/images/logo.png</logo>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0x3E6FBC,0xBBBBBB,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xBBBBBB,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<!-- <colors>0xFFFFFF,0x3E6FBC,0x101010,0x000000,0xFFD700</colors> -->
+		<alpha>0.5</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<geometryservice
+		url="http://jiaotong.seisys.cn:8399/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"
+		url="widgets/Navigation/NavigationWidget.swf" />
+
+	<map top="0" center="123.4461 41.8066" scale="96000"
+		scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+				url="http://jiaotong.seisys.cn:8399/arcgis/rest/services/shenyang/shenyang-base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="项目内发布段" type="dynamic" visible="true"
+				url="http://jiaotong.seisys.cn:8399/arcgis/rest/services/shenyang/fbd_WithinWorkScope/MapServer">
+				<sublayer id="1" popupconfig="popups/ShenYang/Popup-fbd.xml" />
+				<sublayer id="3" popupconfig="popups/ShenYang/Popup-fbd.xml" />
+				<sublayer id="5" popupconfig="popups/ShenYang/Popup-fbd.xml" />
+			</layer>
+
+			<layer label="二环内发布段" type="dynamic" visible="false"
+				url="http://jiaotong.seisys.cn:8399/arcgis/rest/services/shenyang/fbd_Within2Ring/MapServer">
+				<sublayer id="1" popupconfig="popups/ShenYang/Popup-fbd.xml" />
+				<sublayer id="3" popupconfig="popups/ShenYang/Popup-fbd.xml" />
+				<sublayer id="5" popupconfig="popups/ShenYang/Popup-fbd.xml" />
+			</layer>
+
+			<!-- <layer label="设备" type="dynamic" visible="true" -->
+			<!-- url="http://jiaotong.seisys.cn:8399/arcgis/rest/services/shenyang/shenyang-device/MapServer"> -->
+			<!-- <sublayer id="0" popupconfig="popups/ShenYang/PopUp-qbb.xml"/> -->
+			<!-- <sublayer id="1" popupconfig="popups/ShenYang/PopUp-wbcjq.xml"/> -->
+			<!-- <sublayer id="2" popupconfig="popups/ShenYang/PopUp-xhj.xml"/> -->
+			<!-- <sublayer id="3" popupconfig="popups/ShenYang/PopUp-cd.xml"/> -->
+			<!-- </layer> -->
+
+			<layer label="诱导屏" type="feature" visible="false"
+				url="http://jiaotong.seisys.cn:8399/arcgis/rest/services/shenyang/shenyang-device/FeatureServer/0"
+				popupconfig="popups/ShenYang/PopUp-qbb.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/device/qbb-grey.png"
+						height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/device/qbb-blue.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/device/qbb-red.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/device/qbb-yellow.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+
+			<layer label="微波车检器" type="feature" visible="false"
+				url="http://jiaotong.seisys.cn:8399/arcgis/rest/services/shenyang/shenyang-device/FeatureServer/1"
+				popupconfig="popups/ShenYang/PopUp-wbcjq.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/device/dm-grey.png"
+						height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/device/dm-blue.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/device/dm-red.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/device/dm-yellow.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+
+			<layer label="SCATS" type="feature" visible="false"
+				url="http://jiaotong.seisys.cn:8399/arcgis/rest/services/shenyang/shenyang-device/FeatureServer/2"
+				popupconfig="popups/ShenYang/PopUp-xhj.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/device/xhj-grey.png"
+						height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/device/xhj-blue.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/device/xhj-red.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/device/xhj-yellow.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+
+			<layer label="车道控制" type="feature" visible="false"
+				url="http://jiaotong.seisys.cn:8399/arcgis/rest/services/shenyang/shenyang-device/FeatureServer/3"
+				popupconfig="popups/ShenYang/PopUp-cd.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/device/dm-grey.png"
+						height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/device/dm-blue.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/device/dm-red.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/device/dm-yellow.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+
+			<layer label="匝道控制" type="feature" visible="false"
+				url="http://jiaotong.seisys.cn:8399/arcgis/rest/services/shenyang/shenyang-device/FeatureServer/4"
+				popupconfig="popups/ShenYang/PopUp-cd.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/device/zdd-grey.png"
+						height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/device/zdd-blue.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/device/zdd-red.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/device/zdd-yellow.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="ControlPanel" preload="open" right="20" bottom="20"
+			config="widgets/ControlPanel/ShenYang/IconControlPanelWidget-ShenYang-main.xml"
+			url="widgets/ControlPanel/IconControlPanelWidget.swf" />
+
+	</widgetcontainer>
+
+</configuration>

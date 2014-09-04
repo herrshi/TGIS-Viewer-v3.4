@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   layout="absolute" widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" >
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.seisys.TGISViewer.AppEvent;
+			
+			private var _pointType:String;
+			private var _polylineType:String;
+			private var _polygonType:String;
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_pointType = configXML.pointtype;
+					_polylineType = configXML.polylinetype;
+					_polygonType = configXML.polygontype;
+				}
+			}
+			
+			protected function btnAddPoint_clickHandler(event:MouseEvent):void
+			{
+				if ( btnAddPoint.label == "新增点" )
+				{
+					if ( _pointType != "" )
+					{
+						AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, _pointType );
+					}
+					btnAddPoint.label = "结束";
+				}
+				else
+				{
+					if ( _pointType != "" )
+					{
+						AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, _pointType );
+					}
+					btnAddPoint.label = "新增点";
+				}
+			}
+			
+			protected function btnAddPolyline_clickHandler(event:MouseEvent):void
+			{
+				if ( _polylineType != "" )
+				{
+					AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, _polylineType );
+				}
+			}
+			
+			protected function btnAddPolygon_clickHandler(event:MouseEvent):void
+			{
+				if ( _polygonType != "" )
+				{
+					AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, _polygonType );
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:HGroup>
+		<s:Button id="btnAddPoint" label="新增点" 
+				  width="50" height="20" 
+				  skinClass="widgets.EditorToolbar.EditorToolbarButtonSkin" 
+				  click="btnAddPoint_clickHandler(event)"/>
+		<s:Button id="btnAddPolyline" label="新增线" 
+				  width="50" height="20" 
+				  skinClass="widgets.EditorToolbar.EditorToolbarButtonSkin" 
+				  click="btnAddPolyline_clickHandler(event)" />
+		<s:Button id="btnAddPolygon" label="新增面"
+				  width="50" height="20" 
+				  skinClass="widgets.EditorToolbar.EditorToolbarButtonSkin" 
+				  click="btnAddPolygon_clickHandler(event)" />
+	</s:HGroup>
+</TGISViewer:BaseWidget>

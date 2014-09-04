@@ -1,0 +1,247 @@
+<?xml version="1.0" ?>
+<!-- 浦东 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+	
+	<arcgisserverip>192.168.8.33:6080</arcgisserverip>
+	
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+				  config="widgets/Navigation/NavigationWidget.xml"
+				  url="widgets/Navigation/NavigationWidget.swf" />
+	
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 				  config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 				  url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" scale="64000" center="8645.7109 -2189.2693"
+		 	  scalebarvisible="false" esrilogovisible="false"
+		 	  doubleclickzoomenabled="true">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true" 
+					  url="http://{serverip}/arcgis/rest/services/pd_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="发布段" type="dynamic" visible="true" 
+					  url="http://{serverip}/arcgis/rest/services/pd_fbd/MapServer">
+				<sublayer id="1" popupconfig="popups/PuDong/PopUp-ksl-3.xml"/>
+				<sublayer id="2" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-3.xml"/>
+				<sublayer id="3" popupconfig="popups/PuDong/PopUp-dm-CiYao-3.xml"/>
+				<sublayer id="5" popupconfig="popups/PuDong/PopUp-ksl-5.xml"/>
+				<sublayer id="6" popupconfig="popups/PuDong/PopUp-ksl-zd-5.xml"/>
+				<sublayer id="7" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-5.xml"/>
+				<sublayer id="8" popupconfig="popups/PuDong/PopUp-dm-CiYao-5.xml"/>
+			</layer>
+			
+<!-- 			<layer label="诱导板" type="feature" visible="false"  -->
+<!-- 					  url="http://{serverip}/arcgis/rest/services/pd_device/MapServer/0"  -->
+<!-- 					  popupconfig="popups/PuDong/PopUp-qbb.xml"> -->
+<!-- 				<uniquevaluerenderer field="PDDB.RT_DEVCOMMSTATE_V.FSTR_STATE"> -->
+<!-- 					<defaultlabel>未知</defaultlabel> -->
+<!-- 					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-grey.png" yoffset="13" /> -->
+
+<!-- 					<uniquevalueinfo value="connect" label="连接"> -->
+<!-- 						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-blue.png" yoffset="13" /> -->
+<!-- 					</uniquevalueinfo> -->
+
+<!-- 					<uniquevalueinfo value="disconnect" label="中断"> -->
+<!-- 						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-red.png" yoffset="13" /> -->
+<!-- 					</uniquevalueinfo> -->
+
+<!-- 					<uniquevalueinfo value="malfunction" label="异常"> -->
+<!-- 						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-yellow.png" yoffset="13" /> -->
+<!-- 					</uniquevalueinfo> -->
+<!-- 				</uniquevaluerenderer> -->
+<!-- 			</layer> -->
+			
+			<layer label="全彩板" type="feature" visible="false" 
+					  url="http://{serverip}/arcgis/rest/services/pd_device/MapServer/0" 
+					  definitionexpression="sb_qbb.DEVTYPE='CB'"
+					  popupconfig="popups/PuDong/PopUp-qbb.xml">
+				<uniquevaluerenderer field="PDDB.RT_DEVCOMMSTATE_V.FSTR_STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanC-grey.png" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanC-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanC-red.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanC-yellow.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="L板" type="feature" visible="false" 
+					  url="http://{serverip}/arcgis/rest/services/pd_device/MapServer/0" 
+					  definitionexpression="sb_qbb.DEVTYPE='MB_L'"
+					  popupconfig="popups/PuDong/PopUp-qbb.xml">
+				<uniquevaluerenderer field="PDDB.RT_DEVCOMMSTATE_V.FSTR_STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanL-grey.png" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanL-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanL-red.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanL-yellow.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="M板" type="feature" visible="false" 
+					  url="http://{serverip}/arcgis/rest/services/pd_device/MapServer/0" 
+					  definitionexpression="sb_qbb.DEVTYPE='MB' OR sb_qbb.DEVTYPE='' OR sb_qbb.DEVTYPE=' '"
+					  popupconfig="popups/PuDong/PopUp-qbb.xml">
+				<uniquevaluerenderer field="PDDB.RT_DEVCOMMSTATE_V.FSTR_STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanM-grey.png" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanM-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanM-red.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanM-yellow.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="S板" type="feature" visible="false" 
+					  url="http://{serverip}/arcgis/rest/services/pd_device/MapServer/0" 
+					  definitionexpression="sb_qbb.DEVTYPE='SB' OR sb_qbb.DEVTYPE='SMZ' OR sb_qbb.DEVTYPE='SMZ '"
+					  popupconfig="popups/PuDong/PopUp-qbb.xml">
+				<uniquevaluerenderer field="PDDB.RT_DEVCOMMSTATE_V.FSTR_STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanS-grey.png" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanS-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanS-red.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanS-yellow.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="摄像机" type="feature" visible="false" 
+					  url="http://{serverip}/arcgis/rest/services/pd_device/MapServer/1" 
+					  popupconfig="popups/PuDong/PopUp-sxj.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" />
+				</simplerenderer>
+			</layer>
+			
+			<layer label="匝道灯" type="feature" visible="false" 
+					  url="http://{serverip}/arcgis/rest/services/pd_device/MapServer/3" 
+					  popupconfig="popups/PuDong/PopUp-zdd.xml">
+				<uniquevaluerenderer field="PDDB.RT_RCLAMP_VW.FSTR_STATE">
+					<defaultlabel>默认</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/ZaDaoDeng-grey.png" yoffset="13" />
+
+					<uniquevalueinfo value="closed" label="关闭">
+						<picturemarkersymbol url="assets/images/mapIcons/ZaDaoDeng-red.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="opened" label="开放">
+						<picturemarkersymbol url="assets/images/mapIcons/ZaDaoDeng-green.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="unknown" label="未知">
+						<picturemarkersymbol url="assets/images/mapIcons/ZaDaoDeng-black.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="车牌识别" type="feature" visible="false" 
+					  url="http://{serverip}/arcgis/rest/services/pd_device/MapServer/4" 
+					  popupconfig="popups/PuDong/PopUp-cpsb.xml">
+				<uniquevaluerenderer field="PDDB.RT_LPSTATE_VW.FSTR_STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/KaKou-grey.png" yoffset="13" />
+
+					<uniquevalueinfo value="y" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="信号机" type="feature" visible="false" 
+					  url="http://{serverip}/arcgis/rest/services/pd_device/MapServer/5" 
+					  popupconfig="popups/PuDong/PopUp-xhj.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-blue.png" yoffset="13" />
+				</simplerenderer>
+			</layer>
+			
+			<layer label="车道控制" type="feature" visible="false" 
+					  url="http://{serverip}/arcgis/rest/services/pd_device/MapServer/6" 
+					  popupconfig="popups/PuDong/PopUp-cdkz.xml">
+				<uniquevaluerenderer field="PDDB.RT_DEVCOMMSTATE_V.FSTR_STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/DuanMian-grey.png" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/DuanMian-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/DuanMian-red.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/DuanMian-yellow.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="路名图层" type="dynamic" visible="true" 
+					  url="http://{serverip}/arcgis/rest/services/pd_roadname/MapServer" />
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="ControlPanel" preload="open" right="20" bottom="20"
+				config="widgets/ControlPanel/PuDong/IconControlPanelWidget-main.xml"
+				url="widgets/ControlPanel/IconControlPanelWidget.swf" />
+		
+		<widget label="设备图例" right="20" bottom="80" 
+				config="widgets/StaticImage/PuDong/StaticImageWidget-deviceLegend.xml"
+				url="widgets/StaticImage/StaticImageWidget.swf"/>
+	</widgetcontainer>
+	
+	<widgetcontainer layout="horizontal">
+		<widget label="搜索" preload="minimized"
+				icon="assets/images/i_search.png" 
+				config="widgets/MultiLayerSearch/PuDong/MultiLayerSearchWidget-main.xml" 
+				url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+	</widgetcontainer>
+</configuration>

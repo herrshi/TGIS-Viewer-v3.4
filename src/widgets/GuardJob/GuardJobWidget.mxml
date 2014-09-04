@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// 警卫任务组件
+//  新增流程：
+//  1. 用户绘制线或面。
+//  2. 点击保存按钮，flash调用js函数saveGuardJobGeometry，将几何要素按照顺序传给页面。
+//  3. 页面调用flash函数setDeviceSearchDistance，设置每种设备的搜索半径。
+//  4. 搜索每个几何要素附近的设备。polyline需要先缓冲再查询，polygon直接查询。
+//  5. 显示设备。设备弹出窗有添加/删除按钮，调用js函数addRelateDeviceByMap将设备添加到任务中，
+        调用js函数deleteRelateDeviceByMap从任务中删除设备。
+///////////////////////////////////////////////////////////////////////////
+-->
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:esri="http://www.esri.com/2008/ags"
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*"
+					   creationComplete="this_creationCompleteHandler(event)" layout="absolute"
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.events.DrawEvent;
+			import com.esri.ags.geometry.Geometry;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.Polygon;
+			import com.esri.ags.geometry.Polyline;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.portal.PopUpRenderer;
+			import com.esri.ags.renderers.IRenderer;
+			import com.esri.ags.symbols.SimpleFillSymbol;
+			import com.esri.ags.symbols.SimpleLineSymbol;
+			import com.esri.ags.tasks.GeometryService;
+			import com.esri.ags.tasks.GeometryServiceSingleton;
+			import com.esri.ags.tasks.supportClasses.IdentifyResult;
+			import com.esri.ags.tools.DrawTool;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
+			import mx.rpc.Fault;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
+			import cn.seisys.TGISViewer.utils.RendererParser;
+			
+			/**
+			 * 组件启动时调用的js函数，通知页面启动完成。
+			 * */
+			private var _widgetRunNotifyFunctionName:String;
+			/**
+			 * 组件关闭时调用的js函数，通知页面组件关闭。
+			 * */
+			private var _widgetCloseNotifyFunctionName:String;
+			
+			/**
+			 * identify参数
+			 * */
+			private var _identifyParamTable:Hashtable;
+			[Bindable]
+			private var _identifyUrl:String;
+			
+			private var _lineSymbol:SimpleLineSymbol;
+			private var _fillSymbol:SimpleFillSymbol;
+			
+			/**
+			 * 显示新增任务时绘制路线/区域的图层
+			 * */
+			private var _drawLayer:GraphicsLayer;
+			/**
+			 * 显示页面通过showGuardJobGeometry接口添加的线路
+			 * */
+			private var _showGeometryLayer:GraphicsLayer
+			
+			/**
+			 * 显示搜索出来的设备
+			 * */
+			private var _searchResultLayer:GraphicsLayer;
+			/**
+			 * 显示页面通过showGuardJobDevice接口添加的设备
+			 * 搜索出来的设备和页面添加的设备popup不同，要分在两个图层
+			 * */
+			private var _showDeviceLayer:GraphicsLayer;
+			
+			/**
+			 * 搜索出来的设备的popup
+			 * */
+			private var _searchResultPopUpRendererTable:Hashtable;
+			
+			/**
+			 * 页面通过showGuardJobDevice添加的设备的popup
+			 * */
+			private var _showDevicePopUpRendererTable:Hashtable;
+			
+			/**
+			 * 当前画的是第几个要素
+			 * 一个任务可以加多个要素，要保存序号
+			 * */
+			private var _drawIndex:uint;
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				geometryService.url = GeometryServiceSingleton.instance.url;
+				geometryService.token = GeometryServiceSingleton.instance.token;
+				geometryService.proxyURL = GeometryServiceSingleton.instance.proxyURL;
+				
+				_drawIndex = 0;
+				_drawLayer = new GraphicsLayer();
+				_drawLayer.name = "guardJobDrawLayer";
+				map.addLayer( _drawLayer );
+				
+				_showGeometryLayer = new GraphicsLayer();
+				_showGeometryLayer.name = "guardJobShowGeometryLayer";
+				map.addLayer( _showGeometryLayer );
+				
+				_searchResultLayer = new GraphicsLayer();
+				_searchResultLayer.name = "guardJobSearchResultLayer";
+				map.addLayer( _searchResultLayer );
+				
+				_showDeviceLayer = new GraphicsLayer();
+				_showDeviceLayer.name = "guardJobShowDeviceLayer";
+				map.addLayer( _showDeviceLayer );
+				
+				_identifyParamTable = new Hashtable();
+				_searchResultPopUpRendererTable = new Hashtable();
+				_showDevicePopUpRendererTable = new Hashtable();
+				
+				var selectionColor:Number = getStyle( "selectionColor" );
+				_lineSymbol = new SimpleLineSymbol( "solid", selectionColor, 1, 2 );
+				_fillSymbol = new SimpleFillSymbol( "solid", selectionColor, 0.2, 
+					new SimpleLineSymbol( "solid", selectionColor, 1, 2 ) );
+				
+				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_widgetRunHandler );
+				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_widgetCloseHandler );
+				
+				AppEvent.addListener( AppEvent.GUARD_SET_DEVICE_SEARCH_DISTANCE, 
+					appevent_setDeviceSearchDistanceHandler );
+				AppEvent.addListener( AppEvent.GUARD_SHOW_GEOMETRY, appevent_showGuardJobGeometryHandler );
+				AppEvent.addListener( AppEvent.GUARD_SHOW_DEVICE, appevent_showGuardJobDeviceHandler );
+				AppEvent.addListener( AppEvent.GUARD_DELETE_DEVICE_BY_PAGE, 
+					appevent_deleteGuardJobDeviceByMapHandler );
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					var showPanel:Boolean = ( configXML.showpanel == "false" ? false : true );
+					this.visible = this.includeInLayout = showPanel;
+					
+					//identify配置
+					if ( configXML.identifyparams[ 0 ] )
+					{
+						_identifyUrl = configXML.identifyparams.url;
+						if ( configData.arcgisServerIP )
+						{
+							_identifyUrl = _identifyUrl.replace( "{serverip}", configData.arcgisServerIP );
+						}
+						
+						var paramList:XMLList = configXML.identifyparams..param;
+						for each ( var paramXML:XML in configXML.identifyparams.param )
+						{
+							var type:String = paramXML.type;
+							var layerIds:String = paramXML.layerids;
+							var idField:String = paramXML.idfield;
+							var descField:String = paramXML.descfield;
+							
+							var paramObj:Object = 
+								{ 
+									layerIds: layerIds, 
+									idField: idField, 
+									descField: descField,
+									type: type
+								};
+							_identifyParamTable.add( type, paramObj );
+						}
+					}
+					
+					//renderer
+					var rendererParser:RendererParser = new RendererParser();
+					var renderer:IRenderer = rendererParser.parseRenderer( configXML );
+					_showDeviceLayer.renderer = _searchResultLayer.renderer = renderer;
+					
+					//popup
+					for each ( var popUpXML:XML in configXML.searchresultpopups.popup )
+					{
+						var layerName:String = popUpXML.@layername;
+						var popUpInfo:PopUpInfoWithButtons = PopUpInfoParser.parsePopUpInfo( popUpXML );
+						
+						var popUpRenderer:ClassFactory = new ClassFactory( PopUpRenderer );
+						popUpRenderer.properties = 
+							{ 
+								popUpInfo: popUpInfo
+							};
+						_searchResultPopUpRendererTable.add( layerName, popUpRenderer );
+					}
+					
+					for each ( popUpXML in configXML.showdevicepopups.popup )
+					{
+						layerName = popUpXML.@layername;
+						popUpInfo = PopUpInfoParser.parsePopUpInfo( popUpXML );
+						
+						popUpRenderer = new ClassFactory( PopUpRenderer );
+						popUpRenderer.properties = 
+							{ 
+								popUpInfo: popUpInfo
+							};
+						_showDevicePopUpRendererTable.add( layerName, popUpRenderer ); 
+					}
+					
+					_widgetRunNotifyFunctionName = configXML.widgetrunnotify;
+					_widgetCloseNotifyFunctionName = configXML.widgetclosenotify;
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetRunNotifyFunctionName } 
+						);
+					}
+				}
+			}
+			
+			private function appevent_widgetRunHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetRunNotifyFunctionName } );
+					}
+				}
+			}
+			
+			private function appevent_widgetCloseHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件关闭
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetCloseNotifyFunctionName } 
+						);
+					}
+				}
+			}
+			
+			private function appevent_setDeviceSearchDistanceHandler( event:AppEvent ):void
+			{
+				var param:String = event.data as String;
+				var deviceTypeArray:Array = JSON.parse( param ) as Array;
+				for each ( var deviceTypeObj:Object in deviceTypeArray )
+				{
+					var type:String = deviceTypeObj.type;
+					var distance:Number = deviceTypeObj.distance;
+					
+					var paramObj:Object = _identifyParamTable.find( type );
+					if ( paramObj )
+					{
+						paramObj.distance = distance;
+					}
+				}
+				
+				identifyDevice( Geometry.POLYLINE );
+			}
+			
+			private function iconRollOverHandler(event:MouseEvent):void
+			{
+				clearSelectionFilter();
+				event.target.filters = [ glowFilter ];
+			}
+			
+			private function iconRollOutHandler(event:MouseEvent):void
+			{
+				clearSelectionFilter();
+			}
+			
+			private var _selectedDrawingIcon:Image;
+			
+			private function clearSelectionFilter():void
+			{
+				for ( var i:int = 0; i < imageGroup.numChildren; i++ )
+				{
+					if ( imageGroup.getChildAt(i).filters && imageGroup.getChildAt(i).filters.length > 0 )
+					{
+						if ( !( _selectedDrawingIcon && imageGroup.getChildAt(i) === _selectedDrawingIcon ) )
+						{
+							imageGroup.getChildAt(i).filters = [];
+						}
+					}
+				}
+			}
+			
+			private function activateDrawTool(event:MouseEvent):void
+			{
+				// apply glow
+				_selectedDrawingIcon = Image(event.currentTarget);
+				var drawType:String = _selectedDrawingIcon.name;
+				clearSelectionFilter();
+				_selectedDrawingIcon.filters = [ glowFilter ];
+				
+				switch( drawType )
+				{
+					case DrawTool.CIRCLE:
+					case DrawTool.ELLIPSE:
+					case DrawTool.EXTENT:
+					case DrawTool.FREEHAND_POLYGON:
+					case DrawTool.POLYGON:
+						setMapAction( drawType, "", _fillSymbol, searchDrawEnd );
+						break;
+						
+					case DrawTool.LINE:
+					case DrawTool.FREEHAND_POLYLINE:
+					case DrawTool.POLYLINE:
+						setMapAction( drawType, "", _lineSymbol, searchDrawEnd );
+						break;
+				}
+			}
+			
+			private function searchDrawEnd(event:DrawEvent):void
+			{
+				var drawGraphic:Graphic = event.graphic;
+				//保存绘制顺序，回传给页面时需要序号
+				drawGraphic.attributes = { drawIndex: _drawIndex };
+				_drawIndex++;
+				_drawLayer.add( drawGraphic );
+			}
+			
+			protected function btnSaveGeometry_clickHandler(event:MouseEvent):void
+			{
+				var geometryArray:Array = [];
+				for each ( var drawGraphic:Graphic in _drawLayer.graphicProvider )
+				{
+					var drawIndex:uint = drawGraphic.attributes.drawIndex;
+					//删掉spatialReference属性
+					var geometryJson:Object = drawGraphic.geometry.toJSON();
+					geometryJson.spatialReference = null;
+					delete geometryJson.spatialReference;
+					var geometryObj:Object = 
+						{
+							index: drawGraphic.attributes.drawIndex,
+							type: drawGraphic.geometry.type,
+							geometry: geometryJson
+						};
+					geometryArray.push( geometryObj );
+				}
+				
+				var dataString:String = JSON.stringify( geometryArray );
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "saveGuardJobGeometry",
+						params: [ dataString ]
+					} 
+				);
+				
+				//多边形不用等待返回搜索半径，直接查询
+				identifyDevice( Geometry.POLYGON );
+			}
+			
+			protected function btnClearGeometry_clickHandler(event:MouseEvent):void
+			{
+				_drawLayer.clear();
+				_searchResultLayer.clear();
+				_drawIndex = 0;
+			}
+			
+			private function identifyDevice( geometryType:String ):void
+			{
+				var graphicAC:ArrayCollection = new ArrayCollection();
+				graphicAC.addAll( _drawLayer.graphicProvider as ArrayCollection );
+				graphicAC.addAll( _showGeometryLayer.graphicProvider as ArrayCollection );
+				
+				for each ( var graphic:Graphic in graphicAC )
+				{
+					for each ( var type:String in _identifyParamTable.getKeySet() )
+					{
+						var paramObj:Object = _identifyParamTable.find( type );
+						if ( graphic.geometry.type == geometryType )
+						{
+							switch( graphic.geometry.type )
+							{
+								case Geometry.POLYGON:
+									identifyDeviceInPolygon( graphic.geometry, paramObj );
+									break;
+								
+								case Geometry.POLYLINE:
+									identifyDeviceInPolyline( graphic.geometry, paramObj );
+									break;
+							}
+						}
+					}
+				}
+			}
+			
+			private function identifyDeviceInPolyline( geometry:Geometry, identifyParamObj:Object ):void
+			{
+				var distance:Number = identifyParamObj.distance;
+				if ( distance )
+				{
+					bufferParam.geometries = [ geometry ];
+					bufferParam.distances = [ distance ];
+					geometryService.buffer( bufferParam, 
+						new AsyncResponder( geometryService_bufferCompleteHandler, faultHandler, identifyParamObj ) );
+				}
+				
+			}
+			
+			private function geometryService_bufferCompleteHandler( item:Object, token:Object = null ):void
+			{
+				var bufferResultArray:Array = item as Array;
+				for ( var i:uint = 0; i < bufferResultArray.length; i++ )
+				{
+					var bufferPolygon:Polygon = bufferResultArray[i] as Polygon;
+					bufferPolygon.spatialReference = map.spatialReference;
+					identifyDeviceInPolygon( bufferPolygon, token );
+				}
+			}
+			
+			private function identifyDeviceInPolygon( geometry:Geometry, identifyParamObj:Object ):void
+			{
+				var layerIds:String = identifyParamObj.layerIds;
+				identifyParam.layerIds = layerIds.split( "," );
+				identifyParam.geometry = geometry;
+				identifyTask.execute( identifyParam, 
+					new AsyncResponder( identifyTask_executeCompleteHandler, faultHandler, identifyParamObj ) );
+			}
+			
+			private function identifyTask_executeCompleteHandler( item:Object, token:Object ):void
+			{
+				var idField:String = token.idField;
+				var descField:String = token.descField;
+				
+				var results:Array = item as Array;
+				if ( results && results.length > 0 )
+				{
+					for each ( var identifyResult:IdentifyResult in results )
+					{
+						var layerName:String = identifyResult.layerName;
+						var graphic:Graphic = identifyResult.feature;
+						graphic.attributes.layerName = layerName;
+						graphic.attributes.type = token.type;
+						//名称保存到统一的字段，方便以后读取
+						graphic.attributes.desc = graphic.attributes[ descField ];
+						graphic.id = graphic.attributes[ idField ];
+						
+						var popUpRenderer:ClassFactory = _searchResultPopUpRendererTable.find( layerName );
+						if ( !popUpRenderer )
+						{
+							popUpRenderer = _searchResultPopUpRendererTable.find( "default" );
+						}
+						graphic.infoWindowRenderer = popUpRenderer;
+						
+						_searchResultLayer.add( graphic );
+					}
+				}
+			}
+			
+			private function faultHandler( fault:Fault, token:Object ):void
+			{
+				var strInfo: String = "Error: ";
+				strInfo += "Fault Code: " + fault.faultCode + "\n";
+				strInfo += "Fault Info: " + fault.faultString + "\n";
+				strInfo += "Fault Detail: " + fault.faultDetail;
+				showError( strInfo );
+			}
+			
+			private function appevent_deleteGuardJobDeviceByMapHandler( event:AppEvent ):void
+			{
+				var params:String = event.data as String;
+				var paramObj:Object = JSON.parse( params );
+				var deviceType:String = paramObj.type;
+				var deviceId:String = paramObj.id;
+				for each ( var graphic:Graphic in _searchResultLayer.graphicProvider )
+				{
+					if ( graphic.attributes.type == deviceType && graphic.id == deviceId )
+					{
+						_searchResultLayer.remove( graphic );
+						_searchResultLayer.refresh();
+						//关闭弹出窗
+						AppEvent.dispatch( AppEvent.HIDE_INFO_POPUP );
+						break;
+					}
+				}
+				
+				for each ( graphic in _showDeviceLayer.graphicProvider )
+				{
+					if ( graphic.attributes.type == deviceType && graphic.id == deviceId )
+					{
+						_showDeviceLayer.remove( graphic );
+						_showDeviceLayer.refresh();
+						//关闭弹出窗
+						AppEvent.dispatch( AppEvent.HIDE_INFO_POPUP );
+						break;
+					}
+				}
+				
+				/*var pointArray:Array = paramObj.points;
+				
+				for each ( var pointObj:Object in pointArray )
+				{
+					var id:String = pointObj.id;
+					for each ( var graphic:Graphic in _searchResultLayer.graphicProvider )
+					{
+						if ( graphic.attributes.type == deviceType && graphic.id == id )
+						{
+							_searchResultLayer.remove( graphic );
+							_searchResultLayer.refresh();
+							//关闭弹出窗
+							AppEvent.dispatch( AppEvent.HIDE_INFO_POPUP );
+							break;
+						}
+					}
+				}*/
+			}
+			
+			private function appevent_showGuardJobGeometryHandler( event:AppEvent ):void
+			{
+				var param:String = event.data as String;
+				var jobArray:Array = JSON.parse( param ) as Array;
+				for each ( var jobObj:Object in jobArray )
+				{
+					var jobId:String = jobObj.jobId;
+					var geometryArray:Array = jobObj.geometries;
+					for each ( var geometryObj:Object in geometryArray )
+					{
+						var type:String = geometryObj.type;
+						var graphic:Graphic;
+						switch( type )
+						{
+							case Geometry.POLYLINE:
+								var polyline:Polyline = Polyline.fromJSON( geometryObj.geometry );
+								graphic = new Graphic( polyline, _lineSymbol );
+								break;
+							
+							case Geometry.POLYGON:
+								var polygon:Polygon = Polygon.fromJSON( geometryObj.geometry );
+								graphic = new Graphic( polygon, _fillSymbol );
+								break;
+						}
+						if ( graphic )
+						{
+							graphic.attributes = { jobId: jobId };
+							_showGeometryLayer.add( graphic );
+						}
+					}
+				}
+			}
+			
+			private function appevent_showGuardJobDeviceHandler( event:AppEvent ):void
+			{
+				var param:String = event.data as String;
+				var jobArray:Array = JSON.parse( param ) as Array;
+				for each ( var jobObj:Object in jobArray )
+				{
+					var jobId:String = jobObj.jobId;
+					var deviceArray:Array = jobObj.devices;
+					for each ( var deviceObj:Object in deviceArray )
+					{
+						var type:String = deviceObj.type;
+						var index:int = deviceObj.index;
+						var id:String = deviceObj.id;
+						var desc:String = deviceObj.desc;
+						var x:Number = deviceObj.x;
+						var y:Number = deviceObj.y;
+						if ( !isNaN( x ) && !isNaN( y ) )
+						{
+							var graphic:Graphic = new Graphic( new MapPoint( x, y ) );
+							graphic.id = id;
+							graphic.attributes = { type: type, layerName: type, desc: desc, jobId: jobId, id: id };
+							
+							var popUpRenderer:ClassFactory = _showDevicePopUpRendererTable.find( type );
+							if ( !popUpRenderer )
+							{
+								popUpRenderer = _showDevicePopUpRendererTable.find( "default" );
+							}
+							graphic.infoWindowRenderer = popUpRenderer;
+							
+							_showDeviceLayer.add( graphic );
+						}
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:GlowFilter id="glowFilter" alpha="1" color="{getStyle('focusColor')}" inner="true"
+					  strength="2"/>
+		
+		<esri:IdentifyTask id="identifyTask" url="{_identifyUrl}"/>
+		
+		<esri:IdentifyParameters id="identifyParam" width="{map.width}" height="{map.height}"
+								 layerOption="all" mapExtent="{map.extent}" returnGeometry="true"
+								 spatialReference="{map.spatialReference}" tolerance="3"/>
+		
+		<esri:GeometryService id="geometryService"/>
+		
+		<esri:BufferParameters id="bufferParam" geodesic="true"
+							   outSpatialReference="{map.spatialReference}"
+							   unit="{GeometryService.UNIT_METER}"/>
+	</fx:Declarations>
+	
+	<TGISViewer:WidgetTemplate id="wTemplate" enableCloseButton="false" width="300" height="120">
+		<s:VGroup width="100%" height="100%" gap="20" paddingLeft="5" paddingRight="5" paddingTop="5">
+			<s:HGroup id="imageGroup" width="100%" height="30" gap="10" horizontalAlign="center">
+				<s:Image click="activateDrawTool(event)" name="{DrawTool.POLYLINE}"
+						 rollOut="iconRollOutHandler(event)" rollOver="iconRollOverHandler(event)"
+						 source="assets/images/i_draw_line.png" useHandCursor="true"/>
+				<s:Image click="activateDrawTool(event)" name="{DrawTool.FREEHAND_POLYLINE}"
+						 rollOut="iconRollOutHandler(event)" rollOver="iconRollOverHandler(event)"
+						 source="assets/images/i_draw_freeline.png" useHandCursor="true"/>
+				<s:Image click="activateDrawTool(event)" name="{DrawTool.POLYGON}"
+						 rollOut="iconRollOutHandler(event)" rollOver="iconRollOverHandler(event)"
+						 source="assets/images/i_draw_poly.png" useHandCursor="true"/>
+				<s:Image click="activateDrawTool(event)" name="{DrawTool.FREEHAND_POLYGON}"
+						 rollOut="iconRollOutHandler(event)" rollOver="iconRollOverHandler(event)"
+						 source="assets/images/i_draw_freepoly.png" useHandCursor="true"/>
+			</s:HGroup>
+			
+			<s:HGroup id="buttonGroup" width="100%" height="30" horizontalAlign="center">
+				<s:Button id="btnSaveGeometry" label="保存线路"
+						  click="btnSaveGeometry_clickHandler(event)"/>
+				<s:Button id="btnClearGeometry" label="清除线路"
+						  click="btnClearGeometry_clickHandler(event)"/>
+			</s:HGroup>
+		</s:VGroup>
+	</TGISViewer:WidgetTemplate>
+</TGISViewer:BaseWidget>

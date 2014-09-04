@@ -1,0 +1,975 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget 
+	     xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+		 xmlns:esri="http://www.esri.com/2008/ags"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 creationComplete="init(event)" widgetConfigLoaded="widgetConfigLoadedHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.events.FindEvent;
+			import com.esri.ags.events.IdentifyEvent;
+			import com.esri.ags.geometry.Geometry;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.Polygon;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.renderers.IRenderer;
+			import com.esri.ags.symbols.SimpleFillSymbol;
+			import com.esri.ags.symbols.SimpleLineSymbol;
+			import com.esri.ags.tasks.GeometryService;
+			import com.esri.ags.tasks.GeometryServiceSingleton;
+			import com.esri.ags.tasks.supportClasses.FindResult;
+			import com.esri.ags.tasks.supportClasses.IdentifyParameters;
+			import com.esri.ags.tasks.supportClasses.IdentifyResult;
+			import com.esri.ags.tasks.supportClasses.RelationParameters;
+			
+			import flash.events.MouseEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ListEvent;
+			import mx.managers.CursorManager;
+			import mx.rpc.AsyncResponder;
+			import mx.rpc.Fault;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
+			import mx.utils.StringUtil;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			import cn.seisys.TGISViewer.utils.LocalizationUtil;
+			import cn.seisys.TGISViewer.utils.RendererParser;
+		
+			private var isAddEvent:Boolean = false;
+			private var isAddRealDataEvent:Boolean = false;
+			[Bindable] private var _searchUrl:String;
+			[Bindable]  
+			[Embed(source="assets/images/search.png")]  
+			private  var search:Class;  
+			[Bindable] 
+			[Embed(source="assets/images/a05.png")]  
+			private  var a05:Class;  
+			[Bindable] 
+			[Embed(source="assets/images/a11.png")]  
+			private  var a11:Class;
+			[Bindable] 
+			[Embed(source="assets/images/a617.png")]  
+			private  var a617:Class;
+			private var  _infoClass:Class;
+			private var _workerToMain:MessageChannel;
+			
+			[Bindable] 
+			public var pId:String = null;
+			[Bindable] 
+			public var title:String = null;
+			[Bindable] 
+			public var image:String = null;
+			[Bindable] 
+			public var time:String  = null;
+			[Bindable] 
+			public var content:String = null;
+			[Bindable] 
+			public var level:Number = 0;
+			[Bindable] 
+			public var source:String =null;
+			[Bindable] 
+			public var location:String =null;
+			[Bindable] 
+			public var deadCount:Number = 0;
+			[Bindable] 
+			public var injuredCount:Number= 0;
+			[Bindable] 
+			public var trappedCount:Number = 0;
+			[Bindable] 
+			public var actions:String = null;
+			[Bindable] 
+			public var interaction110:String = null;
+			[Bindable] 
+			public var interaction120:String = null;
+			[Bindable] 
+			public var interaction119:String = null;
+			
+			[Bindable] 
+			public var logCotent:String = "";
+			[Bindable] 
+			public var polField:String= null;
+			[Bindable] 
+			public var poField:String= null;
+			private var distance:Number =0;
+			private var _identifyParam:IdentifyParameters = new IdentifyParameters();
+			/*缓冲区距离*/
+			[Bindable]  
+			public var dp:ArrayCollection = new ArrayCollection(
+				[   {data:0 ,label:"500米"},
+					{data:1,label:"1000米"},
+					{data:2,label:"1500米"},
+					{data:3,label:"2000米"},
+					{data:4,label:"2500米"},
+					{data:5,label:"3000米"}
+				]
+			);
+			/*上报，回返等*/
+			[Bindable] 
+			public var action1:String= null;
+			[Bindable] 
+			public var action2:String= null;
+			[Bindable] 
+			public var action3:String= null;
+			[Bindable] 
+			public var action4:String= null;
+			[Bindable] 
+			public var action5:String= null;
+											
+			private var _drawSymbol:SimpleFillSymbol;
+			private var _searchFieldArray:Array;
+			private var _searchLayerIds:Array;
+			private var _searchResultLayer:GraphicsLayer;
+			private var _popUpRendererTable:Hashtable;
+			private var _bufferResultLayer:GraphicsLayer;
+			private var _bufferSearchType:String = "";
+			private var _bufferSearchId:String = "";
+			private var _bufferSearchCenterPoint:MapPoint;
+			public var mapPoint:MapPoint;
+		
+			private const ICON_URL:String = "assets/images/";
+			
+		    [Bindable]
+			private var _selectionColor:Number;
+			private var _searchOverlayerInfoArray:Array = [];
+			
+			
+			protected function init(event:FlexEvent):void
+			{
+				_selectionColor = getStyle( "selectionColor" );
+				_drawSymbol = new SimpleFillSymbol( "solid", _selectionColor, 0.2, new SimpleLineSymbol( "solid", _selectionColor, 1, 2 ) );
+				
+				geometryService.url = GeometryServiceSingleton.instance.url;
+				geometryService.token = GeometryServiceSingleton.instance.token;
+				geometryService.proxyURL = GeometryServiceSingleton.instance.proxyURL;
+				
+				/*_bufferResultLayer = new GraphicsLayer();
+				_bufferResultLayer.name = "BufferResultLayer";
+				_bufferResultLayer.symbol = _drawSymbol;
+				map.addLayer( _bufferResultLayer );
+
+				_searchResultLayer = new GraphicsLayer();
+				_searchResultLayer.name = "SearchResultLayer";
+				map.addLayer( _searchResultLayer );
+				*/
+				
+				/*以下根据level的值显示对应的图片*/
+				if(level ==1)
+				{
+					Img.source =ICON_URL + "lev3.png";
+				}
+				else if(level ==2)
+				{
+					Img.source = ICON_URL + "lev2.png";
+				}
+				else if(level ==3)
+				{
+					Img.source = ICON_URL + "lev3.png";
+				}
+				else if(level ==4)
+				{
+					Img.source = ICON_URL + "lev4.png";
+				}
+				else if(level ==5)
+				{
+					Img.source = ICON_URL + "lev5.png";
+				}
+				/*AppEvent.addListener( AppEvent.BUFFER_SEARCH, appevent_BufferSearchHandler );*/
+			}
+		
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					//find参数
+					_searchUrl = configXML.layerinfo.find.url;
+					if ( _searchUrl != "" )
+					{
+						if ( configData.arcgisServerIP )
+						{
+							_searchUrl = _searchUrl.replace( "{serverip}", configData.arcgisServerIP );
+						}
+						var layerIdString:String = configXML.layerinfo.find.layerids;
+						if ( layerIdString )
+						{
+							_searchLayerIds = layerIdString.split( "," );
+						}
+						setLayerCheckBox();
+					}
+					
+					var findFields:String = configXML.layerinfo.find.fields;
+					_searchFieldArray = findFields.split( "," );
+					
+					//renderer
+					var rendererParser:RendererParser = new RendererParser();
+					var renderer:IRenderer = rendererParser.parseRenderer( configXML.layerinfo[0] );
+					_searchResultLayer.renderer = renderer;
+					//overlay
+					if ( configXML.overlays[0] )
+					{
+						for each ( var overlayXML:XML in configXML.overlays[0].overlay )
+						{
+							var name:String = overlayXML.@name;
+							var label:String = overlayXML.@label;
+							var titleField:String = overlayXML.@titlefield;
+							var idField:String = overlayXML.@idfield;
+							var selected:Boolean = overlayXML.@defaultselected == "false" ? false : true;
+							_searchOverlayerInfoArray.push( 
+								{ 
+									name: name,
+									label: label,
+									titleField: titleField,
+									idField: idField,
+									selected: selected
+								} 
+							);
+						}
+						setOverlayCheckBox();
+					}
+				}
+			}
+		
+			
+			public function setLayerCheckBox():void
+			{
+				var jsonService:HTTPService = new HTTPService();
+				jsonService.url = _searchUrl + "/?f=json";
+				jsonService.resultFormat = "text";
+				jsonService.addEventListener( ResultEvent.RESULT, onJSONResult );
+				jsonService.addEventListener( FaultEvent.FAULT, onJsonFault );
+				jsonService.send();
+				
+				function onJSONResult( event:ResultEvent ):void
+				{
+					var rawData:String = event.result as String;
+					var jsonObj:Object = JSON.parse( rawData );
+					var layerArray:Array = jsonObj.layers;
+					createLayerCheckBoxGroup( layerArray,layerGroupBuffer );
+				}
+				
+				function createLayerCheckBoxGroup( layerArray:Array, parentContent:TileGroup ):void
+				{
+					for each ( var layerObj:Object in layerArray )
+					{
+						var layerId:String = layerObj.id;
+						//如果设置了layerids，就只显示layerids中指定的图层
+						if ( !_searchLayerIds || _searchLayerIds.indexOf( layerId ) >=0 )
+						{
+							var checkBox:CheckBox = new CheckBox();
+							checkBox.label = layerObj.name;
+							checkBox.name = "layer";
+							checkBox.id = layerObj.id;
+							//配置了layerids就默认选中，否则按照图层是否可见
+							checkBox.selected = ( _searchLayerIds ? true : layerObj.defaultVisibility );
+							checkBox.addEventListener( Event.CHANGE, layerCheckBox_changeHandler );
+							parentContent.addElement( checkBox );
+						}
+					}
+				}
+				
+				function onJsonFault( event:FaultEvent ):void
+				{
+					var sInfo:String = "";
+					if (event.fault.rootCause is IOErrorEvent)
+					{
+						var ioe:IOErrorEvent = event.fault.rootCause as IOErrorEvent;
+						sInfo += event.fault.rootCause + "\n\n";
+					}
+					if (event.fault.rootCause is SecurityErrorEvent)
+					{
+						var sec:SecurityErrorEvent = event.fault.rootCause as SecurityErrorEvent;
+						// config file with crossdomain issue
+						if (sec.errorID == 2048)
+						{
+							sInfo += LocalizationUtil.getDefaultString('configFileCrossDomain', "\n", sec.toString()) + "\n\n";
+						}
+						else
+						{
+							sInfo += event.fault.rootCause + "\n\n";
+						}
+					}
+					{
+						sInfo += LocalizationUtil.getDefaultString('httpResponseStatus', event.statusCode) + "\n\n";
+					}
+					sInfo += LocalizationUtil.getDefaultString('faultCode', event.fault.faultCode) + "\n\n";
+					sInfo += LocalizationUtil.getDefaultString('faultInfo', event.fault.faultString) + "\n\n";
+					sInfo += LocalizationUtil.getDefaultString('faultDetail', event.fault.faultDetail);
+					AppEvent.showError(sInfo, widgetTitle);
+				}
+			}
+			
+			private function layerCheckBox_changeHandler( event:Event ):void
+			{
+				var checkBox:CheckBox = event.currentTarget as CheckBox;
+				var tileGroup:TileGroup = checkBox.parent as TileGroup;
+				var chkSelectAll:CheckBox;
+				
+				for ( var i:uint = 0; i < tileGroup.numElements; i++ )
+				{
+					if ( tileGroup.getElementAt( i ) is CheckBox )
+					{
+						var checkbox:CheckBox = tileGroup.getElementAt( i ) as CheckBox;
+						if ( !checkbox.selected )
+						{
+							chkSelectAll.selected = false;
+							return;
+						}
+					}
+				}
+				chkSelectAll.selected = true;
+			}
+			
+			/**
+			 * 读取要搜索的overlay图层，生成对应的checkbox
+			 * checkbox是否选中由配置文件控制
+			 * */
+			private function setOverlayCheckBox():void
+			{
+				for each ( var overlayObj:Object in _searchOverlayerInfoArray )
+				{
+					createOverlayCheckBoxGroup( layerGroupBuffer );
+					function createOverlayCheckBoxGroup( parentContent:TileGroup ):void
+					{
+						var checkBox:CheckBox = new CheckBox();
+						checkBox.label = overlayObj.label;
+						//用name来区分overlay和layer的checkbox
+						checkBox.name = "overlay";
+						checkBox.id = overlayObj.name;
+						checkBox.selected = overlayObj.selected;
+						checkBox.addEventListener( Event.CHANGE, overlayCheckBox_changeHandler );
+						parentContent.addElement( checkBox );
+					}
+				}
+			}
+			
+			private function overlayCheckBox_changeHandler( event:Event ):void
+			{
+				var checkBox:CheckBox = event.currentTarget as CheckBox;
+				for each ( var overlayObj:Object in _searchOverlayerInfoArray )
+				{
+					if ( checkBox.id == overlayObj.name )
+					{
+						overlayObj.selected = checkBox.selected;
+						break;
+					}
+				}
+				
+				//更新全选checkBox
+		        var tileGroup:TileGroup = checkBox.parent as TileGroup;
+				var chkSelectAll:CheckBox;
+				for ( var i:uint = 0; i < tileGroup.numElements; i++ )
+				{
+					if ( tileGroup.getElementAt( i ) is CheckBox )
+					{
+						var checkbox:CheckBox = tileGroup.getElementAt( i ) as CheckBox;
+						if ( !checkbox.selected )
+						{
+							chkSelectAll.selected = false;
+							return;
+						}
+					}
+				}
+				chkSelectAll.selected = true;
+			}
+			
+			/*private function appevent_BufferSearchHandler( event:AppEvent ):void
+			{
+				_bufferResultLayer.clear();
+				_searchResultLayer.clear();
+				_bufferSearchId = pid;
+				_bufferSearchCenterPoint = pt;
+				_bufferSearchCenterPoint.spatialReference = map.spatialReference;
+				bufferSearch();
+			}*/
+			
+			public function bufferSearch():void
+			{
+				if ( !_bufferSearchCenterPoint || StringUtil.trim( _bufferSearchId ) == "" )
+				{
+					//Alert.show("请选择")
+					return;
+				}
+				
+				_bufferResultLayer.clear();
+				_searchResultLayer.clear();
+				
+				//缓冲区查询的距离
+				var distance:Number = Number(cbox.selectedItem);
+				bufferParam.geometries = [ _bufferSearchCenterPoint ];
+				bufferParam.distances = [ distance ];
+				geometryService.buffer( bufferParam,new AsyncResponder( geometryService_bufferCompleteHandler, faultHandler, null ) );
+			}
+			
+			protected function geometryService_bufferCompleteHandler( item:Object, token:Object = null ):void
+			{
+				var bufferResultArray:Array = item as Array;
+				for ( var i:uint = 0; i < bufferResultArray.length; i++ )
+				{
+					var bufferPolygon:Polygon = bufferResultArray[i] as Polygon;
+					bufferPolygon.spatialReference = map.spatialReference;
+					_bufferResultLayer.add( new Graphic( bufferPolygon ) );
+					if ( _searchUrl != "" )
+					{
+						//地图图层搜索
+						searchLayer( bufferPolygon, getSelectedLayerId( layerGroupBuffer ) );
+					}
+					if ( _searchOverlayerInfoArray.length > 0 )
+					{
+						//动态图层
+						searchOverlay( bufferPolygon );
+					}
+				}
+			}
+			
+			private function getSelectedLayerId( tileGroup:TileGroup ):Array
+			{
+				var result:Array = [];
+				for ( var i:uint = 0; i < tileGroup.numElements; i++ )
+				{
+					if ( tileGroup.getElementAt( i ) is CheckBox )
+					{
+						var checkbox:CheckBox = tileGroup.getElementAt( i ) as CheckBox;
+						if ( ( checkbox.name == "layer" ) && checkbox.selected )
+						{
+							result.push( checkbox.id );
+						}
+					}
+				}
+				return result;
+			}
+			
+			//搜索地图服务图层
+			private function searchLayer( geom:Geometry, selectedLayers:Array ):void
+			{
+				if ( selectedLayers.length > 0 )
+				{
+					identifyParam.layerIds = selectedLayers;
+					identifyParam.geometry = geom;
+					identifyTask.execute( identifyParam );
+				}
+			}
+			
+			protected function identifyTask_executeCompleteHandler(event:IdentifyEvent):void
+			{
+				//				_searchResultLayer.clear();
+				var results:Array = event.identifyResults;
+				if ( results && results.length > 0 )
+				{
+					for each ( var identifyResult:IdentifyResult in results )
+					{
+						var displayFieldName:String = identifyResult.displayFieldName;
+						var layerName:String = identifyResult.layerName;
+						var graphic:Graphic = identifyResult.feature;
+						var label:String = graphic.attributes[displayFieldName];
+						
+						graphic.attributes.layerName = layerName;
+						//graphic.id = graphic.attributes[idFieldName];
+						_searchResultLayer.add( graphic );
+					}
+				}
+			}
+			
+			
+			//搜索非地图服务图层
+			private function searchOverlay( geom:Geometry ):void
+			{
+				//请求所有数据，筛选其中的overlay数据
+				AppEvent.dispatch( AppEvent.DATA_FETCH_ALL, null, dataAllFetchedHandler );
+				
+				function dataAllFetchedHandler( dataTable:Hashtable ):void
+				{
+					var overlayGeometryArray:Array = [];
+					var overlayGraphicArray:Array = [];
+					for each ( var overlayObj:Object in _searchOverlayerInfoArray )
+					{
+						var overlayName:String = overlayObj.name;
+						//检查checkbox是否选中
+						var selected:Boolean = false;
+						for ( var i:uint = 0; i < layerGroupBuffer.numElements; i++ )
+						{
+							if ( layerGroupBuffer.getElementAt( i ) is CheckBox )
+							{
+								var checkBox:CheckBox = layerGroupBuffer.getElementAt( i ) as CheckBox;
+								if ( checkBox.name == "overlay" && checkBox.id == overlayName )
+								{
+									selected = checkBox.selected;
+									break;
+								}
+							}
+						}
+						if ( !selected )
+						{
+							continue;
+						}
+						var graphicProvider:ArrayCollection = dataTable.find( overlayName ) as ArrayCollection;
+						if ( graphicProvider && graphicProvider.length > 0 )
+						{
+							for each ( var graphic:Graphic in graphicProvider )
+							{
+								graphic.geometry.spatialReference = map.spatialReference;
+								graphic.attributes.overlayName = overlayName;
+								graphic.attributes.overlayLabel = overlayObj.label;
+								graphic.attributes.titleField = overlayObj.titleField;
+								overlayGraphicArray.push( graphic );
+								overlayGeometryArray.push( graphic.geometry );
+							}
+						}
+					}
+					
+					if ( overlayGeometryArray.length > 0 )
+					{
+						relationParams.geometries1 = overlayGeometryArray;
+						relationParams.geometries2 = [geom];
+						geometryService.relation( 
+							relationParams, 
+							new AsyncResponder( geometryService_relationCompleteHandler, 
+								faultHandler, overlayGraphicArray ) 
+						);
+					}
+				}
+			}
+			
+			private function geometryService_relationCompleteHandler( item:Object, token:Object = null ):void
+			{
+				var result:Array = item as Array;
+				var graphicArray:Array = token as Array;
+				
+				for each (var obj:Object in result)
+				{
+					var resultPoint:MapPoint = obj.geometry1 as MapPoint;
+					var overlayGraphic:Graphic = new Graphic( resultPoint );
+					
+					for each ( var graphic:Graphic in graphicArray )
+					{
+						var overlayPoint:MapPoint = graphic.geometry as MapPoint;
+						if ( resultPoint.x == overlayPoint.x && resultPoint.y == overlayPoint.y )
+						{
+							var overlayName:String = graphic.attributes.overlayName;
+							var overlayLabel:String = graphic.attributes.overlayLabel;
+							var titleField:String = graphic.attributes.titleField;
+							
+							overlayGraphic.attributes = graphic.attributes;
+							overlayGraphic.attributes.layerName = overlayName;
+							overlayGraphic.id = graphic.id;
+							_searchResultLayer.add( overlayGraphic );
+							break;
+						}
+					} 
+				}
+			}
+			
+			//进行缓冲区查询
+			protected function bFind_clickHandler(event:MouseEvent):void
+			{
+				/*_bufferResultLayer.clear();
+				_searchResultLayer.clear();*/
+				_bufferSearchId = pId;
+				_bufferSearchCenterPoint = mapPoint;
+				_bufferSearchCenterPoint.spatialReference = map.spatialReference;
+				if(textInput.text !=null && cbox.selectedItem != null)
+				{
+					findSearch();
+				}
+				else
+				{
+					bufferSearch();
+				}
+			}		
+			
+			private function findSearch():void
+			 {
+				 _searchResultLayer.clear();
+				 var searchTextArray:Array = textInput.text.split( " " );
+				 for each ( var searchText:String in searchTextArray )
+				 {
+					 findParam.layerIds = getSelectedLayerId( layerGroupBuffer );
+					 findParam.searchFields = _searchFieldArray;
+					 findParam.searchText = searchText;
+					 CursorManager.setBusyCursor();
+					 findTask.execute( findParam );
+				 }
+			 }
+			
+			 //输入查询的图层名字，进行查询
+			protected function findTask_executeCompleteHandler(event:FindEvent):void
+			{
+				 CursorManager.removeBusyCursor();
+				for each ( var findResult:FindResult in event.findResults )
+				{
+					var label:String = findResult.value;
+					var graphic:Graphic = findResult.feature;
+					var layerName:String = findResult.layerName;
+					graphic.attributes.layerName = layerName;
+					_searchResultLayer.add( graphic );
+				}
+			}
+			
+			//窗口关闭
+			protected function closeButton_clickHandler(event:MouseEvent):void
+			{
+				AppEvent.dispatch(AppEvent.CLOSE, null);
+				/*_bufferResultLayer.clear();
+				map.removeLayer( _bufferResultLayer );
+				_searchResultLayer.clear();
+				map.removeLayer( _searchResultLayer );*/
+				
+			}
+			
+			//缓冲区距离
+			protected function cbox_changeHandler(event:ListEvent):void
+			{
+				distance = Number(cbox.selectedItem);
+			}
+			
+			//上报
+			protected function sb_clickHandler(event:MouseEvent):void
+			{  
+				var array:Array = [];
+				action1 = actions.substring(0,2);
+			    var objPrams:Object = new Object();
+				objPrams.action1 =action1;
+				
+				array.push( action1 );
+				var dataString:String = JSON.stringify( array );
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "sendPoliceEventData",
+						params: [dataString ]
+					} 
+				);
+			}
+			
+			//回退
+			protected function rollback_clickHandler(event:MouseEvent):void
+			{
+				var array:Array = [];
+				action2 = actions.substring(3,5);
+				var objPrams:Object = new Object();
+				objPrams.action1 =action1;
+				
+				array.push( action2 );
+				var dataString:String = JSON.stringify( array );
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "sendPoliceEventData",
+						params: [dataString ]
+					} 
+				);
+			}
+			
+			//派警
+			protected function policeSent_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var array:Array = [];
+				action3 = actions.substring(6,8);
+				var objPrams:Object = new Object();
+				objPrams.action1 =action1;
+				
+				array.push( action3 );
+				var dataString:String = JSON.stringify( array );
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "sendPoliceEventData",
+						params: [dataString ]
+					} 
+				);
+			}
+			
+			//结案
+			protected function closeCase_clickHandler(event:MouseEvent):void
+			{
+				var array:Array = [];
+				action4 = actions.substring(9,11);
+				var objPrams:Object = new Object();
+				objPrams.action1 =action1;
+				
+				array.push( action4 );
+				var dataString:String = JSON.stringify( array );
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "sendPoliceEventData",
+						params: [dataString ]
+					} 
+				);
+			}
+			
+			//回访
+			protected function backVisit_clickHandler(event:MouseEvent):void
+			{
+				var ddd:String = logCotent;
+				var array:Array = [];
+				action5 = actions.substring(12,14);
+				var objPrams:Object = new Object();
+				objPrams.action1 =action1;
+				
+				array.push( action5);
+				var dataString:String = JSON.stringify( array );
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "sendPoliceEventData",
+						params: [dataString ]
+					} 
+				);
+				
+			}
+			
+			//详细信息
+			protected function linkbutton1_clickHandler(event:MouseEvent):void
+			{
+				
+			}
+			
+			//tab页面进行切换
+			protected function tb_changeHandler(event:IndexChangedEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(tb.selectedIndex == 1)
+				{
+					/*lB.alpha = 0;
+					lBt.alpha = 1;
+					lblName.text= "警情";*/
+				
+				}
+				if(tb.selectedIndex== 0)
+				{
+					/*lB.alpha = 1;
+					lBt.alpha = 0;
+					lblName.text= "交通事故";*/
+				}
+				
+				if(tb.selectedIndex==2)
+				{
+					/*lBt.alpha = 0;
+					lB.alpha = 0;
+					lblName.text= "警情信息";*/
+					
+				}  
+				
+			}
+			
+			//清楚进行缓冲区查询的结果
+			protected function clear_clickHandler(event:MouseEvent):void
+			{
+				/*_bufferResultLayer.clear();
+				map.removeLayer( _bufferResultLayer );
+				_searchResultLayer.clear();
+				map.removeLayer( _searchResultLayer );*/
+				
+			}
+			
+			private function faultEventHandler( event:FaultEvent ):void
+			{
+				CursorManager.removeBusyCursor();
+				var strInfo: String = "Error: ";
+				strInfo += "Event Headers: " + event.headers + "\n";
+				strInfo += "Event Target: " + event.target + "\n";
+				strInfo += "Event Type: " + event.type + "\n";
+				strInfo += "Fault Code: " + event.fault.faultCode + "\n";
+				strInfo += "Fault Info: " + event.fault.faultString + "\n";
+				strInfo += "Fault Detail: " + event.fault.faultDetail;
+				showError( strInfo );
+			}
+			
+			private function faultHandler( fault:Fault, token:Object ):void
+			{
+				var strInfo: String = "Error: ";
+				strInfo += "Fault Code: " + fault.faultCode + "\n";
+				strInfo += "Fault Info: " + fault.faultString + "\n";
+				strInfo += "Fault Detail: " + fault.faultDetail;
+				showError( strInfo );
+			}	
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:GlowFilter id="glowFilter"
+					  alpha="1"
+					  color="{getStyle('focusColor')}"
+					  inner="true"
+					  strength="2"/>
+		
+		<esri:GeometryService id="geometryService"/>
+		
+		<esri:BufferParameters id="bufferParam" 
+							   unit="{GeometryService.UNIT_METER}" 
+							   geodesic="true"/>
+		
+		<esri:RelationParameters id="relationParams" 
+								 spatialRelationship="{RelationParameters.SPATIAL_REL_WITHIN}"/>
+		
+		<esri:FindTask id="findTask" 
+					   url="{_searchUrl"
+					   executeComplete="findTask_executeCompleteHandler(event)"
+					   />
+		
+		<esri:FindParameters id="findParam" 
+							 contains="true" 
+							 returnGeometry="true"/>
+		
+		<esri:IdentifyTask id="identifyTask" url="{_searchUrl}" executeComplete="identifyTask_executeCompleteHandler(event)" fault="faultEventHandler(event)"/>
+		
+		<esri:IdentifyParameters id="identifyParam" 
+								 returnGeometry="true" 
+								 tolerance="3"
+								 layerOption="all"
+								 />
+	</fx:Declarations>
+	
+	<s:BorderContainer width="400" borderAlpha="0.0" id="bc" skinClass="cn.seisys.TGISViewer.skins.borderContainerSkin" >
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<s:Group width="402" id="header" top="5" >
+			<s:Spacer height="5"/>
+			<s:HGroup >
+				<s:Spacer width="5"/>
+				<s:Label id="lblName"
+						 fontFamily="微软雅黑" fontSize="16"
+						 text="{title}" verticalAlign="middle" fontWeight="bold" />
+				<!--<mx:LinkButton id="lB" height="18" label="详细信息》"  fontSize="12" click="linkbutton1_clickHandler(event)" color="0x0000FF" />-->
+				<!--<s:Spacer width="5"/>-->
+				<s:Image  id="Img" />
+		     	<!--<s:Spacer width="5" />-->
+				<s:Button id="closeButton"  top="0" right="5" click="closeButton_clickHandler(event)"  
+				useHandCursor="true"   visible="true" skinClass="cn.seisys.TGISViewer.skins.closeBtSkin"/>
+			</s:HGroup>
+		</s:Group>
+		<s:Group id="contentGroup">
+			<s:VGroup>
+				<s:HGroup >
+					<s:VGroup  verticalAlign="top" >
+						<s:HGroup verticalAlign="middle" horizontalAlign="left">
+							<s:Spacer width="5"/>
+							<s:Label text="{time}" fontSize="12" />
+							<s:Label text="({source})" fontSize="12"/>
+							<mx:LinkButton id="lBt" label="详细信息》"  fontSize="12" click="linkbutton1_clickHandler(event)" color="0x0000FF" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Spacer width="5"/>
+							<s:Label  height="14" text="{content}" fontSize="12" verticalAlign="bottom"/>
+						</s:HGroup>
+						<s:HGroup>
+							<s:Spacer width="5"/>
+							<s:Label  height="14" text="{location}" fontSize="12" verticalAlign="bottom"/>
+						</s:HGroup>
+					</s:VGroup>
+					<s:BitmapImage width="80" height="65" fillMode="repeat" smooth="true" source="@Embed('/assets/images/9.png')"/>
+				</s:HGroup>
+				
+				<s:HGroup verticalAlign="justify">
+					<s:Spacer width="5"/>
+					<s:Label height="14" text="死{deadCount}- " fontSize="12"/>
+					<s:Label height="14" text="伤{injuredCount}- " fontSize="12"/>
+					<s:Label height="14" text="困{trappedCount} " fontSize="12"/>
+				</s:HGroup>
+			</s:VGroup>
+		</s:Group>
+		
+		<s:HGroup>
+			<s:Spacer width="5" visible="false"/>
+			<mx:HRule width="385"  height="1" visible="true"  />
+		</s:HGroup>
+		
+		<s:Group height="30">
+			<s:VGroup>
+				<s:HGroup>
+					<s:Spacer width="5"/>
+					<s:Label width="443" height="14" text="报警人：{polField}" fontSize="14"  fontFamily="微软雅黑" fontWeight="bold" />
+				</s:HGroup>
+				<s:HGroup>
+					<s:Spacer width="5"/>
+					<s:Label width="446" height="14" text="涉案人：{poField}" fontSize="14"  fontFamily="微软雅黑" fontWeight="bold" />
+				</s:HGroup>
+			</s:VGroup>
+		</s:Group>
+		<s:HGroup>
+			<s:Spacer width="5" visible="false"/>
+			<mx:HRule width="385"  height="1" visible="true"  />
+		</s:HGroup>
+		<s:Group>
+			<s:HGroup>
+				<s:Spacer width="5"/>
+				<s:Label height="15" text="联动:有危险品" fontWeight="bold" verticalAlign="middle" fontSize="14" fontFamily="微软雅黑"/>
+				<mx:VRule height="15" width="7"/>
+				<s:Label text="{interaction110}" height="15" verticalAlign="middle" fontSize="14" color="0x0000FF"/>
+				<mx:VRule height="15" width="8" />
+				<s:Label text="{interaction119}" height="15" verticalAlign="middle" fontSize="14" color="0x0000FF"/>	
+				<mx:VRule height="15" width="7" />	
+				<s:Label text="{interaction120}" height="15" verticalAlign="middle" fontSize="14" color="0x0000FF"/>	
+			</s:HGroup>
+		</s:Group>
+		
+		<s:Group width="100%" height="145" left="10">
+			<s:HGroup>
+				<s:Spacer width="5" visible="false"/>
+				<mx:HRule width="385"  height="1" visible="true"  />
+			</s:HGroup>
+			<mx:TabNavigator id="tb" width="400" height="145"   borderColor="#ffffff" selectedIndex="1" fontSize="12" change="tb_changeHandler(event)" > 
+				<s:NavigatorContent width="125" height="100%" label="操  作" fontSize="14" icon="{a11}" >
+					<s:VGroup  width="100%" height="100%" paddingLeft="10" paddingRight="10" paddingBottom="10">
+						<s:HGroup width="100%" height="50" verticalAlign="middle">
+							<s:Spacer height="30"/>
+							<s:Button id="sb" label="上报" click="sb_clickHandler(event)" skinClass="cn.seisys.TGISViewer.skins.btSkin"/>
+							<s:Spacer width="15"/>
+							<s:Button id="rollback" label="回退" click="rollback_clickHandler(event)" skinClass="cn.seisys.TGISViewer.skins.btSkin"/>
+							<s:Spacer width="15"/>
+							<s:Button id="policeSent" label="派警" click="policeSent_clickHandler(event)" skinClass="cn.seisys.TGISViewer.skins.btSkin"/>
+							<s:Spacer width="15"/>
+							<s:Button id="closeCase" label="结案" click="closeCase_clickHandler(event)" skinClass="cn.seisys.TGISViewer.skins.btSkin"/>
+							<s:Spacer width="15"/>
+							<s:Button id="backVisit" label="回访" click="backVisit_clickHandler(event)" skinClass="cn.seisys.TGISViewer.skins.btSkin"/>
+						</s:HGroup>
+					</s:VGroup> 
+				</s:NavigatorContent> 
+				
+				<s:NavigatorContent width="125" height="100%" label="在附近查找"  fontSize="14" icon="{search}">
+					<s:VGroup width="100%" height="100%" paddingLeft="10" paddingRight="10" >
+						<s:Spacer height="5"/>
+						<s:Scroller id="layerContainerBuffer" width="395" height="60">
+							<s:TileGroup id="layerGroupBuffer" width="395" height="60">
+								<s:CheckBox  height="20" id="police" label="警员"  fontSize="12"/>
+								<s:CheckBox  height="20" id="car" label="警车"  fontSize="12"/>
+								<s:CheckBox  height="20" id="scats" label="scats"  fontSize="12"/>
+								<s:CheckBox  height="20" id="carCheck" label="车检器"  fontSize="12"/>
+								<s:CheckBox  height="20" id="ePolice" label="电子警察"  fontSize="12"/>
+								<s:CheckBox  height="20" id="ePoh" label="摄像机" fontSize="12"/>
+								<s:CheckBox  height="20" id="ePo" label="诱导版" fontSize="12" />
+								<s:CheckBox  height="20" id="ePublish" label="发布段" fontSize="12" />
+							</s:TileGroup>
+						</s:Scroller>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:ComboBox width="100" id="cbox" prompt="半径"  fontSize="12"   alternatingItemColors="[ #FAE9A3,#B1F2FC ]"
+										 change="cbox_changeHandler(event)" dataProvider="{dp}" toolTip="缓冲区距离"/>
+							<s:TextInput id="textInput" prompt="关键字" fontSize="12" />
+							<s:Spacer width="2" />
+							<s:Button id="bFind"  width="60" y="2" label="查找"  click="bFind_clickHandler(event)" fontSize="12"/> 
+							<s:Button id="clear" width="60" label="清除" click="clear_clickHandler(event)"  fontSize="12"/>
+						</s:HGroup>
+					</s:VGroup> 
+				</s:NavigatorContent>  
+				
+				<s:NavigatorContent width="125" height="100%" label="日志记录"  fontSize="14" icon="{a05}">
+					<s:VGroup width="100%" height="100%" paddingLeft="10" paddingRight="10" >
+						<s:Spacer height="1"/>
+						<s:Scroller height="110" width="395">
+							<s:Group  >
+								<s:Label text="{logCotent}"/>
+							</s:Group>
+						</s:Scroller>
+					</s:VGroup> 
+				</s:NavigatorContent>  
+			</mx:TabNavigator>
+		</s:Group>
+	</s:BorderContainer>	
+</TGISViewer:BaseWidget>

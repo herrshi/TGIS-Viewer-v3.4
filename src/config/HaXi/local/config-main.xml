@@ -1,0 +1,155 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>128.64.151.192:6080</arcgisserverip>
+
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+			config="widgets/Navigation/NavigationWidget.xml"
+		    url="widgets/Navigation/NavigationWidget.swf" />
+		    
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" center="293319.5538 198732.6021" scale="12000"
+		 scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/HaXi/haxi_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="发布段" type="dynamic" visible="false" autorefresh="30"
+				url="http://{serverip}/arcgis/rest/services/HaXi/haxi_fbd/MapServer">
+				<sublayer id="0" popupconfig="popups/HaXi/PopUp-fbd.xml"/>
+			</layer>
+			
+			<layer label="摄像机" type="feature" visible="false"
+				url="http://{serverip}/arcgis/rest/services/HaXi/haxi_device/FeatureServer/0"
+				popupconfig="popups/HaXi/PopUp-sxj.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-grey.png"
+						height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-red.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-yellow.png" 
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="卡口" type="feature" visible="false"
+				url="http://{serverip}/arcgis/rest/services/HaXi/haxi_device/FeatureServer/1"
+				popupconfig="popups/HaXi/PopUp-kk.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/DianZiJingCha-grey.png"
+						height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/DianZiJingCha-blue.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/DianZiJingCha-red.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/DianZiJingCha-yellow.png" 
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="路口机" type="feature" visible="false"
+				url="http://{serverip}/arcgis/rest/services/HaXi/haxi_device/FeatureServer/2"
+				popupconfig="popups/HaXi/PopUp-lkj.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-grey.png"
+						height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-blue.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-red.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-yellow.png" 
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="诱导板" type="feature" visible="false"
+				url="http://{serverip}/arcgis/rest/services/HaXi/haxi_device/FeatureServer/3"
+				popupconfig="popups/HaXi/PopUp-qbb.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-grey.png"
+						height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-blue.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-red.png"
+							height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol
+							url="assets/images/mapIcons/QingBaoBan-yellow.png" height="26"
+							width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			
+			<layer label="注记" type="dynamic" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/HaXi/haxi_anno/MapServer" />
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="ControlPanel" preload="open" right="20" bottom="20"
+				config="widgets/ControlPanel/HaXi/IconControlPanelWidget-main.xml"
+				url="widgets/ControlPanel/IconControlPanelWidget.swf" />
+	</widgetcontainer>
+
+</configuration>

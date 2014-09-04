@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<!--  长沙警员、警车gps轨迹 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"
+			url="widgets/Navigation/NavigationWidget.swf" />
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" initialextent="103.962 30.5946 104.2024 30.7335"
+		scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="矢量图" type="tiled" visible="true"
+				url="http://{serverip}/arcgis/rest/services/chengdu/cd_base_nolabel/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="注记" type="dynamic" visible="true"
+				url="http://{serverip}/arcgis/rest/services/chengdu/cd_anno/MapServer" />
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="gps节点" preload="open" 
+				config="widgets/Overlay/ChengDu/PointOverlayWidget-gpsTrack.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="警车轨迹线" preload="open"
+				config="widgets/Overlay/ChengDu/PolylineOverlayWidget-gpsCarTrack.xml"
+				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+		
+		<widget label="警车模拟移动" preload="open"
+				config="widgets/SimulationMovePoint/ChengDu/SimulationMovePointWidget-gpsCarTrack.xml"
+				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
+		
+		<widget label="警员轨迹线" preload="open"
+				config="widgets/Overlay/ChengDu/PolylineOverlayWidget-gpsPoliceTrack.xml"
+				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+		
+		<widget label="警员模拟移动" preload="open"
+				config="widgets/SimulationMovePoint/ChengDu/SimulationMovePointWidget-gpsPoliceTrack.xml"
+				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
+		
+		<widget label="gpsCarTrack" preload="open" 
+				config="widgets/GPSTrack/ChengDu/GPSTrackWidget-car.xml"
+				url="widgets/GPSTrack/GPSTrackWidget.swf"/>
+				
+		<widget label="gpsPoliceTrack" preload="open" 
+				config="widgets/GPSTrack/ChengDu/GPSTrackWidget-police.xml"
+				url="widgets/GPSTrack/GPSTrackWidget.swf"/>
+	</widgetcontainer>
+
+</configuration>

@@ -1,0 +1,89 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>128.64.151.19:6080</arcgisserverip>
+
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+			config="widgets/Navigation/NavigationWidget.xml"
+		    url="widgets/Navigation/NavigationWidget.swf" />
+		    
+	<widget left="3" bottom="3"
+			config="widgets/Coordinate/CoordinateWidget.xml" 
+			url="widgets/Coordinate/CoordinateWidget.swf" />
+
+	<map top="0"  
+		 scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="经信委" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/tianjin/EcoMap_base/MapServer"/>
+<!-- 			<layer label="捷泰" type="tiled" visible="true" -->
+<!-- 				   url="http://cache1.arcgisonline.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer"/> -->
+		</basemaps>
+		<operationallayers>
+			
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="SheXiangJiOverlay" 
+				config="widgets/Overlay/TianJin/ZhiNengGongJiao/PointOverlayWidget-SheXiangJi.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="XueXiaoOverlay" 
+				config="widgets/Overlay/TianJin/ZhiNengGongJiao/PointOverlayWidget-XueXiao.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+						
+		<!-- 校车实时位置 -->		
+		<widget label="XiaoCheOverlay" preload="open"
+				config="widgets/Overlay/TianJin/ZhiNengGongJiao/PointOverlayWidget-XiaoChe.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<!-- 公交车实时信息 -->
+		<widget label="GongJiaoCheTextOverlay" preload="open"
+				config="widgets/Overlay/TianJin/ZhiNengGongJiao/TextOverlayWidget-XiaoChe.xml" 
+				url="widgets/Overlay/TextOverlayWidget.swf" />
+		
+		<!-- 校车实时轨迹 -->	
+		<widget label="GongJiaoCheGuiJiOverlay" preload="open"
+				config="widgets/Overlay/TianJin/ZhiNengGongJiao/PolylineOverlayWidget-GongJiaoCheGuiJi.xml" 
+				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+		
+		<!-- 校车站点 -->
+		<widget label="XiaoCheZhanDianOverlay" preload="open"
+				config="widgets/Overlay/TianJin/ZhiNengGongJiao/PointOverlayWidget-GongJiaoZhanDian.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<!-- 校车起点站 -->
+		<widget label="XiaoCheQiDianZhanOverlay" preload="open"
+				config="widgets/Overlay/TianJin/ZhiNengGongJiao/PointOverlayWidget-XiaoCheQiDianZhan.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<!-- 校车终点站 -->		
+		<widget label="XiaoCheZhongDianZhanOverlay" preload="open"
+				config="widgets/Overlay/TianJin/ZhiNengGongJiao/PointOverlayWidget-XiaoCheZhongDianZhan.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<!-- 校车线路 -->
+		<widget label="XiaoCheXianLuOverlay" preload="open"
+				config="widgets/Overlay/TianJin/ZhiNengGongJiao/PolylineOverlayWidget-XiaoCheXianLu.xml" 
+				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+	</widgetcontainer>
+	
+	<widgetcontainer layout="fix">
+		<widget label="ControlPanel" preload="open" right="20" bottom="20"
+				config="widgets/ControlPanel/TianJin/ZhiNengGongJiao/IconControlPanelWidget-XiaoChe.xml"
+				url="widgets/ControlPanel/IconControlPanelWidget.swf" />
+	</widgetcontainer>
+</configuration>

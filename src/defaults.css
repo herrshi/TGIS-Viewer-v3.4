@@ -1,0 +1,112 @@
+/* CSS file - Standard Stylesheet */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace esri "http://www.esri.com/2008/ags";
+@namespace viewer "com.esri.viewer.*";
+@namespace viewerComps "com.esri.viewer.components.*";
+@namespace apiComps "com.esri.ags.components.*";
+@namespace TGISViewer "cn.seisys.TGISViewer.*";
+@namespace components "cn.seisys.TGISViewer.components.*";
+
+TGISViewer|WidgetTemplate
+{
+    skinClass: ClassReference("cn.seisys.TGISViewer.skins.WidgetTemplateSkin");
+}
+
+components|TitlebarButton
+{
+    skinClass: ClassReference("cn.seisys.TGISViewer.skins.TitlebarButtonSkin");
+}
+
+s|VScrollBar
+{
+    skinClass: ClassReference("cn.seisys.TGISViewer.skins.VScrollBarSkin");
+}
+
+/*mx|VScrollBar
+{
+    downArrowUpSkin: Embed(source="assets/images/arrow_down.png");
+    downArrowOverSkin: Embed(source="assets/images/arrow_down.png");
+    downArrowDownSkin: Embed(source="assets/images/arrow_down.png");
+    upArrowUpSkin: Embed(source="assets/images/arrow_up.png");
+    upArrowOverSkin: Embed(source="assets/images/arrow_up.png");
+    upArrowDownSkin: Embed(source="assets/images/arrow_up.png");
+    thumbDownSkin: Embed(source="assets/images/thumb.png");
+    thumbUpSkin: Embed(source="assets/images/thumb.png");
+    thumbOverSkin: Embed(source="assets/images/thumb.png");
+    trackSkin: Embed(source="assets/images/track.png");
+}*/
+
+s|HScrollBar
+{
+    skinClass: ClassReference("cn.seisys.TGISViewer.skins.HScrollBarSkin");
+}
+
+/*mx|HScrollBar
+{
+    downArrowUpSkin: Embed(source="assets/images/arrow_down.png");
+    downArrowOverSkin: Embed(source="assets/images/arrow_down.png");
+    downArrowDownSkin: Embed(source="assets/images/arrow_down.png");
+    upArrowUpSkin: Embed(source="assets/images/arrow_up.png");
+    upArrowOverSkin: Embed(source="assets/images/arrow_up.png");
+    upArrowDownSkin: Embed(source="assets/images/arrow_up.png");
+    thumbDownSkin: Embed(source="assets/images/thumb.png");
+    thumbUpSkin: Embed(source="assets/images/thumb.png");
+    thumbOverSkin: Embed(source="assets/images/thumb.png");
+    trackSkin: Embed(source="assets/images/track.png");
+}*/
+
+esri|PopUpRenderer
+{
+	skinClass: ClassReference("cn.seisys.TGISViewer.skins.MyPopUpRendererSkin");
+}
+
+.arrowInfoSymbolStyle
+{
+	backgroundAlpha: 0;
+	borderThickness: 0;
+}
+
+esri|ContentNavigator
+{
+	headerBackgroundColor:green;
+
+}
+esri|InfoWindow  
+        {  
+           border-thickness: 0;  
+		   content-background-alpha : 0;  
+           font-size: 16;  
+           upper-left-radius: 15;  
+           upper-right-radius: 15;
+           info-placement: top;  
+  } 
+
+mx|TabNavigator{
+	tabHeight:32;
+	tabWidth:130;
+	paddingTop:2;
+	paddingLeft:1;
+	horizontalGap:1;
+	tabStyleName:"myTab";
+	firstTabStyleName:"myTab";
+	lastTabStyleName: "myTab";
+	borderVisible:true;
+}
+.myTab{
+	fontFamily:宋体;
+	fontSize:13;
+	fontWeight:bold;
+	up-skin:ClassReference("cn.seisys.TGISViewer.skins.tabnavitor");
+	down-skin:ClassReference("cn.seisys.TGISViewer.skins.tabnavitor");
+	over-skin:ClassReference("cn.seisys.TGISViewer.skins.tabnavitor");
+	disabled-skin:ClassReference("cn.seisys.TGISViewer.skins.tabnavitor");
+	
+	selected-up-skin:ClassReference("cn.seisys.TGISViewer.skins.selectedTabnavitor");
+	selected-down-skin:ClassReference("cn.seisys.TGISViewer.skins.selectedTabnavitor");
+	selected-over-skin:ClassReference("cn.seisys.TGISViewer.skins.selectedTabnavitor");
+	selected-disabled-skin:ClassReference("cn.seisys.TGISViewer.skins.selectedTabnavitor");
+	
+}
+
+

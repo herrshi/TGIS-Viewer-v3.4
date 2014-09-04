@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<!--<arcgisserverip>10.10.40.105:6080</arcgisserverip>-->
+	<arcgisserverip>192.168.1.120:6080</arcgisserverip>
+	
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+			config="widgets/Navigation/NavigationWidget.xml"
+		    url="widgets/Navigation/NavigationWidget.swf" />
+		    
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" initialextent="116.68107 32.678104 116.747656 32.743435"
+		 	  scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true" 
+				url="http://{serverip}/arcgis/rest/services/FengTai/fengtai_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="新增点" preload="open"
+			config="widgets/Overlay/LiuPanShui/PointOverlayByPageWidget.xml"
+			url="widgets/Overlay/PointOverlayByPageWidget.swf" />
+			
+		<widget label="编辑工具栏" left="80" top="10"
+			url="widgets/EditorToolbar/EditorToolbarWidget.swf"/>
+	</widgetcontainer>
+</configuration>

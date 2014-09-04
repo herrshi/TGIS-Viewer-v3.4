@@ -1,0 +1,25 @@
+<!-- 气象站 -->
+<?xml version="1.0" ?>
+<configuration>
+	<type>QiXiangZhan</type>
+	<!-- 组件打开时通知页面 -->
+	<widgetrunnotify></widgetrunnotify>
+	<!-- 组件关闭时通知页面 -->
+	<widgetclosenotify></widgetclosenotify>
+	
+	<popup>
+		<title>{desc}</title>
+		<fields>
+			<field name="desc"/>
+			<field name="age" alias="年龄" visible="true"/>
+			<field name="sex" alias="性别" visible="true"/>
+			<field name="card" alias="证件号" visible="true"/>
+			<field name="addr" alias="地址" visible="true"/>
+		</fields>
+		<showzoomtobutton>false</showzoomtobutton>
+	</popup>
+	
+	<simplerenderer>
+		<picturemarkersymbol url="assets/images/building/fbsxq.png"/>
+	</simplerenderer>
+</configuration>

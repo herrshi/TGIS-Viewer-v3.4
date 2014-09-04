@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<!-- 新增预案页面的地图 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip>
+	
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+			config="widgets/Navigation/NavigationWidget.xml"
+			url="widgets/Navigation/NavigationWidget.swf" />
+	
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" initialextent="121.3151 31.2159 121.4531 31.3089"
+		scalebarvisible="false" esrilogovisible="false"
+		doubleclickzoomenabled="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+				url="http://{serverip}/arcgis/rest/services/putuo/pt_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="WindDirectionImage" preload="open" right="20" top="20" 
+				config="widgets/StaticImage/PuTuo/StaticImageWidget-PuTuo-Wind.xml" 
+				url="widgets/StaticImage/StaticImageWidget.swf"/>
+				
+		<widget label="PoliceEventOverlay" preload="open"
+				config="widgets/Overlay/PuTuo/PointOverlayWidget-policeEvent.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="BuildingOverlay" preload="open"
+				config="widgets/Overlay/PuTuo/PointOverlayWidget-building.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
+
+		<widget label="SendPoliceEventCoordinate" preload="open"
+				config="widgets/SendMapClickCoordinate/PuTuo/SendMapClickCoordinate-policeEvent.xml"
+				url="widgets/SendMapClickCoordinate/SendMapClickCoordinateWidget.swf" />
+		
+		<widget label="后台搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-policeEvent.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="火灾1级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-HuoZai1.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="火灾2级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-HuoZai2.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="火灾3级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-HuoZai3.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="暴雪1级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-BaoXue1.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="暴雪2级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-BaoXue2.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="暴雪3级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-BaoXue3.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="暴雨1级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-BaoYu1.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="暴雨2级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-BaoYu2.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="暴雨3级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-BaoYu3.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="冰雹1级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-BingBao1.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="冰雹2级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-BingBao2.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="冰雹3级搜索" preload="open" 
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-BingBao3.xml"
+				url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="drawBuffer" preload="open" 
+				config="widgets/Overlay/PuTuo/BufferPolygonOverWidget.xml"
+				url="widgets/Overlay/BufferPolygonOverlayWidget.swf"/>
+	</widgetcontainer>
+	
+	<widgetcontainer layout="horizontal">
+		<widget label="搜索" preload="minimized" 
+				icon="assets/images/i_search.png"
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-general.xml"
+				url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+	</widgetcontainer>
+</configuration>

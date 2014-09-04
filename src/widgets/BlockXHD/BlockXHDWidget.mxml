@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 选择一批信号灯，提交给页面。页面返回关联信号灯，将关联信号灯置为黄色 -->
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   layout="absolute" 
+					   creationComplete="creationCompleteHandler(event)" 
+					   widgetConfigLoaded="widgetConfigLoadedHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.FeatureSet;
+			import com.esri.ags.Graphic;
+			import com.esri.ags.events.DrawEvent;
+			import com.esri.ags.geometry.Extent;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.symbols.SimpleFillSymbol;
+			import com.esri.ags.symbols.SimpleLineSymbol;
+			import com.esri.ags.tasks.QueryTask;
+			import com.esri.ags.tasks.supportClasses.Query;
+			import com.esri.ags.tools.DrawTool;
+			
+			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.utils.RendererParser;
+			
+			private var _xhdLayer:GraphicsLayer;
+			private var _xhdLayerUrl:String;
+			private var _xhdIdField:String;
+			private var _xhdNameField:String;
+			
+			private var _drawSymbol:SimpleFillSymbol;
+			private var _drawLayer:GraphicsLayer;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				var contextMenu:ContextMenu = new ContextMenu();
+				contextMenu.hideBuiltInItems();
+				var contextMenuItemMove:ContextMenuItem = new ContextMenuItem( "平移" );
+				contextMenuItemMove.addEventListener( ContextMenuEvent.MENU_ITEM_SELECT, contextMenuItemMove_menuItemSelectHandler );
+				contextMenu.customItems.push( contextMenuItemMove );
+				var contextMenuItemSelect:ContextMenuItem = new ContextMenuItem( "选择" );
+				contextMenuItemSelect.addEventListener( ContextMenuEvent.MENU_ITEM_SELECT, contextMenuItemSelect_menuItemSelectHandler );
+				contextMenu.customItems.push( contextMenuItemSelect );
+				map.contextMenu = contextMenu;
+				
+				var selectionColor:Number = getStyle( "selectionColor" );
+				_drawSymbol = new SimpleFillSymbol( "solid", selectionColor, 0.2, 
+					new SimpleLineSymbol( "solid", selectionColor, 1, 2 ) );
+				
+				_xhdLayer = new GraphicsLayer();
+				map.addLayer( _xhdLayer );
+				
+				_drawLayer = new GraphicsLayer();
+				_drawLayer.symbol = _drawSymbol;
+				map.addLayer( _drawLayer );
+				
+				AppEvent.addListener( AppEvent.SET_RELATE_XHD, appevent_setRelateXHDHandler );
+				AppEvent.addListener( AppEvent.CLEAR_SELECTION, appevent_clearSelectionHandler );
+			}
+			
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_xhdLayerUrl = configXML.xhdlayer.url;
+					_xhdLayerUrl = _xhdLayerUrl.replace( "{serverip}", configData.arcgisServerIP );
+					_xhdIdField = configXML.xhdlayer.idfield;
+					_xhdNameField = configXML.xhdlayer.namefield;
+					
+					var rendererParser:RendererParser = new RendererParser;
+					_xhdLayer.renderer = rendererParser.parseRenderer( configXML.xhdlayer[0] );
+					loadXHDInfo();
+				}
+				
+//				setMapAction( DrawTool.EXTENT, "", _drawSymbol, searchDrawEnd );
+			}
+			
+			private function loadXHDInfo():void
+			{
+				var queryTask:QueryTask = new QueryTask( _xhdLayerUrl );
+				var query:Query = new Query();
+				query.returnGeometry = true;
+				query.where = "1=1";
+				query.outFields = [ _xhdIdField, _xhdNameField ];
+				query.outSpatialReference = map.spatialReference;
+				queryTask.execute( query, new AsyncResponder( onResult, onFault ) );
+				
+				function onResult(featureSet:FeatureSet, token:Object = null):void
+				{
+					if ( featureSet.features.length > 0 )
+					{
+						_xhdLayer.graphicProvider = featureSet.features;
+					}
+				}
+				
+				function onFault(info:Object, token:Object = null):void
+				{
+					showError( info.toString(), "信号灯图层查询错误" );
+				}
+			}
+			
+			
+			private function searchDrawEnd(event:DrawEvent):void
+			{
+				_drawLayer.add( event.graphic );
+				
+				var drawExtent:Extent = event.graphic.geometry.extent;
+				var result:String = "";
+				for each ( var graphic:Graphic in _xhdLayer.graphicProvider )
+				{
+					if ( drawExtent.contains( graphic.geometry ) )
+					{
+						var id:String = graphic.attributes[ _xhdIdField ];
+						result += id + ",";
+					}
+				}
+				//框选结果提交给页面，等待页面得到关联的信号灯后调用setRelateXHD
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{ 
+						functionName: "getRelateXHD", 
+						params: [result] 
+					} 
+				);
+			}
+			
+			private function appevent_clearSelectionHandler( event:AppEvent ):void
+			{
+				for each ( var graphic:Graphic in _xhdLayer.graphicProvider )
+				{
+					graphic.attributes[ "nearest" ] = "false";
+				}
+				_xhdLayer.refresh();
+				
+				_drawLayer.clear();
+				setMapAction( DrawTool.EXTENT, "", _drawSymbol, searchDrawEnd );
+			}
+			
+			private function appevent_setRelateXHDHandler( event:AppEvent ):void
+			{
+				var params:String = event.data as String;
+				var idArray:Array = params.split( "," );
+				for each ( var id:String in idArray )
+				{
+					for each ( var graphic:Graphic in _xhdLayer.graphicProvider )
+					{
+						if ( graphic.attributes[ _xhdIdField ] == id )
+						{
+							graphic.attributes[ "nearest" ] = "true";
+							break;
+						}
+					}
+				}
+				_xhdLayer.refresh();
+			}
+			
+			private function contextMenuItemMove_menuItemSelectHandler( event:ContextMenuEvent ):void
+			{
+				setMapNavigation( "pan", "平移" );
+			}
+			
+			private function contextMenuItemSelect_menuItemSelectHandler( event:ContextMenuEvent ):void
+			{
+				setMapAction( DrawTool.EXTENT, "框选", _drawSymbol, searchDrawEnd );
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+</TGISViewer:BaseWidget>

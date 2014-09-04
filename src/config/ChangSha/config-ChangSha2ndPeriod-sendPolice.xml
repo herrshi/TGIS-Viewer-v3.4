@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<!-- 新增拥堵点页面的地图 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>10.43.2.18:6080</arcgisserverip>
+
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"
+		    url="widgets/Navigation/NavigationWidget.swf" />
+
+	<map top="0" center="112.9894 28.185" scale="96000"
+		 scalebarvisible="false" esrilogovisible="false"
+		 doubleclickzoomenabled="false">
+		<basemaps>
+			<layer label="矢量图" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/changsha/changsha_base_GHY/MapServer" />
+			<layer label="航拍图" type="tiled" visible="false"
+				url="http://{serverip}/arcgis/rest/services/changsha/changsha_aerial/MapServer" />
+			<layer label="卫星图" type="tiled" visible="false"
+				url="http://{serverip}/arcgis/rest/services/changsha/changsha_satellite/MapServer" />
+		</basemaps>
+		<operationallayers>
+
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="PoliceEventOverlay" preload="open"
+				config="widgets/Overlay/ChangSha/PointOverlayWidget-sendPoliceEvent.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="SendPoliceOverlay" preload="open"
+				config="widgets/Overlay/ChangSha/PointOverlayWidget-sendPolice.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+	</widgetcontainer>
+	
+	<widgetcontainer layout="vertical">
+		<widget label="底图切换" preload="open"
+				config="widgets\MapSwitcher\MapSwitcherWidget.xml"
+				url="widgets\MapSwitcher\MapSwitcherWidget.swf"/>
+	</widgetcontainer>
+</configuration>

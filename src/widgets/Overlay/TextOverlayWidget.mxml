@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2010-2013 史晓青. All Rights Reserved.
+//
+// 在地图指定位置添加文字，可设置文字、背景等格式。
+///////////////////////////////////////////////////////////////////////////
+-->
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   layout="absolute" 
+					   creationComplete="creationCompleteHandler(event)"
+					   widgetConfigLoaded="widgetConfigLoadedHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.symbols.TextSymbol;
+			
+			import flash.filters.GlowFilter;
+			
+			import mx.events.FlexEvent;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			
+			private var _textOverlayLayer:GraphicsLayer;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				_textOverlayLayer = new GraphicsLayer();
+				_textOverlayLayer.name = widgetTitle;
+				map.addLayer( _textOverlayLayer );
+				
+				
+				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
+				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_WidgetCloseHandler );
+				
+				AppEvent.addListener( AppEvent.ADD_TEXTS, appevent_AddTextsHandler );
+				AppEvent.addListener( AppEvent.DELETE_ALL_TEXTS, appevent_DeleteAllTextsHandler );
+				AppEvent.addListener( AppEvent.DELETE_TEXTS, appevent_DeleteTextsHandler );
+			}
+			
+			private var _widgetRunNotifyFunctionName:String;
+			private var _widgetCloseNotifyFunctionName:String;
+			
+			private var _textSymbol:TextSymbol = new TextSymbol();
+			
+			private var _textType:String;
+			
+			private var _alpha:Number;
+			private var _angle:Number;
+			private var _background:Boolean;
+			private var _backgroundColor:Number;
+			private var _border:Boolean;
+			private var _borderColor:Number;
+			private var _color:Number;
+			private var _placement:String;
+			private var _xOffset:Number;
+			private var _yOffset:Number;
+			private var _fontName:String;
+			private var _fontSize:Number;
+			
+			private var _glowFilter:GlowFilter;
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_textType = configXML.type;
+					
+					_widgetRunNotifyFunctionName = configXML.widgetrunnotify;
+					_widgetCloseNotifyFunctionName = configXML.widgetclosenotify;
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetRunNotifyFunctionName } 
+						);
+					}
+					
+					//load symbol
+					_alpha = configXML.textsymbol.alpha || getStyle( "contentBackgroundAlpha" );
+					_angle = configXML.textsymbol.angle;
+					_background = configXML.textsymbol.background == "false" ? false : true;
+					_backgroundColor = configXML.textsymbol.backgroundcolor || getStyle( "contentBackgroundColor" );
+					_border = configXML.textsymbol.border == "false" ? false : true;
+					_borderColor = configXML.textsymbol.bordercolor || getStyle( "color" );
+					_color = configXML.textsymbol.color || getStyle( "color" );
+					_placement = configXML.textsymbol.placement || TextSymbol.PLACEMENT_ABOVE;
+					_xOffset = configXML.textsymbol.xoffset;
+					_yOffset = configXML.textsymbol.yoffset;
+					_fontName = configXML.textsymbol.fontname || getStyle( "fontFamily" );
+					_fontSize = configXML.textsymbol.fontsize || getStyle( "fontSize" );
+					
+					if ( configXML.glowfilter[0] )
+					{
+						_glowFilter = new GlowFilter();
+						_glowFilter.color = configXML.glowfilter[0].color || 0xFFFFFF;
+						_glowFilter.alpha = configXML.glowfilter[0].alpha || 1;
+						_glowFilter.blurX = configXML.glowfilter[0].blurx || 4;
+						_glowFilter.blurY = configXML.glowfilter[0].blury || 4;
+						_glowFilter.strength = configXML.glowfilter[0].strength || 80;
+						_glowFilter.inner = configXML.glowfilter[0].inner == "true" ? true : false;
+						_glowFilter.knockout = configXML.glowfilter[0].knockout == "true" ? true : false;
+						
+					}
+				}
+			}
+			
+			private function appevent_WidgetRunHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					map.addLayer( _textOverlayLayer );
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetRunNotifyFunctionName } );
+					}
+				}
+			}
+			
+			private function appevent_WidgetCloseHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					map.removeLayer( _textOverlayLayer );
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetCloseNotifyFunctionName } 
+						);
+					}
+				}
+				
+			}
+			
+			private function appevent_AddTextsHandler( event:AppEvent ):void
+			{
+				var params:String = event.data as String;
+				var paramObj:Object = JSON.parse( params );
+				
+				//类型
+				var type:String = paramObj.type;
+				if ( !type || type.toLowerCase() != _textType.toLowerCase() )
+					return;
+				
+				//点集
+				var pointArray:Array = paramObj.texts;
+				for each ( var pointObj:Object in pointArray )
+				{
+					//坐标
+					var id:String = pointObj.id;
+					var text:String = pointObj.text;
+					var position:Object = pointObj.position;
+					var mapPoint:MapPoint = MapPoint.fromJSON( position );
+					
+					if ( !mapPoint || !id || id == "" )
+						continue;
+					
+					//去掉id重复的点
+					for each ( var gra:Graphic in _textOverlayLayer.graphicProvider )
+					{
+						if ( gra.id == id )
+						{
+							_textOverlayLayer.remove( gra );
+							break;
+						}
+					}
+					
+					var textSymbol:TextSymbol = new TextSymbol();
+					textSymbol.alpha = _alpha;
+					textSymbol.angle = _angle;
+					textSymbol.background = _background;
+					textSymbol.backgroundColor = _backgroundColor;
+					textSymbol.border = _border;
+					textSymbol.borderColor = _borderColor;
+					textSymbol.color = _color;
+					textSymbol.placement = _placement;
+					textSymbol.xoffset = _xOffset;
+					textSymbol.yoffset = _yOffset;
+					textSymbol.htmlText = text;
+					
+					var textFormat:TextFormat = new TextFormat();
+					textFormat.font = _fontName;
+					textFormat.size = _fontSize;
+					textSymbol.textFormat = textFormat;
+					
+//					var mapPoint:MapPoint = new MapPoint( x, y );
+					var graphic:Graphic = new Graphic( mapPoint, textSymbol );
+					graphic.id = id;
+					if ( _glowFilter )
+					{
+						graphic.filters = [_glowFilter]
+					}
+					_textOverlayLayer.add( graphic );
+				}
+			}
+			
+			private function appevent_DeleteAllTextsHandler( event:AppEvent ):void
+			{
+				var type:String = event.data as String;
+				if ( type && ( type.toLowerCase() == _textType.toLowerCase() ) )
+				{
+					_textOverlayLayer.clear();
+				}
+			}
+			
+			private function appevent_DeleteTextsHandler( event:AppEvent ):void
+			{
+				var params:String = event.data as String;
+				var paramObj:Object = JSON.parse( params );
+				
+				var type:String = paramObj.type;
+				if ( !type || ( type.toLowerCase() != _textType.toLowerCase() ) )
+					return;
+				
+				var pointArray:Array = paramObj.points;
+				for each ( var id:String in pointArray )
+				{
+					for each ( var graphic:Graphic in _textOverlayLayer.graphicProvider )
+					{
+						if ( id == graphic.id )
+						{
+							_textOverlayLayer.remove( graphic );
+							break;
+						}
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+</TGISViewer:BaseWidget>

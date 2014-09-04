@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*"  
+					   xmlns:components="cn.seisys.TGISViewer.components.*"
+					   layout="vertical" 
+					   widgetConfigLoaded="widgetConfigLoadedHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.ToolTip;
+			import mx.core.IUIComponent;
+			import mx.managers.ToolTipManager;
+			
+			import spark.components.Image;
+			import spark.layouts.HorizontalLayout;
+			import spark.layouts.VerticalLayout;
+			import spark.layouts.supportClasses.LayoutBase;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.components.MyImage;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			
+			private var _errorTip:ToolTip;
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					//布局
+					var layoutDirection:String = configXML.layout.@direction || "horizontal";
+					var layoutGap:int = configXML.layout.@gap || 5;
+					var containerLayout:LayoutBase;
+					switch( layoutDirection )
+					{
+						case "horizontal":
+						{
+							containerLayout = new HorizontalLayout();
+							( containerLayout as HorizontalLayout ).gap = layoutGap;
+							break;
+						}
+							
+						case "vertical":
+						{
+							containerLayout = new VerticalLayout();
+							( containerLayout as VerticalLayout ).gap = layoutGap;
+							break;
+						}
+					}
+					buttonContainer.layout = containerLayout;
+					
+					//按钮
+					var groupList:XMLList = configXML..group;
+					for ( var i:uint = 0; i < groupList.length(); i++ )
+					{
+						var title:String = groupList[i].@title;
+						
+						//添加间隔线
+						if ( i > 0 )
+						{
+							switch( layoutDirection )
+							{
+								case "horizontal":
+								{
+									buttonContainer.addElement( horizontalLine );
+									break;
+								}
+									
+								case "vertical":
+								{
+									buttonContainer.addElement( verticalLine );
+									break;
+								}
+							}
+						}
+						
+						var itemList:XMLList = groupList[i]..item;
+						for each ( var itemXML:XML in itemList )
+						{
+							var source:String = itemXML.@image;
+							var id:String = itemXML.@id;
+							var name:String = itemXML.@name;
+							var state:String = itemXML.@initstate || "disable";
+							
+							var image:MyImage = new MyImage();
+							image.id = id;
+							image.name = name;
+							image.source = source;
+							if ( state == "enable" )
+							{
+								image.alpha = 1;
+								image.selected = true;
+							}
+							else
+							{
+								image.alpha = 0.5;
+								image.selected = false;
+							}
+							
+							var functionList:XMLList = itemXML..clickfunction;
+							var functionArray:Array = [];
+							for each ( var functionXML:XML in functionList )
+							{
+								var functionName:String = functionXML.@name;
+								var paramList:XMLList = functionXML..param;
+								var paramTable:Hashtable = new Hashtable();
+								for each ( var paramXML:XML in paramList )
+								{
+									var paramName:String = paramXML.@name;
+									var paramValue:String = paramXML.@value;
+									paramTable.add( paramName, paramValue );
+								}
+								var clickFunctionObj:Object = 
+									{
+										name: functionName,
+										paramTable: paramTable
+									}
+								functionArray.push( clickFunctionObj );
+							}
+							image.functionArray = functionArray;
+							
+							image.addEventListener( MouseEvent.ROLL_OVER, image_rollOverHandler );
+							image.addEventListener( MouseEvent.ROLL_OUT, image_rollOutHandler );
+							image.addEventListener( MouseEvent.CLICK, image_clickHandler );
+							buttonContainer.addElement( image );
+						}
+					}
+				}
+			}
+			
+			protected function image_rollOverHandler(event:MouseEvent):void
+			{
+				var image:Image = event.currentTarget as Image;
+				var localPt:Point = new Point( image.x, image.y - image.height );
+				var globalPt:Point = this.localToGlobal( localPt );
+				_errorTip = ToolTipManager.createToolTip( 
+					image.name, globalPt.x, globalPt.y, "errorTipAbove", 
+					IUIComponent( image ) ) as ToolTip;
+			}
+			
+			protected function image_rollOutHandler(event:MouseEvent):void
+			{
+				if ( _errorTip )
+				{
+					ToolTipManager.destroyToolTip( _errorTip );
+				}			
+			}
+			
+			protected function image_clickHandler(event:MouseEvent):void
+			{
+				var image:MyImage = event.currentTarget as MyImage;
+				imageClick( image );
+				
+			}
+			
+			private function imageClick( image:MyImage ):void
+			{
+				if ( image.selected )
+				{
+					fadeOut.play( [image] );
+				}
+				else
+				{
+					fadeIn.play( [image] );
+				}
+				image.selected = !image.selected;
+				
+				var functionArray:Array = image.functionArray;
+				for each ( var clickFunctionObj:Object in functionArray ) 
+				{
+					var functionName:String = clickFunctionObj.name;
+					var paramTable:Hashtable = clickFunctionObj.paramTable;
+					
+					var widgetName:String;
+					var widgetState:String;
+					switch( functionName.toLowerCase() )
+					{
+						//按钮enable时显示图层，按钮disable时隐藏图层
+						case "changelayer":
+							var serviceName:String = paramTable.find( "ServiceName" );
+							var idString:String = paramTable.find( "LayerId" );
+							AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+								{ 
+									serviceName: serviceName,
+									layerIds: idString,
+									visible: image.selected
+								} 
+							);
+							break;
+						
+						//按钮enable时打开组件，按钮disable时关闭组件
+						case "changewidget":
+							widgetName = paramTable.find( "WidgetName" );
+							widgetState = paramTable.find( "WidgetState" );
+							if ( image.selected )
+							{
+								AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
+								if ( widgetState && widgetState != "" )
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_CHANGE_STATE, 
+										{ 
+											label: widgetName,
+											state: widgetState
+										} );
+								}
+							}
+							else
+							{
+								AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+							}
+							break;
+						
+						//按钮enable时打开组件，按钮disable时不关闭组件
+						case "openwidget":
+						 	widgetName = paramTable.find( "WidgetName" );
+							widgetState = paramTable.find( "WidgetState" );
+							if ( image.selected )
+							{
+								AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
+								if ( widgetState && widgetState != "" )
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_CHANGE_STATE, 
+										{ 
+											label: widgetName,
+											state: widgetState
+										} );
+								}
+							}
+							break;
+							
+						//按钮enable时不打开组件，按钮disable时关闭组件
+						case "closewidget":
+							widgetName = paramTable.find( "WidgetName" );
+							if ( !image.selected )
+							{
+								AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+							}
+							break;
+							
+						//点击按钮时通知页面
+						case "informstatechanged":
+							var type:String = paramTable.find( "type" );
+							AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+								{ 
+									functionName: "mapButtonStateChanged", 
+									params: [ type, image.selected ] 
+								} 
+							);
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace components "cn.seisys.TGISViewer.components.*";
+		@namespace TGISViewer "cn.seisys.TGISViewer.*";
+		.errorTip { 
+			color: #FFFFFF; 
+			fontSize: 14; 
+			fontWeight: "bold"; 
+			borderColor: #313131; 
+			borderStyle: "errorTipAbove"; 
+		}
+	</fx:Style>
+	
+	<fx:Declarations>
+		<s:Fade id="fadeIn" alphaTo="1"/>
+		<s:Fade id="fadeOut" alphaTo="0.5"/>
+		
+		<!--垂直布局时的渐变间隔线-->
+		<s:Line id="verticalLine" width="100%">
+			<s:stroke>
+				<s:LinearGradientStroke weight="3">
+					<s:GradientEntry color="{getStyle('contentBackgroundColor')}"/>
+					<s:GradientEntry color="{getStyle('rollOverColor')}"/>
+					<s:GradientEntry color="{getStyle('contentBackgroundColor')}"/>
+				</s:LinearGradientStroke>
+			</s:stroke>
+		</s:Line>
+		
+		<!--水平布局时的渐变间隔线-->
+		<s:Line id="horizontalLine" height="100%" rotation="90">
+			<s:stroke>
+				<s:LinearGradientStroke weight="3">
+					<s:GradientEntry color="{getStyle('contentBackgroundColor')}"/>
+					<s:GradientEntry color="{getStyle('selectionColor')}"/>
+					<s:GradientEntry color="{getStyle('contentBackgroundColor')}"/>
+				</s:LinearGradientStroke>
+			</s:stroke>
+		</s:Line>
+	</fx:Declarations>
+	
+	<s:SkinnableContainer id="buttonContainer" backgroundAlpha="0"/>
+</TGISViewer:BaseWidget>

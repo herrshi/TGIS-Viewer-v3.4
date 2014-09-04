@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<configuration>
+	<showresult>true</showresult>
+	<layers>
+		<layer>
+			<type>居委会</type>
+			<url>http://{serverip}/arcgis/rest/services/pt_live/MapServer/22</url>
+			<idfield>DM</idfield>
+			<simplefillsymbol color="0x3E6FBC" alpha="0.5" style="solid">
+				<outline color="0x3E6FBC" width="3" style="solid"/>
+			</simplefillsymbol>
+		</layer>
+		<layer>
+			<type>小区</type>
+			<url>http://{serverip}/arcgis/rest/services/pt_live/MapServer/30</url>
+			<idfield>BH</idfield>
+			<simplefillsymbol color="0x3E6FBC" alpha="0.5" style="solid">
+				<outline color="0x3E6FBC" width="3" style="solid"/>
+			</simplefillsymbol>
+		</layer>
+	</layers>
+</configuration>

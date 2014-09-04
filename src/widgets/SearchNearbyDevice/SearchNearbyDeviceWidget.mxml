@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   xmlns:esri="http://www.esri.com/2008/ags"
+					   layout="absolute" 
+					   width="400" height="300" 
+					   creationComplete="this_creationCompleteHandler(event)" 
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.Polygon;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.symbols.SimpleFillSymbol;
+			import com.esri.ags.symbols.SimpleLineSymbol;
+			import com.esri.ags.tasks.GeometryService;
+			import com.esri.ags.tasks.GeometryServiceSingleton;
+			
+			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
+			import mx.rpc.Fault;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			
+			
+			
+			private var _searchType:String;
+			private var _bufferDistance:Number;
+			
+			private var _bufferLayer:GraphicsLayer;
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				geometryService.url = GeometryServiceSingleton.instance.url;
+				geometryService.token = GeometryServiceSingleton.instance.token;
+				geometryService.proxyURL = GeometryServiceSingleton.instance.proxyURL;
+				
+				_bufferLayer = new GraphicsLayer();
+				_bufferLayer.name = "seachNearbyBufferLayer";
+				var selectionColor:Number = getStyle( "selectionColor" );
+				_bufferLayer.symbol = new SimpleFillSymbol( "solid", selectionColor, 0.2, 
+					new SimpleLineSymbol( "solid", selectionColor, 1, 2 ) );
+				map.addLayer( _bufferLayer );
+				
+				AppEvent.addListener( AppEvent.BUFFER_SEARCH, appevent_bufferSearchHandler );
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_searchType = configXML.type;
+					_bufferDistance = configXML.bufferdistance;
+					
+					
+				}
+			}
+			
+			
+			private function appevent_bufferSearchHandler( event:AppEvent ):void
+			{
+				var type:String = event.data.type;
+				if ( type != _searchType )
+				{
+					return;
+				}
+				
+				var centerPoint:MapPoint = event.data.point;
+				var distance:Number = event.data.distance || _bufferDistance;
+				bufferSearch( centerPoint, distance );
+			}
+			
+			private function bufferSearch( centerPt:MapPoint, distance:Number, token:String = "" ):void
+			{
+				bufferParam.geometries = [ centerPt ];
+				bufferParam.distances = [ distance ];
+				geometryService.buffer( bufferParam, 
+					new AsyncResponder( geometryService_bufferCompleteHandler, faultHandler, token ) );
+			}
+			
+			private function geometryService_bufferCompleteHandler( item:Object, token:Object = null ):void
+			{
+				var bufferResultArray:Array = item as Array;
+				for ( var i:uint = 0; i < bufferResultArray.length; i++ )
+				{
+					var bufferPolygon:Polygon = bufferResultArray[i] as Polygon;
+					_bufferLayer.add( new Graphic( bufferPolygon ) );
+				}
+			}
+			
+			private function faultHandler( fault:Fault, token:Object ):void
+			{
+				var strInfo: String = "Error: ";
+				strInfo += "Fault Code: " + fault.faultCode + "\n";
+				strInfo += "Fault Info: " + fault.faultString + "\n";
+				strInfo += "Fault Detail: " + fault.faultDetail;
+				showError( strInfo );
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<esri:GeometryService id="geometryService"/>
+		
+		<esri:BufferParameters id="bufferParam" 
+							   unit="{GeometryService.UNIT_METER}" 
+							   outSpatialReference="{map.spatialReference}"
+							   geodesic="true"/>
+	</fx:Declarations>
+</TGISViewer:BaseWidget>

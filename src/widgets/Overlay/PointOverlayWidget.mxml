@@ -1,0 +1,1007 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2010-2013 史晓青. All Rights Reserved.
+//
+// 在地图上添加图标
+///////////////////////////////////////////////////////////////////////////
+-->
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   xmlns:esri="http://www.esri.com/2008/ags"
+					   layout="absolute" 
+					   creationComplete="this_creationCompleteHandler(event)" 
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" >
+		<fx:Style>
+		@namespace esri "http://www.esri.com/2008/ags";
+			@namespace s "library://ns.adobe.com/flex/spark";
+			@namespace mx "library://ns.adobe.com/flex/mx";
+		
+			.myComboBoxDropdown {
+				            dropShadowEnabled: false;
+				            shadowDistance: 3;
+				            shadowDirection: "right";
+				            cornerRadius: 5;
+							
+			       }
+
+	</fx:Style>
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.components.ContentNavigator;
+			import com.esri.ags.events.DrawEvent;
+			import com.esri.ags.events.EditEvent;
+			import com.esri.ags.geometry.Geometry;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.portal.PopUpRenderer;
+			import com.esri.ags.renderers.IRenderer;
+			import com.esri.ags.symbols.Symbol;
+			import com.esri.ags.tools.DrawTool;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.utils.UIDUtil;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
+			import cn.seisys.TGISViewer.utils.RendererParser;
+			import cn.seisys.TGISViewer.utils.SymbolParser;
+
+			private var  _infoClass:Class;
+			private var _pointOverlayLayer:GraphicsLayer;
+			private var _pointType:String;
+			
+			private var pointArray:Array = new Array();
+			private var eventID:String;
+			/**
+			 * 组件启动时调用的js函数，通知页面启动完成。
+			 * */
+			private var _widgetRunNotifyFunctionName:String;
+			/**
+			 * 组件关闭时调用的js函数，通知页面组件关闭。
+			 * */
+			private var _widgetCloseNotifyFunctionName:String;
+			
+			/**
+			 * 处于编辑状态时，记录graphic移动过的位置
+			 * 用于后退/前进等操作
+			 * <listing>
+			 * key: graphic.id
+			 * data: array of geometry 
+			 * </listing>
+			 * */
+			private var _movedGeometryTable:Hashtable;
+			
+			/**
+			 * 当前新增/编辑的graphic
+			 * */
+			private var _selectedGraphic:Graphic;
+			
+			/**
+			 * 新增点位时使用的symbol
+			 * */
+			private var _drawSymbol:Symbol;
+			
+			/**
+			 * 弹出窗样式。 
+			 * 编辑模式时禁用弹出窗，非编辑模式时启动弹出窗
+			 * */
+			private var _popUpRenderer:ClassFactory;
+			
+			/**
+			 * 当前模式
+			 * move/add
+			 * */
+			private var _currentMode:String;
+			private const MODE_MOVE:String = "move";
+			private const MODE_ADD:String = "add";
+			private const MODE_NORMAL:String = "normal";
+			private const DRAW_MODE:String = DrawTool.MAPPOINT;
+			
+			/**
+			 * 点击图标直接触发事件，不显示弹出框
+			 * */
+			private var _clickFunctionInfo:Object;
+			private var _workerToMain:MessageChannel;
+			[Bindable] 
+			public var pid:String = null;
+			[Bindable] 
+			public var title:String = null;
+			[Bindable] 
+			public var image:String = null;
+			[Bindable] 
+			public var time:String  = null;
+			[Bindable] 
+			private var content:String = null;
+			[Bindable] 
+			private var level:Number = 0;
+			[Bindable] 
+			private var source:String =null;
+			[Bindable] 
+			private var location:String =null;
+			[Bindable] 
+			private var deadCount:int = 0;
+			[Bindable] 
+			private var injuredCount:int= 0;
+			[Bindable] 
+			private var trappedCount:int = 0;
+			[Bindable] 
+			private var actions:String = null;
+			[Bindable] 
+			private var logs:String = null;
+			[Bindable] 
+			private var policeFields:Object= null;
+			[Bindable]
+			private var polField:String= null;
+			[Bindable]
+			private var poField:String= null;
+			private var actionArray:Array = null;
+			[Bindable] 
+			private var  logCotent:String =  new String();
+			[Bindable] 
+	        private var  interaction110:String = null;
+			[Bindable] 
+			private var  interaction119:String = null;
+			[Bindable] 
+			private var  interaction120:String = null;
+			[Bindable] 
+			private var  interactionContent:String = null;
+			
+			private var _policeArray:Array =  new Array();
+			private var action1:String = null;
+			private var action2:String = null;
+			private var action3:String = null;
+			private var action4:String = null;
+			private var action5:String = null;
+			[Bindable]  
+			[Embed(source="assets/images/lev1.png")]  
+			private  var lev1:Class;
+			[Bindable]  
+			[Embed(source="assets/images/lev2.png")]  
+			private  var lev2:Class;
+			[Bindable]  
+			private  var lev:Class;
+			private var mapPoint:MapPoint = new MapPoint();
+
+			public function set infoClass(value:Class):void
+			{
+				_infoClass = value;
+			}
+			
+			public function get infoClass():Class
+			{
+				return _infoClass;
+			}
+			
+		
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				_movedGeometryTable = new Hashtable();
+				_pointOverlayLayer = new GraphicsLayer();
+				_pointOverlayLayer.name = widgetTitle;
+				map.addLayer( _pointOverlayLayer );
+				
+			
+				AppEvent.addListener( AppEvent.FIND_DEVICE, appevent_findDeviceHandler );
+				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_widgetRunHandler );
+				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_widgetCloseHandler );
+				AppEvent.addListener( AppEvent.ADD_POINTS, appevent_addPointsHandler );
+				AppEvent.addListener( AppEvent.DELETE_ALL_POINTS, appevent_deleteAllPointsHandler );
+				AppEvent.addListener( AppEvent.DELETE_POINTS, appevent_deletePointsHandler );
+				AppEvent.addListener( AppEvent.START_MOVE_OVERLAY, appevent_startMoveOverlayHandler );
+				AppEvent.addListener( AppEvent.STOP_EDIT_OVERLAY, appevent_stopEditOverlayHandler );
+				AppEvent.addListener( AppEvent.START_ADD_OVERLAY, appevent_startAddOverlayHandler );
+				AppEvent.addListener( AppEvent.STOP_ADD_OVERLAY, appevent_stopAddOverlayHandler );
+				AppEvent.addListener( AppEvent.EDITORTOOBAR_UNDO, appevent_editorToolbarUndoHandler );
+				AppEvent.addListener( AppEvent.EDITORTOOBAR_REDO, appevent_editorToolbarRedoHandler );
+				AppEvent.addListener( AppEvent.EDITORTOOBAR_COMMIT, appevent_editorToolbarCommitHandler );
+				AppEvent.addListener( AppEvent.EDITORTOOBAR_CANCEL, appevent_editorToolbarCancelHandler );
+				
+				//AppEvent.addListener( AppEvent.GET_POLICE_EVENT_DATA,appevent_getPoliceEventDataHandler);
+				AppEvent.addListener( AppEvent.SET_POLICE_EVENT_DATA,appevent_setPoliceEventDataHandler);
+				AppEvent.addListener( AppEvent.CLOSE,closeGroupHandler);
+			}
+			
+			//关闭警情弹出的group窗口
+			private function closeGroupHandler(event:AppEvent):void
+			{
+			     map.infoWindow.hide();
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					//type
+					_pointType = configXML.type;
+					
+					//popup
+					if ( configXML.popup[0] )
+					{
+						var popupXML:XML = configXML.popup[0];
+						var popUpInfo:PopUpInfoWithButtons = PopUpInfoParser.parsePopUpInfo( popupXML );
+						
+						_popUpRenderer = new ClassFactory( PopUpRenderer );
+						_popUpRenderer.properties = 
+							{ 
+								popUpInfo: popUpInfo
+							};
+						_pointOverlayLayer.infoWindowRenderer = _popUpRenderer;
+					}
+					
+					//renderer
+					var rendererParser:RendererParser = new RendererParser;
+					var renderer:IRenderer = rendererParser.parseRenderer( configXML );
+					_pointOverlayLayer.renderer = renderer;
+					
+					//drawSymbol
+					if ( configXML.drawsymbol[0] )
+					{
+						var symbolParser:SymbolParser = new SymbolParser();
+						_drawSymbol = symbolParser.parseSymbol( configXML.drawsymbol[0] );
+					}
+					
+					//clickFunciton
+					if ( configXML.clickfunction )
+					{
+						_clickFunctionInfo = 
+							{
+								action: String( configXML.clickfunction.action ),
+								type: String( configXML.clickfunction.type ),
+								idField: String( configXML.clickfunction.idfield )
+								/*widgetName: String( configXML.clickfunction.widgetname );*/
+							};
+					}
+					
+					//启动时的状态add/move/normal
+					var initMode:String = configXML.initmode;
+					if ( initMode == "add" )
+					{
+						_currentMode = MODE_ADD;
+						AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, _pointType );
+					}
+					_widgetRunNotifyFunctionName = configXML.widgetrunnotify;
+					_widgetCloseNotifyFunctionName = configXML.widgetclosenotify;
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetRunNotifyFunctionName } 
+						);
+					}
+				}
+			}
+			
+			private function appevent_widgetRunHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					map.addLayer( _pointOverlayLayer );
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetRunNotifyFunctionName } );
+					}
+				}
+			}
+			
+			private function appevent_widgetCloseHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					map.removeLayer( _pointOverlayLayer );
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetCloseNotifyFunctionName } 
+						);
+					}
+				}
+			}
+			
+			/*private function appevent_getPoliceEventDataHandler(event:AppEvent):void
+			{
+				var pointArray:Array = [];
+				for each ( var pointGraphic:Graphic in _pointOverlayLayer.graphicProvider )
+				{
+					var id:String = pointGraphic.attributes.id;
+					var geometryJson:Object = pointGraphic.geometry.toJSON();
+					geometryJson.spatialReference = null;
+					delete geometryJson.spatialReference;
+					var geometryObj:Object = 
+						{
+							    id: pointGraphic.attributes.id,
+								geometry: geometryJson
+						};
+					pointArray.push( geometryObj );
+				}
+				var dataString:String = JSON.stringify( pointArray );
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "getPoliceEventData",
+						params: [ dataString ]
+					} 
+				);
+			}*/
+
+			private var arrResult:Array = new Array();
+			//获取警情数据
+			private function appevent_setPoliceEventDataHandler(event:AppEvent):void
+			{
+				 var param:String = event.data as String;
+				 _policeArray  = JSON.parse( param ) as Array;
+				 for each ( var policeObj:Object in _policeArray )
+				 {
+					 var selID:String = policeObj.id;
+					 deadCount = policeObj.deadCount;
+					 injuredCount =policeObj.injuredCount;
+					 trappedCount= policeObj.trappedCount;
+					 logs = policeObj.logs;
+					 policeFields = policeObj.fields;
+					 polField= policeFields["报警人"];
+					 poField= policeFields["涉案人"];
+					 var obj:Object = new Object();
+					 obj.pid =policeObj.id;
+					 obj.title = policeObj.title;
+					 obj.time =policeObj.time;
+					 obj.content = policeObj.content;
+					 obj.level = policeObj.level;
+					 obj.source = policeObj.source;
+					 obj.deadCount =deadCount;
+					 obj.injuredCount =injuredCount;
+					 obj.trappedCount= trappedCount;
+					 obj.actions= policeObj.actions;
+					 obj.poField =polField;
+					 obj.polField = poField;
+					 obj.location = policeObj.location;
+					 obj.interaction110 = policeObj.interaction110;
+					 obj.interaction119 = policeObj.interaction119;
+					 obj.interaction120 = policeObj.interaction120;
+					 
+					 arrResult = logs.split('；');
+					 arrResult.pop();
+					 for(var i:int = 0; i < arrResult.length; i++)
+					 {
+						 logCotent  += arrResult[i];
+						 logCotent  +="\n";
+					 }
+					 obj.logCotent = logCotent;
+					 for each ( var graphic:Graphic in _pointOverlayLayer.graphicProvider )
+					 {
+						 graphic.attributes=obj;
+					 }
+				 }
+			}
+		
+			
+		/*	private function openInfoWin_clickHandler(event:MouseEvent):void
+			{
+				var grp:Graphic = event.currentTarget as Graphic;
+				mapPoint = grp.geometry  as MapPoint;
+				map.extent = map.extent.centerAt(grp.geometry  as MapPoint);
+				var  pw:policeEventDetailWidget =  new policeEventDetailWidget();
+				pw.mapPoint = mapPoint;
+				pw.location = grp.attributes.location;
+				pw.poField = grp.attributes.poField;
+				pw.polField = grp.attributes.polField;
+				pw.time = grp.attributes.time;
+				pw.title = grp.attributes.title;
+				pw.logCotent = grp.attributes.logCotent;
+				pw.level = grp.attributes.level;
+				pw.source = grp.attributes.source;
+				pw.deadCount = grp.attributes.deadCount;
+				pw.injuredCount = grp.attributes.injuredCount;
+				pw.trappedCount = grp.attributes.trappedCount;
+			    pw.actions = grp.attributes.actions;
+				pw.pId = grp.attributes.pid;
+				pw.image = grp.attributes.image;
+				pw.content = grp.attributes.content;
+				pw.interaction110 =grp.attributes.interaction110;
+				pw.interaction119 =grp.attributes.interaction119;
+				pw.interaction120 =grp.attributes.interaction120;
+				map.infoWindow.closeButtonVisible = false;
+                map.infoWindow.labelVisible = false;
+				map.infoWindow.content = pw;  
+				map.infoWindow.contentOwner = grp;
+				map.infoWindow.show(grp.geometry as MapPoint);
+				//map.infoWindow.setStyle("borderAlpha",0.0);
+				//map.infoWindow.setStyle("backgroundAlpha" ,0.0);
+			}
+			*/
+			
+			private function openInfoWin():void
+			{
+				for each ( var grp:Graphic in _pointOverlayLayer.graphicProvider )
+				{
+					if(grp.attributes.pid == eventID)
+					{
+						mapPoint = grp.geometry  as MapPoint;
+						map.extent = map.extent.centerAt(grp.geometry  as MapPoint);
+						
+						var  pw:policeEventDetailWidget =  new policeEventDetailWidget();
+						pw.mapPoint = mapPoint;
+						pw.location = grp.attributes.location;
+						pw.poField = grp.attributes.poField;
+						pw.polField = grp.attributes.polField;
+						pw.time = grp.attributes.time;
+						pw.title = grp.attributes.title;
+						pw.logCotent = grp.attributes.logCotent;
+						pw.level = grp.attributes.level;
+						pw.source = grp.attributes.source;
+						pw.deadCount = grp.attributes.deadCount;
+						pw.injuredCount = grp.attributes.injuredCount;
+						pw.trappedCount = grp.attributes.trappedCount;
+						pw.actions = grp.attributes.actions;
+						pw.pId = grp.attributes.pid;
+						pw.image = grp.attributes.image;
+						pw.content = grp.attributes.content;
+						pw.interaction110 =grp.attributes.interaction110;
+						pw.interaction119 =grp.attributes.interaction119;
+						pw.interaction120 =grp.attributes.interaction120;
+						map.infoWindow.closeButtonVisible = false;
+						map.infoWindow.labelVisible = false;
+						map.infoWindow.content = pw;  
+						map.infoWindow.contentOwner = grp;
+						map.infoWindow.show(grp.geometry as MapPoint);
+						
+					}
+				}
+				
+			}
+			private function closeInfoWin_clickHandler(event:MouseEvent):void
+			{
+				map.infoWindow.hide();
+			}
+			
+			private function appevent_addPointsHandler( event:AppEvent ):void
+			{
+				var params:String = event.data as String;
+				var paramObj:Object = JSON.parse( params );
+				//类型
+				var type:String = paramObj.type;
+				if ( !type || type.toLowerCase() != _pointType.toLowerCase() )
+					return;
+				
+				//点集
+				var pointArray:Array = paramObj.points;
+				for each ( var pointObj:Object in pointArray )
+				{
+					//坐标
+					var x:Number = pointObj.x;
+					var y:Number = pointObj.y;
+					var id:String = pointObj.id;
+					
+					if ( !id || id == "" )
+						continue;
+					
+					var graphic:Graphic = getGraphicById( id );
+					if ( graphic )
+					{
+						//若已经存在此点且传入坐标则更新位置，否则只更新属性
+						if ( !isNaN( x ) && !isNaN( y ) )
+						{
+							graphic.geometry = new MapPoint( x, y );
+						}
+					}
+					else
+					{
+						//若不存在此点且传入坐标则新建点，否则退出
+						if ( !isNaN( x ) && !isNaN( y ) )
+						{
+							graphic = new Graphic( new MapPoint( x, y ) );
+							graphic.id = id;
+							_pointOverlayLayer.add( graphic );
+						}
+						else
+						{
+							continue;
+						}
+					}
+					var fields:Object = pointObj.fields;
+					if ( fields )
+					{
+						graphic.attributes = fields;
+					}
+					
+					//trace(infoWin);
+					if ( _clickFunctionInfo )
+					{
+						var action:String = _clickFunctionInfo.action;
+						switch( action.toLowerCase() )
+						{
+							case "opendevice":
+								graphic.addEventListener( MouseEvent.CLICK, openDevice_clickHandler );
+								break;
+							case "getpoliceeventdata":
+								graphic.addEventListener(MouseEvent.CLICK, openDetail_clickHandler);
+								//graphic.addEventListener(MouseEvent.CLICK, openInfoWin_clickHandler);
+						}
+					}
+				}
+				addSharedData( widgetTitle, _pointOverlayLayer.graphicProvider as ArrayCollection );
+			}
+			//向js页面请求数据，传id号到js页面
+			private function  openDetail_clickHandler(event:MouseEvent):void
+			{
+				if(event.currentTarget != null)
+				{
+					var grp:Graphic = event.currentTarget as Graphic;
+					var type:String = _clickFunctionInfo.type;
+					if ( type == " " )
+					{
+						type = _pointType;
+					}
+					var idField:String = _clickFunctionInfo.idField;
+					eventID = ( idField == "" ? grp.id : grp.attributes[ id ] );
+					
+					AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+						{
+							functionName: "getPoliceEventData",
+							params: [ eventID ]
+						} 
+					);
+					pointArray.push(eventID);
+					openInfoWin();
+				}
+			}
+			
+			
+			private function openDevice_clickHandler( event:MouseEvent ):void
+			{
+				var graphic:Graphic = event.currentTarget as Graphic;
+				
+				var type:String = _clickFunctionInfo.type;
+				if ( type == "" )
+				{
+					type = _pointType;
+				}
+				
+				var idField:String = _clickFunctionInfo.idField;
+				var id:String = ( idField == "" ? graphic.id : graphic.attributes[ idField ] );
+				
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "openDevice",
+						params: [ type, id ]
+					} 
+				);
+			}
+			
+			private function appevent_deleteAllPointsHandler( event:AppEvent ):void
+			{
+				var type:String = event.data as String;
+				if ( type && ( type.toLowerCase() == _pointType.toLowerCase() ) )
+				{
+					_pointOverlayLayer.clear();
+				}
+			}
+			
+			private function appevent_deletePointsHandler( event:AppEvent ):void
+			{
+				var params:String = event.data as String;
+				var paramObj:Object = JSON.parse( params );
+				
+				var type:String = paramObj.type;
+				if ( !type || ( type.toLowerCase() != _pointType.toLowerCase() ) )
+					return;
+				
+				var idArray:Array = paramObj.ids;
+				for each ( var id:String in idArray )
+				{
+					for each ( var graphic:Graphic in _pointOverlayLayer.graphicProvider )
+					{
+						if ( id == graphic.id )
+						{
+							_pointOverlayLayer.remove( graphic );
+							break;
+						}
+					}
+				}
+			}
+			
+			/**
+			 * 在当前显示graphic中找到id对应的graphic
+			 * */
+			private function getGraphicById( id:String ):Graphic
+			{
+				for each ( var graphic:Graphic in _pointOverlayLayer.graphicProvider )
+				{
+					if ( id == graphic.id )
+					{
+						return graphic;
+					}
+				}
+				return null;
+			}
+			
+			private function appevent_startMoveOverlayHandler( event:AppEvent ):void
+			{
+				var params:String = event.data as String;
+				var paramObj:Object = JSON.parse( params );
+				var type:String = paramObj.type;
+				var idArray:Array = paramObj.ids || paramObj.points;
+				
+				if ( type != _pointType )
+				{
+					return;
+				}
+				
+				//打开编辑栏
+				openWidget( "编辑工具栏" );
+				
+				_currentMode = MODE_MOVE;
+				
+				//编辑状态时不显示infoWindow
+				_pointOverlayLayer.infoWindowRenderer = null;
+				
+				//没有指定id时，所有graphic都可以移动
+				if ( !idArray || idArray.length == 0 )
+				{
+					//给graphicLayer增加点击事件，点击到的graphic可以移动
+					//					_pointOverylayLayer.addEventListener( MouseEvent.CLICK, pointOverlayLayer_ClickHandler );
+				}
+					//只有指定的graphic可以移动
+				else
+				{
+					//找到id对应的graphic
+					var graphics:Array = [];
+					for each ( var id:String in idArray )
+					{
+						var graphic:Graphic = getGraphicById( id );
+						if ( graphic )
+						{
+							graphic.filters = [ editHighlightGlowFilter ];
+							graphics.push( graphic );
+							//保存初始位置
+							_movedGeometryTable.add( graphic.id, [ graphic.geometry ] );
+							_currentGeometryIndex = 0;
+						}
+					}
+					//激活编辑工具
+					editTool.activate( EditTool.MOVE, graphics );
+				}
+			}
+			
+			private function appevent_stopEditOverlayHandler( event:AppEvent ):void
+			{
+				var type:String = event.data as String;
+				if ( type != _pointType )
+				{
+					return;
+				}
+				
+				_currentMode = MODE_NORMAL;
+				closeWidget( "编辑工具栏" );
+				
+				editTool.deactivate();
+				_pointOverlayLayer.removeEventListener( MouseEvent.CLICK, pointOverlayLayer_ClickHandler );
+				_pointOverlayLayer.infoWindowRenderer = _popUpRenderer;
+			}
+			
+			private function appevent_startAddOverlayHandler( event:AppEvent ):void
+			{
+				var type:String = event.data as String;
+				if ( type != _pointType )
+				{
+					return;
+				}
+				
+				_currentMode = MODE_ADD;
+				
+				openWidget( "编辑工具栏" );
+				
+				setMapAction( DRAW_MODE, null, _drawSymbol, map_drawEndHandler );
+			}
+			
+			private function map_drawEndHandler( event:DrawEvent ):void
+			{
+				//显示
+				var drawGraphic:Graphic = event.graphic;
+				drawGraphic.id = UIDUtil.createUID();
+//				drawGraphic.id = "8AAA76B0-61B3-6470-6DBE-5818F29C64D4";
+				_movedGeometryTable.add( drawGraphic.id, [ drawGraphic.geometry ] );
+				_pointOverlayLayer.add( drawGraphic );
+				_selectedGraphic = drawGraphic;
+				
+				//设置移动
+				drawGraphic.filters = [ editHighlightGlowFilter ];
+				editTool.activate( EditTool.MOVE, [ drawGraphic ] );
+			}
+			
+			private function appevent_stopAddOverlayHandler( event:AppEvent ):void
+			{
+				var type:String = event.data as String;
+				if ( type != _pointType )
+				{
+					return;
+				}
+				
+				_currentMode = MODE_NORMAL;
+				closeWidget( "编辑工具栏" );
+				setMapAction( null, null, null, null );
+				editTool.deactivate();
+				
+				_pointOverlayLayer.removeEventListener( MouseEvent.CLICK, pointOverlayLayer_ClickHandler );
+				_pointOverlayLayer.infoWindowRenderer = _popUpRenderer;
+			}
+			
+			/**
+			 * 点击某一个graphic，激活编辑工具，使这个graphic可以移动
+			 * */
+			private function pointOverlayLayer_ClickHandler( event:MouseEvent ):void
+			{
+				editTool.deactivate();
+				
+				if ( _selectedGraphic )
+				{
+					_selectedGraphic.filters = [];
+					_selectedGraphic = null;
+				}
+				
+				if ( event.target is Graphic )
+				{
+					_selectedGraphic = Graphic( event.target );
+				}
+					//如果是PictureMarkerSymbol需要判断event.grahpic.parent
+				else if ( event.target.parent is Graphic )
+				{
+					_selectedGraphic = Graphic( event.target.parent );
+				}
+				
+				if ( _selectedGraphic )
+				{
+					_selectedGraphic.filters = [ editHighlightGlowFilter ];
+					//保存初始位置
+					_movedGeometryTable.add( _selectedGraphic.id, [ _selectedGraphic.geometry ] );
+					editTool.activate( EditTool.MOVE, [ _selectedGraphic ] );
+				}
+			}
+			
+			/**
+			 * 记录当前的geometry在历史GeometryArray中的位置
+			 * */
+			private var _currentGeometryIndex:int;
+			
+			protected function editTool_graphicsMoveStopHandler(event:EditEvent):void
+			{
+				//每次移动一个点
+				if ( event.graphics.length > 0 )
+				{
+					_selectedGraphic = event.graphics[ 0 ];
+					//保存此次移动的位置
+					var geometryArray:Array = _movedGeometryTable.find( _selectedGraphic.id );
+					if ( geometryArray )
+					{
+						//先删除当前序号以后的记录
+						geometryArray.splice( _currentGeometryIndex + 1 );
+						
+						geometryArray.push( _selectedGraphic.geometry );
+						_currentGeometryIndex = geometryArray.length - 1;
+						
+						/*for each ( var geometry:Geometry in geometryArray )
+						{
+						trace( JSONUtil.encode( geometry ) );
+						}*/
+					}
+				}
+			}
+			
+			private function appevent_editorToolbarUndoHandler( event:AppEvent ):void
+			{
+				if ( _selectedGraphic  )
+				{
+					var geometryArray:Array = _movedGeometryTable.find( _selectedGraphic.id );
+					if ( geometryArray && _currentGeometryIndex > 0 )
+					{
+						_currentGeometryIndex--;
+						_selectedGraphic.geometry = geometryArray[ _currentGeometryIndex ];
+					}
+				}
+			}
+			
+			private function appevent_editorToolbarRedoHandler( event:AppEvent ):void
+			{
+				if ( _selectedGraphic )
+				{
+					var geometryArray:Array = _movedGeometryTable.find( _selectedGraphic.id );
+					if ( geometryArray && _currentGeometryIndex < geometryArray.length - 1 )
+					{
+						_currentGeometryIndex++;
+						_selectedGraphic.geometry = geometryArray[ _currentGeometryIndex ];
+					}
+				}
+			}
+			
+			private function appevent_editorToolbarCommitHandler( event:AppEvent ):void
+			{
+				if ( _selectedGraphic )
+				{
+					Alert.show( "是否提交更改？", "提交确认", Alert.YES | Alert.NO, map, commitAlertClickHandler );
+				}
+			}
+			
+			private function commitAlertClickHandler( event:CloseEvent ):void
+			{
+				if ( event.detail == Alert.YES )
+				{
+					var dataObj:Object;
+					var dataString:String;
+					var jsonGeometryObj:Object;
+					
+					//清除glow效果
+					_selectedGraphic.filters = [];
+					switch( _currentMode )
+					{
+						//当前处于移动状态
+						case MODE_MOVE:
+						{
+							var pointArray:Array = [];
+							for each ( var graphicId:String in _movedGeometryTable.getKeySet() )
+							{
+								var geometryArray:Array = _movedGeometryTable.find( graphicId );
+								//获取最新的geometry
+								var latestGeometry:Geometry = geometryArray[ geometryArray.length - 1 ];
+								//删掉spatialReference属性
+								jsonGeometryObj = latestGeometry.toJSON();
+								jsonGeometryObj.spatialReference = null;
+								
+								delete jsonGeometryObj.spatialReference;
+								var pointObj:Object = 
+									{ 
+										id: graphicId, 
+										geometry: jsonGeometryObj 
+									};
+								pointArray.push( pointObj );
+							}
+							
+							dataObj = 
+								{ 
+									type: _pointType, 
+									geometries: pointArray 
+								};
+							
+							dataString = JSON.stringify( dataObj );
+							AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+								{ 
+									functionName: "editPointGeometry", 
+									params: [ dataString ] 
+								} 
+							);
+							
+							//停止编辑
+							editTool.deactivate();
+							_pointOverlayLayer.infoWindowRenderer = _popUpRenderer;
+							//清除历史数据
+							_movedGeometryTable.clear();
+							break;
+						}
+							
+							//当前处于新增状态
+						case MODE_ADD:
+						{
+							if ( _selectedGraphic )
+							{
+								//删掉spatialReference属性
+								jsonGeometryObj = _selectedGraphic.geometry.toJSON();
+								jsonGeometryObj.spatialReference = null;
+								delete jsonGeometryObj.spatialReference;
+								dataObj = 
+									{ 
+										type: _pointType, 
+										id: _selectedGraphic.id, 
+										geometry: jsonGeometryObj 
+									};
+								dataString = JSON.stringify( dataObj );
+								AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+									{ 
+										functionName: "addPointGeometry", 
+										params: [ dataString ] 
+									} 
+								);
+								
+								//进入新增状态，新增下一个点
+								setMapAction( DRAW_MODE, null, _drawSymbol, map_drawEndHandler );
+								//清除历史数据
+								_movedGeometryTable.clear();
+							}
+							
+							break;
+						}
+					}
+				}
+			}
+			
+			private function appevent_editorToolbarCancelHandler( event:AppEvent ):void
+			{
+				if ( _selectedGraphic )
+				{
+					Alert.show( "是否放弃更改？", "放弃确认", Alert.YES | Alert.NO, map, cancelAlertClickHandler );
+				}
+			}
+			
+			private function cancelAlertClickHandler( event:CloseEvent ):void
+			{
+				//清除glow效果
+				_selectedGraphic.filters = [];
+				
+				//停止编辑
+				editTool.deactivate();
+				_pointOverlayLayer.infoWindowRenderer = _popUpRenderer;
+				//回到初始位置
+				for each ( var graphicId:String in _movedGeometryTable.getKeySet() )
+				{
+					var geometryArray:Array = _movedGeometryTable.find( graphicId );
+					var graphic:Graphic = getGraphicById( graphicId );
+					graphic.geometry = geometryArray[ 0 ];
+					
+					//如果是新增模式，要把新增的点删掉
+					if ( _currentMode == MODE_ADD )
+					{
+						_pointOverlayLayer.remove( graphic );
+						//进入新增状态，新增下一个点
+						setMapAction( DRAW_MODE, null, _drawSymbol, map_drawEndHandler );
+					}
+				}
+				//清除历史数据
+				_movedGeometryTable.clear();
+			}
+			
+			private function appevent_findDeviceHandler( event:AppEvent ):void
+			{
+				var type:String = event.data.type;
+				var id:String = event.data.id;
+				if ( type != _pointType )
+				{
+					return;
+				}
+				for each ( var graphic:Graphic in _pointOverlayLayer.graphicProvider )
+				{
+					if ( graphic.id == id )
+					{
+						map.centerAt( graphic.geometry as MapPoint );
+						//处于新增、编辑模式时不显示弹出框
+						if ( _currentMode == MODE_NORMAL )
+						{
+							var contentNavigator:ContentNavigator = new ContentNavigator();
+							contentNavigator.dataProvider = new ArrayList([ graphic ]);
+							map.infoWindowContent = contentNavigator;
+							map.infoWindow.show( graphic.geometry as MapPoint );
+						}
+						break;
+					}
+				}
+			}
+			
+			
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:GlowFilter id="glowFilter"
+					  alpha="1"
+					  color="{getStyle('focusColor')}"
+					  inner="true"
+					  strength="2"/>
+		
+		<!-- 编辑已有元素 -->
+		<esri:EditTool id="editTool" map="{map}" 
+					   graphicsMoveStop="editTool_graphicsMoveStopHandler(event)" />
+		<!-- 高亮显示当前在编辑的元素 -->
+		<s:GlowFilter id="editHighlightGlowFilter" color="0xFF0000" alpha="1" blurX="32" blurY="32"/>
+	</fx:Declarations>
+	
+</TGISViewer:BaseWidget>

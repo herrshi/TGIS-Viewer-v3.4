@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 根据名称改变地图显示范围，名称对应的范围保存在配置文件中 -->
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   layout="absolute" 
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" 
+					   creationComplete="this_creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.geometry.Extent;
+			import com.esri.ags.geometry.MapPoint;
+			
+			import mx.events.FlexEvent;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			
+			private var _locatorTable:Hashtable = new Hashtable();
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				AppEvent.addListener( AppEvent.LOCATOR_MAP_BY_NAME, appevent_locatorMapByNameHandler );
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					var locatorList:XMLList = configXML..locator;
+					for each ( var locatorXML:XML in locatorList )
+					{
+						var locatorObj:Object;
+						
+						var name:String = locatorXML.@name;
+						var type:String = locatorXML.@type;
+						switch( type )
+						{
+							case "polygon":
+							{
+								var extent:String = locatorXML.extent;
+								locatorObj = 
+									{ 
+										type: type, 
+										extent: extent 
+									};
+								break;
+							}
+							
+							case "point":
+							{
+								var x:Number = locatorXML.x;
+								var y:Number = locatorXML.y;
+								locatorObj = 
+									{
+										type: type,
+										x: x,
+										y: y
+									}
+								break;
+							}
+						}
+						
+						_locatorTable.add( name, locatorObj );
+					}
+				}
+			}
+			
+			private function appevent_locatorMapByNameHandler( event:AppEvent ):void
+			{
+				var name:String = event.data as String;
+				var locatorObj:Object = _locatorTable.find( name );
+				if ( locatorObj )
+				{
+					var type:String = locatorObj.type;
+					switch ( type )
+					{
+						case "polygon":
+						{
+							var extentString:String = locatorObj.extent;
+							var extentArray:Array = extentString.split( " " );
+							if ( extentArray.length == 4 )
+							{
+								var extent:Extent = new Extent( extentArray[0], extentArray[1], 
+									extentArray[2], extentArray[3] );
+								map.extent = extent;
+							}
+							break;
+						}
+							
+						case "point":
+						{
+							var x:Number = locatorObj.x;
+							var y:Number = locatorObj.y;
+							if ( !isNaN( x ) && !isNaN( y ) )
+							{
+								var centerPoint:MapPoint = new MapPoint( x, y );
+								map.centerAt( centerPoint );
+							}
+							break;
+						}
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+</TGISViewer:BaseWidget>

@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<!-- 无锡行程时间 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip>
+
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+			config="widgets/Navigation/NavigationWidget.xml"
+		    url="widgets/Navigation/NavigationWidget.swf" />
+		    
+	<widget left="3" bottom="3"
+			config="widgets/Coordinate/CoordinateWidget.xml" 
+			url="widgets/Coordinate/CoordinateWidget.swf" />
+
+	<map top="0" initialextent="120.1464 31.5002 120.4338 31.6398"
+		 scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/wuxi/wx_base_PGIS_new_93/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="注记图层" type="dynamic" visible="true" 
+				   url="http://{serverip}/arcgis/rest/services/wuxi/wx_anno_PGIS_93/MapServer"/>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer>
+		<widget label="行程时间线" preload="open"
+				config="widgets/Overlay/WuXi/PolylineOverlayWidget-travelTimeLine.xml"
+				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+				
+		<widget label="行程时间起点图标" preload="open"
+				config="widgets/Overlay/WuXi/PointOverlayWidget-travelTimeStartPoint.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="行程时间终点图标" preload="open"
+				config="widgets/Overlay/WuXi/PointOverlayWidget-travelTimeEndPoint.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+						
+		<widget label="行程时间起点文字" preload="open"
+				config="widgets/Overlay/WuXi/TextOverlayWidget-travelTimeStartPoint.xml"
+				url="widgets/Overlay/TextOverlayWidget.swf" />
+		
+		<widget label="行程时间终点文字" preload="open"
+				config="widgets/Overlay/WuXi/TextOverlayWidget-travelTimeEndPoint.xml"
+				url="widgets/Overlay/TextOverlayWidget.swf" />
+			
+		<widget label="行程时间线文字" preload="open"
+				config="widgets/Overlay/WuXi/TextOverlayWidget-travelTimeLineText.xml"
+				url="widgets/Overlay/TextOverlayWidget.swf" />
+		
+		<widget label="行程时间" preload="open"
+				url="widgets/TravelTime/TravelTimeWidget.swf" />
+	</widgetcontainer>
+
+</configuration>

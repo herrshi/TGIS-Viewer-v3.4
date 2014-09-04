@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+<!--  长沙警员、警车gps轨迹 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>128.64.151.12:6080</arcgisserverip>
+
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"
+			url="widgets/Navigation/NavigationWidget.swf" />
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" 
+		 scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="矢量图" type="tiled" visible="true"
+				url="http://{serverip}/arcgis/rest/services/changsha/changsha_base_GHY/MapServer" />
+<!-- 			<layer label="航拍图" type="tiled" visible="false" -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/changsha/changsha_aerial/MapServer" /> -->
+<!-- 			<layer label="卫星图" type="tiled" visible="false" -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/changsha/changsha_satellite/MapServer" /> -->
+		</basemaps>
+		<operationallayers>
+<!-- 			<layer label="注记图层" type="dynamic" visible="true"  -->
+<!-- 				   url="http://{serverip}/arcgis/rest/services/yixing/yx_anno_PGIS/MapServer"/> -->
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="vertical">
+		<widget label="底图切换" preload="open"
+				config="widgets\MapSwitcher\MapSwitcherWidget.xml"
+				url="widgets\MapSwitcher\MapSwitcherWidget.swf"/>
+	</widgetcontainer>
+	
+	<widgetcontainer layout="fix">
+		<widget label="gps节点" preload="open" 
+				config="widgets/Overlay/ChangSha/PointOverlayWidget-gpsTrack.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="警车轨迹线" preload="open"
+				config="widgets/Overlay/ChangSha/PolylineOverlayWidget-gpsCarTrack.xml"
+				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+		
+		<widget label="警车模拟移动" preload="open"
+				config="widgets/SimulationMovePoint/ChangSha/SimulationMovePointWidget-gpsCarTrack.xml"
+				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
+		
+		<widget label="警员轨迹线" preload="open"
+				config="widgets/Overlay/ChangSha/PolylineOverlayWidget-gpsPoliceTrack.xml"
+				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+		
+		<widget label="警员模拟移动" preload="open"
+				config="widgets/SimulationMovePoint/ChangSha/SimulationMovePointWidget-gpsPoliceTrack.xml"
+				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
+		
+		<widget label="gpsCarTrack" preload="open" 
+				config="widgets/GPSTrack/ChangSha/GPSTrackWidget-car.xml"
+				url="widgets/GPSTrack/GPSTrackWidget.swf"/>
+				
+		<widget label="gpsPoliceTrack" preload="open" 
+				config="widgets/GPSTrack/ChangSha/GPSTrackWidget-police.xml"
+				url="widgets/GPSTrack/GPSTrackWidget.swf"/>
+	</widgetcontainer>
+
+</configuration>

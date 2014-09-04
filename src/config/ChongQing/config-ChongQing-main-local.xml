@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+	
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"
+			url="widgets/Navigation/NavigationWidget.swf" />
+
+	<map top="0" scale="192000" center="106.38494 29.541666"
+		 scalebarvisible="false" esrilogovisible="false"
+		 doubleclickzoomenabled="true">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/chongqing/chongqing_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="设施设备" type="dynamic" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/chongqing/chongqing_device/MapServer">
+				<sublayer id="1" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="2" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="3" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="4" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="6" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="7" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="8" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="9" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="11" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="12" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="13" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="14" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="16" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="17" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="18" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="19" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="21" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="23" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="24" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="25" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="26" popupconfig="popups/ChongQing/PopUp-device-default.xml"/>
+				<sublayer id="27" popupconfig="popups/ChongQing/PopUp-bigClient.xml"/>
+			</layer>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+<!-- 	<widgetcontainer layout="fix"> -->
+<!-- 		<widget label="ControlPanel" preload="open" right="20" bottom="20" -->
+<!-- 				config="widgets/ControlPanel/ChongQing/IconControlPanelWidget-ChongQing-main.xml" -->
+<!-- 				url="widgets/ControlPanel/IconControlPanelWidget.swf" /> -->
+<!-- 	</widgetcontainer> -->
+	
+<!-- 	<widgetcontainer layout="vertical"> -->
+<!-- 		<widget label="图层管理" preload="open" -->
+<!-- 				config="widgets\MapSwitcher\MapSwitcherWidget.xml" -->
+<!-- 				url="widgets\MapSwitcher\MapSwitcherWidget.swf"/> -->
+<!-- 	</widgetcontainer> -->
+</configuration>

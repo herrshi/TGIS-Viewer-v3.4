@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   layout="absolute" 
+					   creationComplete="creationCompleteHandler(event)" 
+					   widgetConfigLoaded="widgetConfigLoadedHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.Polyline;
+			
+			import mx.events.FlexEvent;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			
+			private var _type:String;
+			private var _simMovePointType:String;
+			private var _id:String;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				AppEvent.addListener( AppEvent.ADD_GPS_TRACK, appevent_addGpsTrackHandler );
+				AppEvent.addListener( AppEvent.DELETE_ALL_GPS_TRACK, appevent_deleteAllGpsTrackHandler );
+			}
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_type = configXML.type;
+					_simMovePointType = configXML.simmovepointtype || "gpsTrack";
+				}
+			}
+			
+			private function appevent_addGpsTrackHandler( event:AppEvent ):void
+			{
+				var params:String = event.data as String;
+				var paramObj:Object = JSON.parse( params );
+				
+				var type:String = paramObj.type;
+				if ( !type || type.toLowerCase() != _type.toLowerCase() )
+				{
+					return;
+				}
+				
+				_id = paramObj.id;
+				var speed:Number = paramObj.speed || 40;
+				
+				var pointArray:Array = paramObj.points;
+				var trackPath:Array = [];
+				
+				//初始化节点overlay数据
+				var trackPointJsonObjArray:Array = [];
+				var trackPointSymbolObj:Object = 
+					{ 
+						type: "gpsTrackPointSymbol", 
+						points: trackPointJsonObjArray 
+					};
+				
+				var index:uint = 0;
+				for each ( var pointObj:Object in pointArray )
+				{
+					var time:String = pointObj.time;
+					var x:Number = pointObj.x;
+					var y:Number = pointObj.y;
+					var trackPoint:MapPoint;
+					if ( !isNaN( x ) && !isNaN( y ) )
+					{
+						trackPoint = new MapPoint( x, y );
+						trackPath.push( trackPoint );
+						
+						trackPointJsonObjArray.push( 
+							{ 
+								id: index,
+								x: x,
+								y: y,
+								fields: { time: time }
+							} 
+						);
+					}
+					index++;
+				}
+				var trackPolyline:Polyline = new Polyline( [trackPath] );
+				AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_START, 
+					{ 
+						type: _simMovePointType,
+						id: _id, 
+						speed: speed, 
+						route: JSON.stringify( trackPolyline.toJSON() ) 
+					} 
+				);
+				
+				var trackPointJsonString:String = JSON.stringify( trackPointSymbolObj );
+				AppEvent.dispatch( AppEvent.ADD_POINTS, trackPointJsonString );
+			}
+			
+			private function appevent_deleteAllGpsTrackHandler( event:AppEvent ):void
+			{
+				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "gpsTrackPointSymbol" );
+				AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_STOP, "" );
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+</TGISViewer:BaseWidget>

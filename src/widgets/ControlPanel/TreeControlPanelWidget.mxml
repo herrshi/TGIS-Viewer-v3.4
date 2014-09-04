@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   xmlns:checkTree="cn.seisys.TGISViewer.components.checkTree.*"
+					   layout="absolute" 
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" 
+					   creationComplete="this_creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.components.checkTree.CheckTreeItemRenderer;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			
+			[Bindable]
+			private var _treeDataProvider:ArrayCollection;
+			
+			[Bindable]
+			private var _selectionColor:Number;
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				_selectionColor = getStyle( "selectionColor" );
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_treeDataProvider = new ArrayCollection();
+					
+					var groupList:XMLList = configXML..group;
+					for each ( var groupXML:XML in groupList )
+					{
+						var groupName:String = groupXML.@name;
+						var groupChildren:ArrayCollection = new ArrayCollection();
+						
+						var hasAtLeastOneChecked:Boolean = false;
+						var allChecked:Boolean = true;
+						//创建子项
+						var itemList:XMLList = groupXML..item;
+						//有子项
+						if ( itemList.length() > 0 )
+						{
+							for each ( var itemXML:XML in itemList )
+							{
+								//创建列表
+								var itemName:String = itemXML.@name;
+								var itemId:String = itemXML.@id;
+								var itemState:String = itemXML.@state;
+								var state:int = 
+									itemState == "checked" ? CheckTreeItemRenderer.STATE_CHECKED : 
+									CheckTreeItemRenderer.STATE_UNCHECKED;
+								//用于确定父项状态
+								var bolState:Boolean = itemState == "checked" ? true : false;
+								hasAtLeastOneChecked = hasAtLeastOneChecked || bolState;
+								allChecked = allChecked && bolState;
+								
+								//点击事件
+								var functionList:XMLList = itemXML..clickfunction;
+								var functionArray:Array = [];
+								for each ( var functionXML:XML in functionList )
+								{
+									var functionName:String = functionXML.@name;
+									var paramList:XMLList = functionXML..param;
+									var paramTable:Hashtable = new Hashtable();
+									for each ( var paramXML:XML in paramList )
+									{
+										var paramName:String = paramXML.@name;
+										var paramValue:String = paramXML.@value;
+										paramTable.add( paramName, paramValue );
+									}
+									var clickFunctionObj:Object = 
+										{
+											name: functionName,
+											paramTable: paramTable
+										}
+									functionArray.push( clickFunctionObj );
+								}
+								
+								var itemObject:Object = 
+									{ 
+										label: itemName, 
+										state: state,
+										functionArray: functionArray
+									};
+								groupChildren.addItem( itemObject );
+							}
+						}
+						//没有子项
+						else
+						{
+							allChecked = false;
+							//将存放子项的ArrarCollection清空，否则空的父项会显示上一个父项的子项
+							groupChildren = null;
+						}
+						
+						//确定父项状态
+						var groupState:int;
+						if ( allChecked )
+						{
+							groupState = CheckTreeItemRenderer.STATE_CHECKED;
+						}
+						else if ( hasAtLeastOneChecked )
+						{
+							groupState = CheckTreeItemRenderer.STATE_INDETERMINATE;
+						}
+						else
+						{
+							groupState = CheckTreeItemRenderer.STATE_UNCHECKED;
+						}
+						//创建父项
+						var groupObject:Object = 
+							{ 
+								label: groupName, 
+								children: groupChildren, 
+								state: groupState
+							};
+						_treeDataProvider.addItem( groupObject );
+					}
+				}
+			}
+			
+			protected function trControlPanel_doubleClickHandler(event:MouseEvent):void
+			{
+				var selectedItem:Object = trControlPanel.selectedItem;
+				var isOpen:Boolean = trControlPanel.isItemOpen( selectedItem );
+				trControlPanel.expandItem( selectedItem, !isOpen );
+			}
+			
+			protected function trControlPanel_checkBoxClickHandler(event:MouseEvent):void
+			{
+				var selectedItem:Object = trControlPanel.selectedItem;
+				if ( selectedItem )
+				{
+					treeItemChange( selectedItem );
+				}
+			}
+			
+			private function treeItemChange( selectedItem:Object ):void
+			{
+				var children:ArrayCollection = selectedItem.children;
+				//有子项时递归
+				if ( children )
+				{
+					for each ( var childItem:Object in children )
+					{
+						treeItemChange( childItem );
+					}
+				}
+				else
+				{
+					var bolState:Boolean = ( selectedItem.state == CheckTreeItemRenderer.STATE_CHECKED );
+					var functionArray:Array = selectedItem.functionArray;
+					for each ( var clickFunctionObj:Object in functionArray ) 
+					{
+						var functionName:String = clickFunctionObj.name;
+						var paramTable:Hashtable = clickFunctionObj.paramTable;
+						
+						var widgetName:String;
+						var widgetState:String;
+						switch( functionName.toLowerCase() )
+						{
+							//按钮enable时显示图层，按钮disable时隐藏图层
+							case "changelayer":
+								var serviceName:String = paramTable.find( "ServiceName" );
+								var idString:String = paramTable.find( "LayerId" );
+								AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+									{ 
+										serviceName: serviceName,
+										layerIds: idString,
+										visible: bolState
+									} 
+								);
+								break;
+							
+							//按钮enable时打开组件，按钮disable时关闭组件
+							case "changewidget":
+								widgetName = paramTable.find( "WidgetName" );
+								widgetState = paramTable.find( "WidgetState" );
+								if ( bolState )
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
+									if ( widgetState && widgetState != "" )
+									{
+										AppEvent.dispatch( AppEvent.WIDGET_CHANGE_STATE, 
+											{ 
+												label: widgetName,
+												state: widgetState
+											} 
+										);
+									}
+								}
+								else
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+								}
+								break;
+							
+							//按钮enable时打开组件，按钮disable时不关闭组件
+							case "openwidget":
+								widgetName = paramTable.find( "WidgetName" );
+								widgetState = paramTable.find( "WidgetState" );
+								if ( bolState )
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
+									if ( widgetState && widgetState != "" )
+									{
+										AppEvent.dispatch( AppEvent.WIDGET_CHANGE_STATE, 
+											{ 
+												label: widgetName,
+												state: widgetState
+											} );
+									}
+								}
+								break;
+							
+							//按钮enable时不打开组件，按钮disable时关闭组件
+							case "closewidget":
+								widgetName = paramTable.find( "WidgetName" );
+								if ( !bolState )
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+								}
+								break;
+							
+							//点击按钮时通知页面
+							case "informstatechanged":
+								var type:String = paramTable.find( "type" );
+								AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+									{ 
+										functionName: "mapButtonStateChanged", 
+										params: [ type, bolState ] 
+									} 
+								);
+						}
+					}
+				}
+			}
+			
+			protected function btnClear_clickHandler(event:MouseEvent):void
+			{
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace ns "http://www.esri.com/2008/ags";
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace TGISViewer "cn.seisys.TGISViewer.*";
+		@namespace esri "http://www.esri.com/2008/ags";
+		
+		mx|Tree {
+			/*folderClosedIcon: ClassReference(null);
+			folderOpenIcon: ClassReference(null);*/
+			defaultLeafIcon: ClassReference(null);
+		}
+	</fx:Style>
+	
+	<TGISViewer:WidgetTemplate id="wTemplate" width="200" height="320" 
+							   enableCloseButton="false" enableIcon="false" enableMinimizeButton="false">
+		<s:VGroup width="100%" height="100%" gap="2">
+			<checkTree:CheckTree id="trControlPanel" width="100%" height="100%"
+								 dataProvider="{_treeDataProvider}"
+								 borderAlpha="0" checkBoxBgColor="0x000000" checkBoxBgAlpha="1" 
+								 labelField="label" checkBoxStateField="state" checkBoxEnableState="true"
+								 checkBoxClick="trControlPanel_checkBoxClickHandler(event)"
+								 doubleClick="trControlPanel_doubleClickHandler(event)"/>
+			<!--<s:HGroup width="100%" height="30" horizontalAlign="center" verticalAlign="middle">
+				<s:Button id="btnClear" label="清除" click="btnClear_clickHandler(event)"/>
+			</s:HGroup>-->
+		</s:VGroup>
+		
+	</TGISViewer:WidgetTemplate>
+	<!--<s:SkinnableContainer id="controllerContainer" width="200" height="400">
+		<checkTree:CheckTree id="trControlPanel" width="100%" height="100%"
+							 dataProvider="{_treeDataProvider}"
+							 borderAlpha="0"
+							 labelField="label" checkBoxStateField="state" checkBoxEnableState="true"
+							 checkBoxBgColor="0x000000" checkBoxBgAlpha="1"
+							 change="trControlPanel_changeHandler(event)" 
+							 doubleClick="trControlPanel_doubleClickHandler(event)"/>
+	</s:SkinnableContainer>-->
+</TGISViewer:BaseWidget>

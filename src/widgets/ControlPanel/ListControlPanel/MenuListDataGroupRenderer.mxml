@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				implements="mx.managers.IFocusManagerComponent" 
+				xmlns:ListControlPanel="widgets.ControlPanel.ListControlPanel.*"
+				width="100%" minHeight="30"
+				focusEnabled="true" 
+				buttonMode="true" useHandCursor="true" 
+				autoDrawBackground="true" 
+				click="this_clickHandler(event)" 
+				dataChange="this_dataChangeHandler(event)" >
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.managers.IFocusManagerComponent;
+			
+			import spark.components.DataGroup;
+			
+			[Bindable]
+			private var upperRad:int = 0;
+			
+			[Bindable]
+			private var lowerRad:int = 0;
+			
+			[Bindable]
+			private var _menuItem:MenuItem;
+			
+			private var isLastItem:Boolean;
+			
+			protected function this_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent( new Event( "widgetListItemClick", true ) );
+			}
+			
+			protected function this_dataChangeHandler(event:FlexEvent):void
+			{
+				_menuItem = data as MenuItem;
+				itemLabel.text = _menuItem.label;
+				
+				if ( itemIndex == 0 )
+				{
+					lowerRad = 0;
+					upperRad = 4;
+					scs.alpha = 0.3;
+				}
+				else if ( isLastItem )
+				{
+					lowerRad = 4;
+					upperRad = 0;
+					scs.alpha = 0;
+				}
+				else
+				{
+					lowerRad = 0;
+					upperRad = 0;
+					scs.alpha = 0.3;
+				}
+			}
+			
+			override public function set itemIndex(value:int):void
+			{
+				super.itemIndex = value;
+				
+				var dataGroup:DataGroup = parent as DataGroup;
+				isLastItem = ( dataGroup && ( value == dataGroup.numElements - 1 ) );
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="hovered"/>
+	</s:states>
+	
+	<!-- border/background rectangle -->
+	<s:Rect left="0" right="-2" top="-6" bottom="0"
+			bottomLeftRadiusX="{lowerRad}"
+			bottomLeftRadiusY="{lowerRad}"
+			bottomRightRadiusX="{lowerRad}"
+			bottomRightRadiusY="{lowerRad}"
+			topLeftRadiusX="{upperRad}"
+			topLeftRadiusY="{upperRad}"
+			topRightRadiusX="{upperRad}"
+			topRightRadiusY="{upperRad}">
+		<s:fill>
+			<s:SolidColor alpha="0.3"
+						  alpha.hovered="0.8"
+						  color.hovered="{getStyle('rollOverColor')}"
+						  color.normal="{getStyle('contentBackgroundColor')}"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:VGroup height="25" width="100%"
+			  paddingBottom="8"
+			  paddingLeft="10"
+			  paddingTop="13">
+		
+		<s:Label id="itemLabel" width="100%" 
+				 color="0xffffff" fontWeight="bold"/>
+		
+		<ListControlPanel:MenuItemUnderline id="underline"/>
+		
+		<!--divider-->
+		<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke id="scs"
+									alpha="0.3"
+									caps="square"
+									color="#C4CCCC"
+									weight="2"/>
+			</s:stroke>
+		</s:Line>
+	</s:VGroup>
+</s:ItemRenderer>

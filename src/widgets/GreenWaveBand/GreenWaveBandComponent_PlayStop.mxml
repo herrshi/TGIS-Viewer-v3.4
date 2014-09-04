@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   width="100%"
+				   backgroundAlpha="0.8"
+				   borderVisible="{_mouseClicked}" 
+				   borderColor="{getStyle('selectionColor')}" 
+				   borderWeight="3">
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.seisys.TGISViewer.AppEvent;
+			
+			public static const GWB_PLAY:String = "play";
+			public static const GWB_PAUSE:String = "pause";
+			public static const GWB_RESUME:String = "resume";
+			public static const GWB_STOP:String = "stop";
+			
+			[Bindable]
+			public var bandObj:Object;
+			
+			[Bindable]
+			public var mouseOvered:Boolean = false;
+			
+			[Bindable]
+			private var _mouseClicked:Boolean = false;
+			
+			private var _playStarted:Boolean = false;
+			
+			protected function imgPlay_clickHandler(event:MouseEvent):void
+			{
+				_mouseClicked = true;
+				
+				imgPlay.visible = imgPlay.includeInLayout = false;
+				imgPause.visible = imgPause.includeInLayout = true;
+				imgStop.enabled = true;
+				
+				//已开始播放则发送resume消息
+				if ( _playStarted )
+				{
+					AppEvent.dispatch( AppEvent.GWB_PLAY_CONTROL, 
+						{ 
+							id: bandObj.id, 
+							status: GWB_RESUME 
+						} 
+					);
+				}
+				//未开始播放则发送start消息
+				else
+				{
+					AppEvent.dispatch( AppEvent.GWB_PLAY_CONTROL, 
+						{ 
+							id: bandObj.id, 
+							status: GWB_PLAY 
+						} 
+					);
+					_playStarted = true;
+				}
+			}
+			
+			protected function imgStop_clickHandler(event:MouseEvent):void
+			{
+				_mouseClicked = false;
+				_playStarted = false;
+				
+				imgPlay.visible = imgPlay.includeInLayout = true;
+				imgPause.visible = imgPause.includeInLayout = false;
+				imgStop.enabled = false;
+				
+				AppEvent.dispatch( AppEvent.GWB_PLAY_CONTROL, 
+					{ 
+						id: bandObj.id, 
+						status: GWB_STOP 
+					} 
+				);
+			}
+			
+			protected function imgPause_clickHandler(event:MouseEvent):void
+			{
+				imgPlay.visible = imgPlay.includeInLayout = true;
+				imgPause.visible = imgPause.includeInLayout = false;
+				
+				AppEvent.dispatch( AppEvent.GWB_PLAY_CONTROL, 
+					{ 
+						id: bandObj.id, 
+						status: GWB_PAUSE 
+					} 
+				);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="5" paddingTop="5"/>
+	</s:layout>
+	
+	<s:Label id="lblBandName" text="{bandObj.name}"/>
+	<s:HGroup id="grpPlayControl" height="100%" 
+			  visible="{mouseOvered}" includeInLayout="{mouseOvered}" 
+			  verticalAlign="middle" horizontalAlign="right">
+		<s:Label text="速度: "/>
+		<s:NumericStepper id="numstpMoveSpeed" value="45"
+						  minimum="40" maximum="80"/>
+		
+		<s:Image id="imgPlay" source="assets/images/playControl-play.png" 
+				 buttonMode="true"
+				 click="imgPlay_clickHandler(event)"/>
+		<s:Image id="imgPause" source="assets/images/playControl-pause.png" 
+				 buttonMode="true"
+				 visible="false" includeInLayout="false"
+				 click="imgPause_clickHandler(event)"/>
+		<s:Image id="imgStop" source="assets/images/playControl-stop.png"
+				 buttonMode="true"
+				 enabled="false" 
+				 click="imgStop_clickHandler(event)"/>
+	</s:HGroup>
+</s:BorderContainer>

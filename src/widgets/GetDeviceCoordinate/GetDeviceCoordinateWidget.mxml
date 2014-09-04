@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   layout="absolute" 
+					   widgetConfigLoaded="widgetConfigLoadedHandler(event)"
+					   creationComplete="creationCompleteHandler(event)" 
+					   xmlns:esri="http://www.esri.com/2008/ags">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.FeatureSet;
+			import com.esri.ags.Graphic;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.symbols.Symbol;
+			
+			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
+			import mx.rpc.Fault;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			import cn.seisys.TGISViewer.utils.MapServiceUtil;
+			import cn.seisys.TGISViewer.utils.SymbolParser;
+			
+			private var _layerTable:Hashtable = new Hashtable();
+			
+			private var _showResultInMap:Boolean;
+			private var _resultLayer:GraphicsLayer;
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_showResultInMap = ( configXML.showresult == "true" ? true : false );
+					
+					var symbolParser:SymbolParser = new SymbolParser();
+					for each ( var layerXML:XML in configXML.layers[0].layer )
+					{
+						var type:String = layerXML.type;
+						var url:String = layerXML.url;
+						url = url.replace( "{serverip}", configData.arcgisServerIP );
+						var idField:String = layerXML.idfield;
+						var symbol:Symbol = symbolParser.parseSymbol( layerXML );
+						_layerTable.add(  
+							type, 
+							{ 
+								url: url, 
+								idField: idField,
+								symbol: symbol
+							} 
+						);
+					}
+				}
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				_resultLayer = new GraphicsLayer();
+				_resultLayer.name = "queryResultLayer";
+				map.addLayer( _resultLayer );
+				
+				map.addEventListener( MouseEvent.CLICK, map_clickHandler );
+				
+				AppEvent.addListener( AppEvent.GET_DEVICE_COORDINATE, appevent_GetDeviceCoordinateHandler );
+			}
+			
+			private function map_clickHandler( event:MouseEvent ):void
+			{
+				_resultLayer.clear();
+			}
+			
+			private function appevent_GetDeviceCoordinateHandler( event:AppEvent ):void
+			{
+				var params:String = event.data as String;
+				var paramObj:Object = JSON.parse( params );
+				
+				//类型
+				var type:String = paramObj.type;
+				var layerObj:Object = _layerTable.find( type );
+				if ( !layerObj )
+				{
+					return;
+				}
+				
+				_resultLayer.clear();
+				
+				var idField:String = layerObj.idField;
+				var url:String = layerObj.url;
+				
+				var where:String = "";
+				var deviceArray:Array = paramObj.DeviceList;
+				for ( var i:uint = 0; i < deviceArray.length; i++ ) 
+				{
+					var id:String = deviceArray[i];
+					where += idField + "='" + id + "'";
+					if ( i != deviceArray.length - 1 )
+					{
+						where += " or ";
+					}
+				}
+				query.where = where;
+				query.outFields = [idField];
+				queryTask.url = url;
+				queryTask.execute( query, 
+					new AsyncResponder( queryTask_executeCompleteHandler, queryTask_faultHandler, type ) );
+			}
+			
+			protected function queryTask_executeCompleteHandler( item:Object, token:Object = null ):void
+			{
+				var featureSet:FeatureSet = item as FeatureSet;
+				var type:String = token as String;
+				
+				var graphicArray:Array = [];
+				for each ( var graphic:Graphic in featureSet.features )
+				{
+					//显示结果
+					if ( _showResultInMap )
+					{
+						var layerConfigObj:Object = _layerTable.find( type );
+						if ( layerConfigObj )
+						{
+							var symbol:Symbol = layerConfigObj.symbol;
+							graphic.symbol = symbol;
+							_resultLayer.add( graphic );
+						}
+					}
+					
+					//保存结果
+					var centerPoint:MapPoint = MapServiceUtil.getGeomCenter( graphic );
+					var graphicObj:Object = { 
+						geometry: { x: centerPoint.x, y: centerPoint.y }, 
+						attributes: graphic.attributes 
+					};
+					graphicArray.push( graphicObj );
+				}
+				
+				var dataObj:Object = { type:type, points:graphicArray };				
+				var dataString:String = JSON.stringify( dataObj );
+				AppEvent.dispatch( 
+					AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "getDeviceCoordinateResult",
+						params: [dataString]
+					} 
+				);
+			}
+			
+			protected function queryTask_faultHandler( fault:Fault, token:Object ):void
+			{
+				var strInfo: String = "Error: ";
+				strInfo += "Fault Code: " + fault.faultCode + "\n";
+				strInfo += "Fault Info: " + fault.faultString + "\n";
+				strInfo += "Fault Detail: " + fault.faultDetail;
+				showError( strInfo );		
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<esri:Query id="query" returnGeometry="true"/>
+		<esri:QueryTask id="queryTask" />
+	</fx:Declarations>
+</TGISViewer:BaseWidget>

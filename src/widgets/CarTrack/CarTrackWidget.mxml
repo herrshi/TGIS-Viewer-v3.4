@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   xmlns:esri="http://www.esri.com/2008/ags"
+					   layout="absolute" 
+					   widgetConfigLoaded="widgetConfigLoadedHandler(event)"
+					   creationComplete="creationCompleteHandler(event)" >
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.FeatureSet;
+			import com.esri.ags.Graphic;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.Polyline;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.tasks.QueryTask;
+			import com.esri.ags.tasks.supportClasses.Query;
+			
+			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			
+			private var _moveSpeed:Number;
+			private var _simMovePointType:String;
+			
+			private var _trackPointLayer:GraphicsLayer;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				_trackPointLayer = new GraphicsLayer();
+				map.addLayer( _trackPointLayer );
+				
+				AppEvent.addListener( AppEvent.ADD_CAR_TRACK, appevent_addCarTrackHandler );
+				AppEvent.addListener( AppEvent.DELETE_CAR_TRACK, appevent_deleteCarTrackHandler );
+				AppEvent.addListener( AppEvent.DELETE_ALL_CAR_TRACK, appevent_deleteAllCarTrackHandler );
+			}
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_moveSpeed = configXML.speed || 40;
+					_simMovePointType = configXML.simmovepointtype || "carTrack";
+					
+					if ( configXML.devicelayer[0] )
+					{
+						var url:String = configXML.devicelayer.url;
+						url = url.replace( "{serverip}", configData.arcgisServerIP );
+						var idField:String = configXML.devicelayer.idfield;
+						if ( url != "" && idField != "" )
+						{
+							queryDevice( url, idField );
+						}
+					}
+				}
+			}
+			
+			private var _deviceArray:Array = [];
+			
+			private function queryDevice( url:String, idField:String ):void
+			{
+				var queryTask:QueryTask = new QueryTask( url );
+				var query:Query = new Query();
+				query.where = "1=1";
+				query.returnGeometry = true;
+				query.outFields = [ idField ];
+				queryTask.execute(query, new AsyncResponder(onResult, onFault));
+				
+				function onResult(featureSet:FeatureSet, token:Object = null):void
+				{
+					for each ( var graphic:Graphic in featureSet.features )
+					{
+						var id:String = graphic.attributes[ idField ];
+						var point:MapPoint = graphic.geometry as MapPoint;
+						_deviceArray.push( 
+							{ 
+								id: id, 
+								point: point 
+							} 
+						);
+					}
+				}
+				
+				function onFault(info:Object, token:Object = null):void
+				{
+					showError( info.toString(), widgetTitle );
+				}
+			}
+			
+			private function appevent_addCarTrackHandler( event:AppEvent ):void
+			{
+				var param:String = event.data as String;
+				var paramObj:Object = JSON.parse( param );
+				var plateNumber:String = paramObj.plateNumber;
+				var points:Array = paramObj.kkPoints;
+				
+				var startPointObj:Object;
+				var endPointObj:Object;
+				
+				//初始化卡口点图标overlay数据
+				var kaKouSymbolJsonObjArray:Array = [];
+				var kaKouSymbolObj:Object = 
+					{ 
+						type: "carTrackKaKouSymbol", 
+						points: kaKouSymbolJsonObjArray 
+					};
+				
+				//初始化卡口点文字overlay数据
+				var kaKouTextJsonObjArray:Array = [];
+				var kakouTextObj:Object = 
+					{ 
+						type: "carTrackKaKouText", 
+						points: kaKouTextJsonObjArray 
+					};
+				
+				var trackPath:Array = [];
+				var index:uint = 1;
+				
+				for ( var i:uint = 0; i < points.length; i++ )
+				{
+					var pointObj:Object = points[ i ];
+					var x:Number = pointObj.x;
+					var y:Number = pointObj.y;
+					var deviceId:String = pointObj.deviceId;
+					var trackPoint:MapPoint;
+					
+					if ( !isNaN( x ) && !isNaN( y ) )
+					{
+						trackPoint = new MapPoint( x, y );
+					}
+					else
+					{
+						for each ( var deviceObj:Object in _deviceArray )
+						{
+							if ( deviceObj.id == deviceId )
+							{
+								trackPoint = deviceObj.point;
+								break;
+							}
+						}
+					}
+					if ( !trackPoint )
+					{
+						continue;
+					}
+					
+					//保存起点和终点
+					trackPath.push( trackPoint );
+					if ( i == 0 )
+					{
+						startPointObj =
+							{
+								id: deviceId, 
+								x: trackPoint.x, 
+								y: trackPoint.y
+							}
+					}
+					else if ( i == points.length - 1 )
+					{
+						endPointObj =
+							{
+								id: deviceId, 
+								x: trackPoint.x, 
+								y: trackPoint.y
+							}
+					}
+					
+					var deviceDesc:String = pointObj.deviceDesc;
+					var passTime:String = pointObj.passTime;
+					var picUrl:String = pointObj.picUrl;
+					var direction:String = pointObj.direction;
+					var hasAdded:Boolean = false;
+					
+					//添加图标
+					//已经添加过的设备不再添加图标
+					for each ( var symbolObj:Object in kaKouSymbolJsonObjArray )
+					{
+						if ( symbolObj.id == deviceId )
+						{
+							hasAdded = true;
+							break;
+						}
+					}
+					if ( !hasAdded )
+					{
+						kaKouSymbolJsonObjArray.push( 
+							{
+								id: deviceId, 
+								x: trackPoint.x, 
+								y: trackPoint.y,
+								fields: { url:picUrl }
+							}
+						);
+					}
+					
+					
+					//添加文字
+					hasAdded = false;
+					var content:String;
+					for each ( var textObj:Object in kaKouTextJsonObjArray )
+					{
+						if ( textObj.id == deviceId )
+						{
+							content = textObj.text;
+							content += "\n序号: " + index + "\n经过时间: " + passTime;
+							textObj.text = content;
+							hasAdded = true;
+							break;
+						}
+					}
+					if ( !hasAdded )
+					{
+						content = "编号: " + deviceId + "\n位置: " + deviceDesc + 
+							"\n序号: " + index + "\n经过时间: " + passTime;
+						kaKouTextJsonObjArray.push( 
+							{ 
+								text: content, 
+								id: deviceId, 
+								position: trackPoint.toJSON() 
+							} 
+						);
+					}
+					
+					var trackGraphic:Graphic = findGraphicById( deviceId, trackPoint );
+					var trackInfoObj:Object = { index: index, direction: direction };
+					( trackGraphic.attributes.trackInfo as Array ).push( trackInfoObj );
+					
+					index++;
+				}
+				
+				//显示卡口点
+				var kaKouPointJsonString:String = JSON.stringify( kaKouSymbolObj );
+				AppEvent.dispatch( AppEvent.ADD_POINTS, kaKouPointJsonString );
+				
+				//显示起点
+				if ( startPointObj )
+				{
+					var kaKouStartObj:Object = 
+						{ 
+							type: "carTrackStart", 
+							points: [ startPointObj ] 
+						};
+					var kaKouStartPointJsonString:String = JSON.stringify( kaKouStartObj );
+					AppEvent.dispatch( AppEvent.ADD_POINTS, kaKouStartPointJsonString );
+				}
+				
+				//显示终点
+				if ( endPointObj )
+				{
+					var kaKouEndObj:Object = 
+						{ 
+							type: "carTrackEnd", 
+							points: [ endPointObj ] 
+						};
+					var kaKouEndPointJsonString:String = JSON.stringify( kaKouEndObj );
+					AppEvent.dispatch( AppEvent.ADD_POINTS, kaKouEndPointJsonString );
+				}
+				
+				//显示卡口文字
+				var kaKouTextJsonString:String = JSON.stringify( kakouTextObj );
+				AppEvent.dispatch( AppEvent.ADD_TEXTS, kaKouTextJsonString );
+				
+				if ( trackPath.length > 1 )
+				{
+					var trackPolyline:Polyline = new Polyline( [trackPath] );
+					
+					//设置显示范围
+					map.extent = trackPolyline.extent.expand( 1.5 );
+					
+					//画线
+					var lineObj:Object = 
+						{ 
+							type: "carTrack", 
+							lines: [ { "id": plateNumber, "geometry": trackPolyline } ] 
+						};
+					var lineString:String = JSON.stringify( lineObj );
+					AppEvent.dispatch( AppEvent.ADD_LINES, lineString );
+					
+					//显示移动车辆
+					AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_START, 
+						{ 
+							type: _simMovePointType,
+							id: plateNumber, 
+							speed: _moveSpeed, 
+							route: JSON.stringify( trackPolyline.toJSON() ) 
+						} 
+					);
+				}
+			}
+			
+			private function findGraphicById( id:String, point:MapPoint ):Graphic
+			{
+				for each ( var graphic:Graphic in _trackPointLayer.graphicProvider )
+				{
+					if ( graphic.id == id )
+					{
+						return graphic;
+					}
+				}
+				
+				graphic = new Graphic( point );
+				graphic.id = id;
+				graphic.attributes = { trackInfo: [] };
+				graphic.symbol = carTrackInfoSymbol;
+//				_trackPointLayer.add( graphic );
+				return graphic;
+			}
+			
+			private function appevent_deleteCarTrackHandler( event:AppEvent ):void
+			{
+				var plateNumber:String = event.data as String;
+			}
+			
+			private function appevent_deleteAllCarTrackHandler( event:AppEvent ):void
+			{
+				_trackPointLayer.clear();
+				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "carTrackKaKouSymbol" );
+				AppEvent.dispatch( AppEvent.DELETE_ALL_TEXTS, "carTrackKaKouText" );
+				AppEvent.dispatch( AppEvent.DELETE_ALL_LINES, "carTrack" );
+				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "carTrackStart" );
+				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "carTrackEnd" );
+				AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_STOP, "" );
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<esri:InfoSymbol id="carTrackInfoSymbol" infoRenderer="widgets.CarTrack.CarTrackSymbol"/>
+	</fx:Declarations>
+</TGISViewer:BaseWidget>

@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2010-2013 史晓青. All Rights Reserved.
+//
+// 1.读取绿波图层和信号灯图层，显示绿波列表；选中某绿波后显示绿波线和相关信号灯。
+// 2.在绿波线上显示移动点；距离移动点一定范围内的信号灯设置为绿色，其他为红色。
+// 3.移动速度模拟真实速度（km/h），速度可设置。
+// 4.移动过程可以控制（暂停/恢复/循环）。
+///////////////////////////////////////////////////////////////////////////
+-->
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   xmlns:GreenWaveBand="widgets.GreenWaveBand.*"
+					   xmlns:esri="http://www.esri.com/2008/ags"
+					   layout="absolute" 
+					   widgetConfigLoaded="widgetConfigLoadedHandler(event)" 
+					   creationComplete="creationCompleteHandler(event)"  >
+	
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.FeatureSet;
+			import com.esri.ags.Graphic;
+			import com.esri.ags.Units;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.Polyline;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.symbols.SimpleLineSymbol;
+			import com.esri.ags.tasks.QueryTask;
+			import com.esri.ags.tasks.supportClasses.Query;
+			import com.esri.ags.utils.GeometryUtil;
+			
+			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			import cn.seisys.TGISViewer.utils.MapServiceUtil;
+			import cn.seisys.TGISViewer.utils.RendererParser;
+			import cn.seisys.TGISViewer.utils.SymbolParser;
+			
+			private var _gwbLayerUrl:String;
+			private var _gwbTable:Hashtable;
+			private var _gwbQueryTask:QueryTask;
+			private var _gwbIdField:String;
+			private var _gwbNameField:String;
+			private var _gwbLayer:GraphicsLayer;
+			private var _gwbVisible:Boolean;
+			
+			private var _xhdLayerUrl:String;
+			private var _xhdQueryTask:QueryTask;
+			private var _xhdIdField:String;
+			private var _xhdNameField:String;
+			private var _xhdBandIdField:String;
+			private var _xhdStateField:String;
+			private var _xhdLayer:GraphicsLayer;
+			private var _xhdInitStateTable:Hashtable;
+			private var _xhdInitVisible:Boolean;
+			
+			private var _queryCurrentPointTimer:Timer;
+			
+			/** 绿波带处于非锁定和黄闪状态时定时改变状态 */
+			private var _changeIntervalTimer:Timer;
+			
+			private var _nearLength:Number;
+			
+			private var _simMovePointType:String;
+			
+			private var _moveSpeed:Number;
+			
+			private var _componentType:String;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				_gwbTable = new Hashtable();
+				_gwbQueryTask = new QueryTask();
+				_gwbLayer = new GraphicsLayer();
+				map.addLayer( _gwbLayer );
+				
+				_xhdInitStateTable = new Hashtable();
+				_xhdQueryTask = new QueryTask();
+				_xhdLayer = new GraphicsLayer();
+				map.addLayer( _xhdLayer );
+				
+				_queryCurrentPointTimer = new Timer( 1000 );
+				_queryCurrentPointTimer.addEventListener( TimerEvent.TIMER, queryCurrentPointTimer_timerHandler );
+				_queryCurrentPointTimer.start();
+				
+				AppEvent.addListener( AppEvent.GWB_PLAY_CONTROL, appEvent_gwbPlayControlHandler );
+			}
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_simMovePointType = configXML.simmovepointtype || "greenWaveBandRoute";
+					_nearLength = configXML.nearlength || 100;
+					_componentType = configXML.componentType || "playStop";
+					_moveSpeed = configXML.movespeed || 60;
+					
+					if ( configXML.greenwavebandlayer[0] )
+					{
+						_gwbLayerUrl = configXML.greenwavebandlayer.url;
+						_gwbLayerUrl = _gwbLayerUrl.replace( "{serverip}", configData.arcgisServerIP );
+						_gwbIdField = configXML.greenwavebandlayer.idfield;
+						_gwbNameField = configXML.greenwavebandlayer.namefield;
+						_gwbVisible = configXML.greenwavebandlayer.visible == "false" ? false : true;
+						
+						if ( _gwbVisible )
+						{
+							var symbolParser:SymbolParser = new SymbolParser();
+							_gwbLayer.symbol = symbolParser.parseSymbol( configXML.greenwavebandlayer[0] ) || 
+								new SimpleLineSymbol( SimpleLineSymbol.STYLE_SOLID, getStyle( "selectionColor" ), 1, 3 );
+						}
+						
+						loadGreenWaveBandInfo();
+					}
+					
+					if ( configXML.xhdlayer[0] )
+					{
+						_xhdLayerUrl = configXML.xhdlayer.url;
+						_xhdLayerUrl = _xhdLayerUrl.replace( "{serverip}", configData.arcgisServerIP );
+						_xhdIdField = configXML.xhdlayer.idfield;
+						_xhdNameField = configXML.xhdlayer.namefield;
+						_xhdBandIdField = configXML.xhdlayer.bandidfield;
+						_xhdStateField = configXML.xhdlayer.statefield;
+						_xhdInitVisible = configXML.xhdlayer.initvisible == "true" ? true : false;
+						
+						var changeInterval:Number = configXML.xhdlayer.changeinterval || 0;
+						if ( changeInterval > 0 )
+						{
+							_changeIntervalTimer = new Timer( changeInterval * 1000 );
+							_changeIntervalTimer.addEventListener(TimerEvent.TIMER, changeIntervalTimer_timerEventHandler );
+						}
+						
+						var rendererParser:RendererParser = new RendererParser;
+						_xhdLayer.renderer = rendererParser.parseRenderer( configXML.xhdlayer[0] );
+//						_xhdLayer.renderer = renderer;
+						
+						/*_xhdLayer.symbol = symbolParser.parseSymbol( configXML.xhdlayer[0] ) || 
+							new PictureMarkerSymbol( "assets/images/mapIcons/XinHaoDeng-red.png", 0, 0, 0, 9 );*/
+						
+						//绿波带载入完成后再载入信号灯信息
+					}
+				}
+			}
+			
+			private function loadGreenWaveBandInfo():void
+			{
+				_gwbQueryTask.url = _gwbLayerUrl;
+				var query:Query = new Query();
+				query.returnGeometry = true;
+				query.where = "1=1";
+				query.outFields = [ _gwbIdField, _gwbNameField ];
+				query.outSpatialReference = map.spatialReference;
+				_gwbQueryTask.execute( query, new AsyncResponder( onResult, onFault ) );
+				
+				function onResult(featureSet:FeatureSet, token:Object = null):void
+				{
+					if ( featureSet.features.length > 0 )
+					{
+						if ( _gwbVisible )
+						{
+							_gwbLayer.graphicProvider = featureSet.features;
+						}
+						
+						for each ( var graphic:Graphic in featureSet.features )
+						{
+							var bandName:String = graphic.attributes[ _gwbNameField ];
+							var bandId:String = graphic.attributes[ _gwbIdField ];
+							
+							var bandObj:Object = { 
+								id: bandId, 
+								name: bandName, 
+								graphic: graphic,
+								status: GreenWaveBandComponent_PlayStop.GWB_STOP,
+								relateXhd: []
+							};
+							_gwbTable.add( bandId, bandObj );
+							
+							switch( _componentType )
+							{
+								case "playStop":
+									var gwbComponentPlay:GreenWaveBandComponent_PlayStop = new GreenWaveBandComponent_PlayStop();
+									gwbComponentPlay.bandObj = bandObj;
+									gwbComponentPlay.addEventListener( MouseEvent.ROLL_OVER, gwbComponentPlay_mouseOverHandler );
+									gwbComponentPlay.addEventListener( MouseEvent.ROLL_OUT, gwbComponentPlay_mouseOutHandler );
+									gwbComponentContainer.addElement( gwbComponentPlay );
+									break;
+								
+								case "lockUnlock":
+									var gwbComponentLock:GreenWaveBandComponent_LockUnlock = new GreenWaveBandComponent_LockUnlock();
+									gwbComponentLock.bandObj = bandObj;
+									gwbComponentLock.addEventListener( MouseEvent.ROLL_OVER, gwbComponentLock_mouseOverHandler );
+									gwbComponentLock.addEventListener( MouseEvent.ROLL_OUT, gwbComponentLock_mouseOutHandler );
+									gwbComponentContainer.addElement( gwbComponentLock );
+									break;
+							}
+							
+						}
+						
+						loadXhdInfo();
+					}
+					
+				}
+				
+				function onFault(info:Object, token:Object = null):void
+				{
+					showError( info.toString(), "绿波带图层查询错误" );
+				}
+				
+			}
+			
+			private var _flashTimer:Timer;
+			
+			private function gwbComponentPlay_mouseOverHandler( event:MouseEvent ):void
+			{
+				var gwbComponent:GreenWaveBandComponent_PlayStop = event.currentTarget as GreenWaveBandComponent_PlayStop;
+				gwbComponent.mouseOvered = true;
+				if ( _gwbVisible )
+				{
+					_flashTimer = MapServiceUtil.flashGraphic( gwbComponent.bandObj.graphic, _gwbLayer, 500, 3 );
+				}
+			}
+			
+			private function gwbComponentPlay_mouseOutHandler( event:MouseEvent ):void
+			{
+				var gwbComponent:GreenWaveBandComponent_PlayStop = event.currentTarget as GreenWaveBandComponent_PlayStop;
+				gwbComponent.mouseOvered = false;
+				if ( _gwbVisible )
+				{
+					MapServiceUtil.stopFlashGrahpic( _flashTimer, gwbComponent.bandObj.graphic, _gwbLayer );
+				}
+			}
+			
+			private function gwbComponentLock_mouseOverHandler( event:MouseEvent ):void
+			{
+				var gwbComponent:GreenWaveBandComponent_LockUnlock = event.currentTarget as GreenWaveBandComponent_LockUnlock;
+				gwbComponent.mouseOvered = true;
+				if ( _gwbVisible )
+				{
+					_flashTimer = MapServiceUtil.flashGraphic( gwbComponent.bandObj.graphic, _gwbLayer, 500, 3 );
+				}
+			}
+			
+			private function gwbComponentLock_mouseOutHandler( event:MouseEvent ):void
+			{
+				var gwbComponent:GreenWaveBandComponent_LockUnlock = event.currentTarget as GreenWaveBandComponent_LockUnlock;
+				gwbComponent.mouseOvered = false;
+				if ( _gwbVisible )
+				{
+					MapServiceUtil.stopFlashGrahpic( _flashTimer, gwbComponent.bandObj.graphic, _gwbLayer );
+				}
+			}
+			
+			private function loadXhdInfo():void
+			{
+				_xhdQueryTask.url = _xhdLayerUrl;
+				var query:Query = new Query();
+				query.returnGeometry = true;
+				query.where = "1=1";
+				query.outFields = [ _xhdBandIdField, _xhdIdField, _xhdNameField, _xhdStateField ];
+				query.outSpatialReference = map.spatialReference;
+				_xhdQueryTask.execute( query, new AsyncResponder( onResult, onFault ) );
+				
+				function onResult(featureSet:FeatureSet, token:Object = null):void
+				{
+					if ( featureSet.features.length > 0 )
+					{
+						_xhdLayer.graphicProvider = featureSet.features;
+						
+						for each ( var graphic:Graphic in featureSet.features )
+						{
+//							graphic.visible = false;
+							var id:String = graphic.attributes[ _xhdIdField ];
+							var state:String = graphic.attributes[ _xhdStateField ];
+							_xhdInitStateTable.add( id, state );
+							
+							graphic.id = id;
+							graphic.attributes.state = state;
+							
+							var xhdObj:Object = 
+								{
+									id: id,
+									name: graphic.attributes[ _xhdNameField ],
+									graphic: graphic
+								};
+							
+							var bandId:String = graphic.attributes[ _xhdBandIdField ];
+							var bandObj:Object = _gwbTable.find( bandId );
+							if ( bandObj )
+							{
+								var bandRelateXhj:Array = bandObj.relateXhd;
+								bandRelateXhj.push( xhdObj );
+							}
+						}
+					}
+				}
+				
+				function onFault(info:Object, token:Object = null):void
+				{
+					showError( info.toString(), "信号灯图层查询错误" );
+				}
+			}
+			
+			private function changeIntervalTimer_timerEventHandler( event:TimerEvent ):void
+			{
+				for each ( var xhdGraphic:Graphic in _xhdLayer.graphicProvider )
+				{
+					
+				}
+			}
+			
+			private function appEvent_gwbPlayControlHandler( event:AppEvent ):void
+			{
+				var id:String = event.data.id;
+				var status:String = event.data.status;
+				
+				var bandObj:Object = _gwbTable.find( id );
+				if ( bandObj )
+				{
+					bandObj.status = status;
+					switch( status )
+					{
+						case GreenWaveBandComponent_PlayStop.GWB_PLAY:
+							setRelateXhdVisibility( id, true );
+							setRelateXhdState( id, "red" );
+							var bandGraphic:Graphic = bandObj.graphic;
+							var polyline:Polyline = bandGraphic.geometry as Polyline;
+							var lineJson:String = JSON.stringify( polyline.toJSON() );
+							AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_START, 
+								{ 
+									type: _simMovePointType,
+									id: id, 
+									route: lineJson, 
+									speed: _moveSpeed 
+								} 
+							);
+							break;
+							
+						case GreenWaveBandComponent_PlayStop.GWB_PAUSE:
+							AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_PAUSE, id );
+							break;
+							
+						case GreenWaveBandComponent_PlayStop.GWB_RESUME:
+							AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_RESUME, id );
+							break;
+							
+						case GreenWaveBandComponent_PlayStop.GWB_STOP:
+							AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_STOP, id );
+							setRelateXhdVisibility( id, false );
+							break;
+						
+						case GreenWaveBandComponent_LockUnlock.GWB_LOCK:
+							setRelateXhdVisibility( id, true );
+							setRelateXhdState( id, "red" );
+							bandGraphic = bandObj.graphic;
+							polyline = bandGraphic.geometry as Polyline;
+							lineJson = JSON.stringify( polyline.toJSON() );
+							AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_START, 
+								{ 
+									type: _simMovePointType,
+									id: id, 
+									route: lineJson, 
+									speed: _moveSpeed 
+								} 
+							);
+							break;
+							/*setRelateXhdState( id, "green" );
+							bandGraphic = bandObj.graphic;
+							polyline = bandGraphic.geometry as Polyline;
+							map.extent = polyline.extent.expand( 1.5 );*/
+							break;
+						
+						case GreenWaveBandComponent_LockUnlock.GWB_UNLOCK:
+							AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_STOP, id );
+							setRelateXhdState( id, GreenWaveBandComponent_LockUnlock.GWB_UNLOCK );
+							bandGraphic = bandObj.graphic;
+							polyline = bandGraphic.geometry as Polyline;
+							map.extent = polyline.extent.expand( 1.5 );
+							break;
+						
+						case GreenWaveBandComponent_LockUnlock.GWB_FLASH:
+							AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_STOP, id );
+							setRelateXhdState( id, "yellow" );
+							bandGraphic = bandObj.graphic;
+							polyline = bandGraphic.geometry as Polyline;
+							map.extent = polyline.extent.expand( 1.5 );
+							break;
+					}
+				}
+			}
+			
+			/**
+			 * 显示/隐藏和绿波带关联的信号灯
+			 * @param
+			 * gwbId: 绿波带编号
+			 * @param
+			 * visibility: 显示/隐藏信号灯
+			 * */
+			private function setRelateXhdVisibility( gwbId:String, visibility:Boolean ):void
+			{
+				var gwbObj:Object = _gwbTable.find( gwbId );
+				if ( gwbObj )
+				{
+					for each ( var xhdObj:Object in gwbObj.relateXhd )
+					{
+						var graphic:Graphic = xhdObj.graphic;
+						graphic.visible = visibility;
+					}
+					_xhdLayer.refresh();
+				}
+			}
+			
+			private function setRelateXhdState( gwbId:String, state:String ):void
+			{
+				var gwbObj:Object = _gwbTable.find( gwbId );
+				if ( gwbObj )
+				{
+					for each ( var xhdObj:Object in gwbObj.relateXhd )
+					{
+						var graphic:Graphic = xhdObj.graphic;
+						if ( state == GreenWaveBandComponent_LockUnlock.GWB_UNLOCK )
+						{
+							var id:String = graphic.id;
+							var initState:String = _xhdInitStateTable.find( id );
+							graphic.attributes.state = initState;
+						}
+						else
+						{
+							graphic.attributes.state = state;
+						}
+						
+					}
+					_xhdLayer.refresh();
+				}
+			}
+			
+			private function queryCurrentPointTimer_timerHandler( event:TimerEvent ):void
+			{
+				for each ( var id:String in _gwbTable.getKeySet() )
+				{
+					var gwbObj:Object = _gwbTable.find( id );
+					if ( gwbObj.status == GreenWaveBandComponent_PlayStop.GWB_PLAY || 
+						gwbObj.status == GreenWaveBandComponent_PlayStop.GWB_RESUME || 
+						gwbObj.status == GreenWaveBandComponent_LockUnlock.GWB_LOCK )
+					{
+						//获取模拟移动点当前位置
+						AppEvent.dispatch( AppEvent.GET_SIM_MOVE_POINT_CURRENT_POINT, id, currentPointCallback );
+					}
+				}
+			}
+			
+			/**
+			 * 根据模拟移动点当前位置，将一定半径范围内的信号机改为绿色图标
+			 * */
+			private function currentPointCallback( id:String, pt:MapPoint ):void
+			{
+				var gwbObj:Object = _gwbTable.find( id );
+				if ( gwbObj )
+				{
+					var polylines:Array = [];
+					var xhdArray:Array = gwbObj.relateXhd;
+					for each ( var xhdObj:Object in xhdArray )
+					{
+						var xhdGraphic:Graphic = xhdObj.graphic;
+						var xhdPt:MapPoint = xhdGraphic.geometry as MapPoint;
+						var path:Array = [ pt, xhdPt ];
+						var polyline:Polyline = new Polyline( [path] );
+						polylines.push( polyline );
+					}
+					var lengthArray:Array = GeometryUtil.geodesicLengths( polylines, Units.METERS );
+					for ( var i:uint = 0; i < lengthArray.length; i++ )
+					{
+						xhdGraphic = xhdArray[ i ].graphic;
+						xhdGraphic.attributes.state = ( lengthArray[ i ] < _nearLength ? "green" : "red" ); 
+					}
+					_xhdLayer.refresh();
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	
+	<TGISViewer:WidgetTemplate id="wTemplate" 
+							   width="250" enableCloseButton="false">
+		<s:VGroup id="gwbComponentContainer" width="100%" height="100%" gap="5" paddingTop="20"/>
+	</TGISViewer:WidgetTemplate>
+</TGISViewer:BaseWidget>

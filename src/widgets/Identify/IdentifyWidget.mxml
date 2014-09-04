@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   xmlns:esri="http://www.esri.com/2008/ags"
+					   xmlns:checkTree="cn.seisys.TGISViewer.components.checkTree.*"
+					   layout="absolute"
+					   widgetConfigLoaded="widgetConfigLoadedHandler(event)" 
+					   creationComplete="creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.events.DrawEvent;
+			import com.esri.ags.events.IdentifyEvent;
+			import com.esri.ags.geometry.Geometry;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.symbols.SimpleMarkerSymbol;
+			import com.esri.ags.tasks.supportClasses.IdentifyResult;
+			import com.esri.ags.tools.DrawTool;
+			
+			import mx.events.FlexEvent;
+			import mx.managers.CursorManager;
+			import mx.rpc.events.FaultEvent;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			
+			[Bindable] private var _searchUrl:String;
+			private var _layerId:Array = new Array();
+			private var _findFieldArray:Array;
+			
+			private var _drawLayer:GraphicsLayer;
+			private var _drawSymbol:SimpleMarkerSymbol;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				_drawSymbol = new SimpleMarkerSymbol( SimpleMarkerSymbol.STYLE_CIRCLE, 12, getStyle( 'focusColor' ) );
+				
+				_drawLayer = new GraphicsLayer();
+				_drawLayer.name = "DrawLayer";
+				map.addLayer( _drawLayer );
+				
+				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_widgetRunHandler );
+				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_widgetCloseHandler );
+			}
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					//find参数
+					_layerId= [int(configXML.layerinfo.find.id[0])];
+					_searchUrl = configXML.layerinfo.find.url;
+					if ( _searchUrl != "" )
+					{
+						if ( configData.arcgisServerIP )
+						{
+							_searchUrl = _searchUrl.replace( "{serverip}", configData.arcgisServerIP );
+						}
+					}
+					
+					var findFields:String = configXML.layerinfo.find.fields;
+					_findFieldArray = findFields.split( "," );
+					
+					setMapAction( DrawTool.MAPPOINT, "", _drawSymbol, searchDrawEnd );
+				}
+			}
+			
+			private function appevent_widgetRunHandler( event:AppEvent ):void
+			{
+				setMapAction( DrawTool.MAPPOINT, "", _drawSymbol, searchDrawEnd );
+			}
+			
+			private function appevent_widgetCloseHandler( event:AppEvent ):void
+			{
+				_drawLayer.clear();
+				setMapAction( null, null, null, null );
+			}
+			
+			private function searchLayer( geom:Geometry ):void
+			{
+				if ( _layerId.length > 0 )
+				{
+					identifyParam.layerIds = _layerId;
+					identifyParam.geometry = geom;
+					identifyTask.execute( identifyParam );
+				}
+			}
+			
+			protected function identifyTask_executeCompleteHandler(event:IdentifyEvent):void
+			{
+				var results:Array = event.identifyResults;
+				if ( results && results.length > 0 )
+				{
+					for each ( var identifyResult:IdentifyResult in results )
+					{
+						var graphic:Graphic = identifyResult.feature;
+						var number:String = graphic.attributes[_findFieldArray[0]];
+						if ( number != "" )
+						{
+							AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+								{ 
+									functionName: "getBuildHouse",
+									params: [number]
+								}
+							);
+							break;
+						}
+					}
+				}
+				
+				setMapAction( DrawTool.MAPPOINT, "", _drawSymbol, searchDrawEnd );
+			}
+			
+			private function faultEventHandler( event:FaultEvent ):void
+			{
+				CursorManager.removeBusyCursor();
+				var strInfo: String = "Error: ";
+				strInfo += "Event Headers: " + event.headers + "\n";
+				strInfo += "Event Target: " + event.target + "\n";
+				strInfo += "Event Type: " + event.type + "\n";
+				strInfo += "Fault Code: " + event.fault.faultCode + "\n";
+				strInfo += "Fault Info: " + event.fault.faultString + "\n";
+				strInfo += "Fault Detail: " + event.fault.faultDetail;
+				showError( strInfo );
+			}
+			
+			private function searchDrawEnd(event:DrawEvent):void
+			{
+				_drawLayer.clear();
+				var drawGraphic:Graphic = event.graphic;
+				_drawLayer.add( drawGraphic );
+				
+				var geom:Geometry = drawGraphic.geometry;
+				searchLayer( geom);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<esri:IdentifyParameters id="identifyParam" 
+								 returnGeometry="true" 
+								 tolerance="1"
+								 layerOption="all"
+								 width="{map.width}" height="{map.height}" 
+								 mapExtent="{map.extent}" 
+								 spatialReference="{map.spatialReference}"/>
+		
+		<esri:IdentifyTask id="identifyTask" 
+						   url="{_searchUrl}" 
+						   executeComplete="identifyTask_executeCompleteHandler(event)" 
+						   fault="faultEventHandler(event)"/>
+		
+		<s:GlowFilter id="glowFilter"
+					  alpha="1"
+					  color="{getStyle('focusColor')}"
+					  inner="true"
+					  strength="2"/>
+	</fx:Declarations>
+	
+</TGISViewer:BaseWidget>

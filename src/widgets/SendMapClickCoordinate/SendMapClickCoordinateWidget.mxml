@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   layout="absolute" 
+					   creationComplete="this_creationCompleteHandler(event)"
+					   widgetConfigLoaded="widgetConfigLoadedHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.events.DrawEvent;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.symbols.SimpleFillSymbol;
+			import com.esri.ags.symbols.SimpleLineSymbol;
+			import com.esri.ags.symbols.SimpleMarkerSymbol;
+			import com.esri.ags.symbols.Symbol;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.CursorManagerPriority;
+			import mx.managers.PopUpManager;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.utils.MapServiceUtil;
+			import cn.seisys.TGISViewer.utils.SymbolParser;
+			
+			
+			
+			private var _showConfirmWindow:Boolean;
+			private var _confirmWindowTitle:String;
+			private var _confirmWindowText:String;
+			
+			private var _showBuffer:Boolean;
+			private var _bufferDistance:Number;
+			
+			private var _type:String;
+			/***/
+			private var _drawAction:String;
+			private var _drawSymbol:Symbol;
+			private var _drawLayer:GraphicsLayer;
+			
+			[Embed(source="/assets/images/cross_cursor.png")]
+			private var _crossCursor:Class;
+			private var _cursorId:int;
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_widgetRunHandler );
+				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_widgetCloseHandler );
+				
+				_cursorId = map.cursorManager.setCursor( _crossCursor, CursorManagerPriority.MEDIUM, -8, -8 );
+				map.addEventListener( MouseEvent.DOUBLE_CLICK, map_doubleClickHandler );
+			}
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_type = configXML.type;
+					
+					_showBuffer = configXML.showbuffer == "true";
+					_bufferDistance = configXML.defaultbufferdistance || 200;
+					
+					_showConfirmWindow = configXML.showconfirmwindow == "true";
+					_confirmWindowTitle = configXML.confirmwindow.title;
+					_confirmWindowText = configXML.confirmwindow.text;
+					
+					_drawLayer = new GraphicsLayer();
+					_drawLayer.name = "drawLayer";
+					map.addLayer( _drawLayer );
+					
+					var selectionColor:Number = getStyle( "selectionColor" );
+					var pointSymbol:SimpleMarkerSymbol = new SimpleMarkerSymbol( 
+						SimpleMarkerSymbol.STYLE_CIRCLE, 10, selectionColor );
+					var lineSymbol:SimpleLineSymbol = new SimpleLineSymbol( 
+						SimpleLineSymbol.STYLE_SOLID, selectionColor, 1, 3 );
+					var polygonSymbol:SimpleFillSymbol = new SimpleFillSymbol( 
+						SimpleFillSymbol.STYLE_SOLID, selectionColor, 0.2, lineSymbol );
+					
+					if ( configXML.drawsymbol[0] )
+					{
+						var symbolParser:SymbolParser = new SymbolParser();
+						_drawSymbol = symbolParser.parseSymbol( configXML.drawsymbol[0] );
+					}
+					
+					/*var drawType:String = configXML.drawtype || "point";
+					switch( drawType.toLowerCase() )
+					{
+						case "point":
+							_drawAction = DrawTool.MAPPOINT;
+							if ( !_drawSymbol )
+							{
+								_drawSymbol = pointSymbol;
+							}
+							break;
+							
+						case "polyline":
+							_drawAction = DrawTool.POLYLINE;
+							if ( !_drawSymbol )
+							{
+								_drawSymbol = lineSymbol;
+							}
+							break;
+						
+						case "freehandpolyline":
+							_drawAction = DrawTool.FREEHAND_POLYLINE;
+							if ( !_drawSymbol )
+							{
+								_drawSymbol = lineSymbol;
+							}
+							break;
+						
+						case "polygon":
+							_drawAction = DrawTool.POLYGON;
+							if ( !_drawSymbol )
+							{
+								_drawSymbol = polygonSymbol;
+							}
+							break;
+						
+						case "freehandpolygon":
+							_drawAction = DrawTool.FREEHAND_POLYGON;
+							if ( !_drawSymbol )
+							{
+								_drawSymbol = polygonSymbol;
+							}
+							break;
+						
+						case "circle":
+							_drawAction = DrawTool.CIRCLE;
+							if ( !_drawSymbol )
+							{
+								_drawSymbol = polygonSymbol;
+							}
+							break;
+						
+						case "ellipse":
+							_drawAction = DrawTool.ELLIPSE;
+							if ( !_drawSymbol )
+							{
+								_drawSymbol = polygonSymbol;
+							}
+							break;
+					}
+					setMapAction( _drawAction, null, _drawSymbol, map_drawEndHandler );*/
+				}
+			}
+			
+			private function appevent_widgetRunHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					_cursorId = map.cursorManager.setCursor(_crossCursor, CursorManagerPriority.MEDIUM, -8, -8);
+					map.addEventListener( MouseEvent.DOUBLE_CLICK, map_doubleClickHandler );
+//					setMapAction( _drawAction, null, _drawSymbol, map_drawEndHandler );
+				}
+			}
+			
+			private function appevent_widgetCloseHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					map.cursorManager.removeCursor( _cursorId );
+					map.removeEventListener( MouseEvent.DOUBLE_CLICK, map_doubleClickHandler );
+//					setMapAction( null, null, null, null );
+				}
+			}
+			
+			private var _lastDrawGraphic:Graphic;
+			
+			[Bindable]
+			private var _confirmWindow:MapClickConfirmWindow;
+			
+			private function map_drawEndHandler( event:DrawEvent ):void
+			{
+				_drawLayer.clear();
+				
+				_lastDrawGraphic = event.graphic;
+				_drawLayer.add( _lastDrawGraphic );
+				
+				var centerPoint:MapPoint = MapServiceUtil.getGeomCenter( _lastDrawGraphic );
+				var screenCenterPoint:Point = map.toScreen( centerPoint );
+				
+				if ( _showConfirmWindow )
+				{
+					if ( !_confirmWindow )
+					{
+						_confirmWindow = MapClickConfirmWindow( PopUpManager.createPopUp( 
+							this, MapClickConfirmWindow ) );
+						_confirmWindow.title = _confirmWindowTitle;
+						_confirmWindow.lblHintText.text = _confirmWindowText;
+						_confirmWindow.showBufferOption = _showBuffer;
+						_confirmWindow.btnCommit.addEventListener( MouseEvent.CLICK, 
+							confirmWindowCommitButton_clickHandler );
+						_confirmWindow.btnCancel.addEventListener( MouseEvent.CLICK, 
+							confirmWindowCancelButton_clickHandler )
+						_confirmWindow.txtDistance.addEventListener( KeyboardEvent.KEY_DOWN, 
+							confirmWindowDistanceText_keyDownHandler );
+					}
+					else
+					{
+						PopUpManager.addPopUp( _confirmWindow, this );
+					}
+					_confirmWindow.x = screenCenterPoint.x + 10;
+					_confirmWindow.y = screenCenterPoint.y + 10;
+					
+					if ( _showBuffer )
+					{
+						_confirmWindow.txtDistance.text = _bufferDistance.toString();
+						//画默认缓冲区
+						AppEvent.dispatch( AppEvent.DELETE_ALL_BUFFER );
+						AppEvent.dispatch( AppEvent.DRAW_BUFFER, 
+							{ 
+								geometry: _lastDrawGraphic.geometry, 
+								distance: _bufferDistance 
+							} 
+						);
+					}
+				}
+				
+				setMapAction( _drawAction, null, _drawSymbol, map_drawEndHandler );
+			}
+			
+			private function map_doubleClickHandler( event:MouseEvent ):void
+			{
+				_drawLayer.clear();
+				
+				var screenPoint:Point = new Point( event.stageX, event.stageY );
+				var mapPoint:MapPoint = map.toMap( screenPoint );
+				_lastDrawGraphic = new Graphic( mapPoint );
+				
+				if ( _showConfirmWindow )
+				{
+					if ( !_confirmWindow )
+					{
+						_confirmWindow = MapClickConfirmWindow( PopUpManager.createPopUp( 
+							this, MapClickConfirmWindow ) );
+						_confirmWindow.title = _confirmWindowTitle;
+						_confirmWindow.lblHintText.text = _confirmWindowText;
+						_confirmWindow.showBufferOption = _showBuffer;
+						_confirmWindow.btnCommit.addEventListener( MouseEvent.CLICK, 
+							confirmWindowCommitButton_clickHandler );
+						_confirmWindow.btnCancel.addEventListener( MouseEvent.CLICK, 
+							confirmWindowCancelButton_clickHandler )
+						_confirmWindow.txtDistance.addEventListener( KeyboardEvent.KEY_DOWN, 
+							confirmWindowDistanceText_keyDownHandler );
+					}
+					else
+					{
+						PopUpManager.addPopUp( _confirmWindow, this );
+					}
+					_confirmWindow.x = screenPoint.x + 10;
+					_confirmWindow.y = screenPoint.y + 10;
+					
+					if ( _showBuffer )
+					{
+						_confirmWindow.txtDistance.text = _bufferDistance.toString();
+						//画默认缓冲区
+						AppEvent.dispatch( AppEvent.DELETE_ALL_BUFFER );
+						AppEvent.dispatch( AppEvent.DRAW_BUFFER, 
+							{ 
+								geometry: _lastDrawGraphic.geometry, 
+								distance: _bufferDistance 
+							} 
+						);
+					}
+				}
+			}
+			
+			private function confirmWindowCommitButton_clickHandler( event:MouseEvent ):void
+			{
+				if ( _showBuffer )
+				{
+					var validationResultEvent:ValidationResultEvent = distanceValidator.validate();
+					if ( !validationResultEvent.results )
+					{
+						_bufferDistance = Number( _confirmWindow.txtDistance.text );
+//						_drawLayer.clear();
+						AppEvent.dispatch( AppEvent.DELETE_ALL_BUFFER );
+						PopUpManager.removePopUp( _confirmWindow );
+						sendCoornidate();
+					}
+				}
+				else
+				{
+//					_drawLayer.clear();
+					PopUpManager.removePopUp( _confirmWindow );
+					sendCoornidate();
+				}
+			}
+			
+			private function confirmWindowCancelButton_clickHandler( event:MouseEvent ):void
+			{
+				_drawLayer.remove( _lastDrawGraphic );
+				PopUpManager.removePopUp( _confirmWindow );
+//				_drawLayer.clear();
+				AppEvent.dispatch( AppEvent.DELETE_ALL_BUFFER );
+				setMapAction( _drawAction, null, _drawSymbol, map_drawEndHandler );
+			}
+			
+			private function confirmWindowDistanceText_keyDownHandler( event:KeyboardEvent ):void
+			{
+				if ( event.keyCode == 13 )
+				{
+					var validationResultEvent:ValidationResultEvent = distanceValidator.validate();
+					if ( !validationResultEvent.results )
+					{
+						_bufferDistance = Number( _confirmWindow.txtDistance.text );
+						AppEvent.dispatch( AppEvent.DELETE_ALL_BUFFER );
+						AppEvent.dispatch( AppEvent.DRAW_BUFFER, 
+							{ 
+								geometry: _lastDrawGraphic.geometry, 
+								distance: _bufferDistance 
+							} 
+						);
+					}
+				}
+			}
+			
+			/**调用js函数，发送用户绘制的图形*/
+			private function sendCoornidate():void
+			{
+				var dataObj:Object;
+				var dataString:String;
+				
+				var point:MapPoint = _lastDrawGraphic.geometry as MapPoint;
+				if ( _showBuffer )
+				{
+					//老版本接口
+					AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+						{
+							functionName: "locatePoint",
+							params: [ _type, point.x.toFixed( 6 ), point.y.toFixed( 6 ), _bufferDistance ]
+						} 
+					);
+					//新版本接口需要的数据
+					dataObj = { type: _type, bufferDistance: _bufferDistance, geometry: point };
+				}
+				else
+				{
+					//老版本接口
+					AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+						{
+							functionName: "locatePoint",
+							params: [ _type, point.x.toFixed( 6 ), point.y.toFixed( 6 ) ]
+						} 
+					);
+					//新版本接口需要的数据
+					dataObj = { type: _type, geometry: point };
+				}
+				
+				//新版本接口
+				dataString = JSON.stringify( dataObj );
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "addPointGeometry",
+						params: [ dataString ]
+					} 
+				);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:NumberValidator id="distanceValidator" source="{_confirmWindow.txtDistance}" property="text" />
+	</fx:Declarations>
+	
+	<!--<s:BorderContainer width="150" height="50" 
+					   borderColor="{getStyle('selectionColor')}" borderWeight="3" 
+					   backgroundAlpha="{getStyle('contentBackgroundAlpha')}">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle" horizontalAlign="center"/>
+		</s:layout>
+		
+		<s:Button id="btnDrawPoint" label="画点" width="50" click="btnDrawPoint_clickHandler(event)"/>
+	</s:BorderContainer>-->
+</TGISViewer:BaseWidget>

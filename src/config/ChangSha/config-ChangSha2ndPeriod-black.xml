@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<!-- 首页的地图 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor,applicationBackgroundColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC,0x000000</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<applicationbackgroundalpha>1</applicationbackgroundalpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>10.43.2.18:6080</arcgisserverip>
+
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+<!-- 	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml" -->
+<!-- 		url="widgets/Navigation/NavigationWidget.swf" /> -->
+
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 		config="widgets/Coordinate/CoordinateWidget.xml" url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" center="112.9894 28.185" scale="96000"
+		scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			
+		</basemaps>
+		<operationallayers>
+			<layer label="发布段" type="dynamic" visible="true"
+				url="http://{serverip}/arcgis/rest/services/changsha/changsha_fbd_noBorder/MapServer"/>
+		</operationallayers>
+	</map>
+</configuration>

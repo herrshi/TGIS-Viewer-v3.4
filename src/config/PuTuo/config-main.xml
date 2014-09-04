@@ -1,0 +1,335 @@
+<?xml version="1.0" ?>
+<!-- 普陀社会资源页面地图 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>15.152.17.108:8399</arcgisserverip>
+	
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+				   config="widgets/Navigation/NavigationWidget.xml"
+				   url="widgets/Navigation/NavigationWidget.swf" />
+	
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" initialextent="121.3151 31.2159 121.4531 31.3089"
+			   scalebarvisible="false" esrilogovisible="false"
+			   doubleclickzoomenabled="true">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true" 
+					   url="http://{serverip}/arcgis/rest/services/pt_base0/MapServer" />
+		</basemaps>
+		<operationallayers>
+<!-- 			<layer label="社会资源" type="dynamic" visible="true"  -->
+<!-- 					   url="http://{serverip}/arcgis/rest/services/pt_live/MapServer" > -->
+<!-- 				<sublayer id="2" popupconfig="popups/PuTuo/PopUp-SheHuiShiPin.xml"/> -->
+<!-- 				<sublayer id="3" popupconfig="popups/PuTuo/PopUp-GongAnShiPin.xml"/>	 -->
+<!-- 				<sublayer id="4" popupconfig="popups/PuTuo/PopUp-GaoQingKaKou.xml"/> -->
+<!-- 				<sublayer id="6" popupconfig="popups/PuTuo/PopUp-ShiChang.xml"/>	 -->
+<!-- 				<sublayer id="7" popupconfig="popups/PuTuo/PopUp-ATM.xml"/>	 -->
+<!-- 				<sublayer id="8" popupconfig="popups/PuTuo/PopUp-GongGongDianHua.xml"/>	 -->
+<!-- 				<sublayer id="9" popupconfig="popups/PuTuo/PopUp-XiaoFangShuan.xml"/>	 -->
+<!-- 				<sublayer id="11" popupconfig="popups/PuTuo/PopUp-JiaYouQiZhan.xml"/>	 -->
+<!-- 				<sublayer id="12" popupconfig="popups/PuTuo/PopUp-YiYuan.xml"/>		 -->
+<!-- 				<sublayer id="13" popupconfig="popups/PuTuo/PopUp-DaXingShangChang.xml"/>	 -->
+<!-- 				<sublayer id="14" popupconfig="popups/PuTuo/PopUp-JuWeiHui.xml"/>	 -->
+<!-- 				<sublayer id="16" popupconfig="popups/PuTuo/PopUp-JinYinShiPinDian.xml"/>	 -->
+<!-- 				<sublayer id="18" popupconfig="popups/PuTuo/PopUp-24hBianLiDian.xml"/> -->
+<!-- 				<sublayer id="19" popupconfig="popups/PuTuo/PopUp-XueXiao.xml"/>	 -->
+<!-- 				<sublayer id="20" popupconfig="popups/PuTuo/PopUp-YinHang.xml"/>	 -->
+<!-- 				<sublayer id="21" popupconfig="popups/PuTuo/PopUp-DianDangHang.xml"/>	 -->
+<!-- 				<sublayer id="23" popupconfig="popups/PuTuo/PopUp-JingWuShi.xml"/>	 -->
+<!-- 				<sublayer id="24" popupconfig="popups/PuTuo/PopUp-YouZheng.xml"/>	 -->
+<!-- 				<sublayer id="25" popupconfig="popups/PuTuo/PopUp-ZhengQuan.xml"/>		 -->
+<!-- 				<sublayer id="26" popupconfig="popups/PuTuo/PopUp-BaoXian.xml"/>	 -->
+<!-- 				<sublayer id="28" popupconfig="popups/PuTuo/PopUp-XiaoQu.xml"/>	 -->
+<!-- 				<sublayer id="32" popupconfig="popups/PuTuo/PopUp-DaSha.xml"/>		    -->
+<!-- 			</layer> -->
+			
+			<layer label="2" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/2" 
+				popupconfig="popups/PuTuo/PopUp-SheHuiShiPin.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/shsp.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="3" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/3" 
+				popupconfig="popups/PuTuo/PopUp-GongAnShiPin.xml">
+				
+				<classbreaksrenderer field="FX">
+					<classbreakinfo min="0" max="0">
+						<picturemarkersymbol url="assets/images/building/gasp0.png"/>
+					</classbreakinfo>
+					
+					<classbreakinfo min="292.5" max="337.4999">
+						<picturemarkersymbol url="assets/images/building/gasp1.png"/>
+					</classbreakinfo>
+					
+					<classbreakinfo min="337.5" max="360">
+						<picturemarkersymbol url="assets/images/building/gasp2.png"/>
+					</classbreakinfo>
+					
+					<classbreakinfo min="0.001" max="22.4999">
+						<picturemarkersymbol url="assets/images/building/gasp2.png"/>
+					</classbreakinfo>
+					
+					<classbreakinfo min="22.5" max="67.4999">
+						<picturemarkersymbol url="assets/images/building/gasp3.png"/>
+					</classbreakinfo>
+					
+					<classbreakinfo min="67.5" max="112.4999">
+						<picturemarkersymbol url="assets/images/building/gasp4.png"/>
+					</classbreakinfo>
+					
+					<classbreakinfo min="112.5" max="157.4999">
+						<picturemarkersymbol url="assets/images/building/gasp5.png"/>
+					</classbreakinfo>
+					
+					<classbreakinfo min="157.5" max="202.4999">
+						<picturemarkersymbol url="assets/images/building/gasp6.png"/>
+					</classbreakinfo>
+					
+					<classbreakinfo min="202.5" max="247.4999">
+						<picturemarkersymbol url="assets/images/building/gasp7.png"/>
+					</classbreakinfo>
+					
+					<classbreakinfo min="247.5" max="292.4999">
+						<picturemarkersymbol url="assets/images/building/gasp8.png"/>
+					</classbreakinfo>
+				</classbreaksrenderer>
+			</layer>
+			
+			<layer label="4" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/4" 
+				popupconfig="popups/PuTuo/PopUp-GaoQingKaKou.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/gqkk.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="6" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/6" 
+				popupconfig="popups/PuTuo/PopUp-ShiChang.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/sc.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="7" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/7" 
+				popupconfig="popups/PuTuo/PopUp-ATM.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/ATM.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="8" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/8" 
+				popupconfig="popups/PuTuo/PopUp-GongGongDianHua.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/ggdh.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="9" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/9" 
+				popupconfig="popups/PuTuo/PopUp-XiaoFangShuan.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/xfs.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="11" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/11" 
+				popupconfig="popups/PuTuo/PopUp-JiaYouQiZhan.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/jyqz.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="12" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/12" 
+				popupconfig="popups/PuTuo/PopUp-YiYuan.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/yy.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="13" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/13" 
+				popupconfig="popups/PuTuo/PopUp-DaXingShangChang.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/dxsc.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="14" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/14" 
+				popupconfig="popups/PuTuo/PopUp-JuWeiHui.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/jwh.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="16" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/16" 
+				popupconfig="popups/PuTuo/PopUp-JinYinShiPinDian.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/jyspd.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="18" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/18" 
+				popupconfig="popups/PuTuo/PopUp-24hBianLiDian.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/24xsbld.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="19" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/19" 
+				popupconfig="popups/PuTuo/PopUp-XueXiao.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/xx.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="20" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/20" 
+				popupconfig="popups/PuTuo/PopUp-YinHang.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/yh.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="21" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/21" 
+				popupconfig="popups/PuTuo/PopUp-DianDangHang.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/ddh.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="23" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/23" 
+				popupconfig="popups/PuTuo/PopUp-JingWuShi.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/jws.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="24" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/24" 
+				popupconfig="popups/PuTuo/PopUp-YouZheng.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/yz.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="25" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/25" 
+				popupconfig="popups/PuTuo/PopUp-ZhengQuan.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/zq.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="26" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/26" 
+				popupconfig="popups/PuTuo/PopUp-BaoXian.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/bx.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="28" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/28" 
+				popupconfig="popups/PuTuo/PopUp-XiaoQu.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/fbsxq.png"/>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="32" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pt_live/MapServer/32" 
+				popupconfig="popups/PuTuo/PopUp-DaSha.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/building/building.png"/>
+				</simplerenderer>
+			</layer>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="float">
+		<widget label="社会资源" right="20" top="20"
+				config="widgets/ControlPanel/PuTuo/TreeControlPanelWidget-SocialResource.xml"
+				url="widgets/ControlPanel/TreeControlPanelWidget.swf" />
+		
+		<widget label="视频资源"  right="20" top="20"
+				config="widgets/ControlPanel/PuTuo/TreeControlPanelWidget-VideoResource.xml"
+				url="widgets/ControlPanel/TreeControlPanelWidget.swf" />
+				
+		<widget label="图层过滤" preload="open" 
+				url="widgets/LayerSymbolFilter/LayerSymbolFilterWidget.swf"/>
+				
+		<widget label="房屋查询" 
+				config="widgets/Identify/PuTuo/IdentifyWidget.xml"
+				url="widgets/Identify/IdentifyWidget.swf" />
+		
+		<widget label="获取坐标"  preload="open"
+				config="widgets/GetDeviceCoordinate/PuTuo/GetDeviceCoordinateWidget.xml" 
+				url="widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.swf"/>
+		
+		<widget label="人口定位" preload="open" 
+				config="widgets/Overlay/PuTuo/PointOverlayWidget-people.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="地址定位" preload="open" 
+				config="widgets/Overlay/PuTuo/PointOverlayWidget-address.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
+	</widgetcontainer>
+	
+	<widgetcontainer layout="horizontal">
+		<widget label="搜索" preload="minimized" 
+				icon="assets/images/i_search.png"
+				config="widgets/MultiLayerSearch/PuTuo/MultiLayerSearchWidget-general.xml"
+				url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+	</widgetcontainer>
+</configuration>

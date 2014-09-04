@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<!-- 义乌绿波带 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>10.10.40.105:6080</arcgisserverip>
+
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"
+			url="widgets/Navigation/NavigationWidget.swf" />
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+	
+	<map top="0" initialextent="104.811941 26.568939 104.878356 26.615024"
+		 scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/LiuPanShui/lps_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="发布段" type="dynamic" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/LiuPanShui/lps_fbd_greenWave/MapServer"/>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="float">
+		<widget label="模拟移动" preload="open"
+				config="widgets/SimulationMovePoint/LiuPanShui/SimulationMovePointWidget-greenWaveBand.xml"
+				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
+		<widget label="绿波控制" preload="open" 
+				right="10" bottom="10"
+				icon="assets/images/i_servicearea.png"
+				config="widgets/GreenWaveBand/LiuPanShui/GreenWaveBandWidget-local.xml"
+				url="widgets/GreenWaveBand/GreenWaveBandWidget.swf"/>
+	</widgetcontainer>
+
+</configuration>

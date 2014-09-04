@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				implements="mx.managers.IFocusManagerComponent"
+				autoDrawBackground="false"
+				buttonMode="true"
+				useHandCursor="true"
+				focusEnabled="true" 
+				click="this_clickHandler(event)" 
+				dataChange="this_dataChangeHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			private const MENU_ITEM_CLICK:String = "menuItemClick";
+			private const MENU_ITEM_MOUSE_OVER:String = "menuItemMouseOver";
+			private const MENU_ITEM_MOUSE_OUT:String = "menuItemMouseOut";
+			
+			[Bindable]
+			private var _menuItem:MenuItem;
+			
+			protected function this_dataChangeHandler(event:FlexEvent):void
+			{
+				_menuItem = data as MenuItem;
+				itemLabel.text = _menuItem.label;
+			}
+			
+			protected function this_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent( new Event( MENU_ITEM_CLICK, true ) );
+			}
+			
+			protected function itemLabel_rollOverHandler(event:MouseEvent):void
+			{
+				dispatchEvent( new Event( MENU_ITEM_MOUSE_OVER, true ) );
+			}
+			
+			protected function itemLabel_rollOutHandler(event:MouseEvent):void
+			{
+				dispatchEvent( new Event( MENU_ITEM_MOUSE_OUT, true ) );
+			}
+			
+			override public function drawFocus(isFocused:Boolean):void
+			{
+				super.drawFocus(isFocused);
+				
+				// Popup the tooltip or remove the menu
+				if (isFocused)
+				{
+					itemLabel_rollOverHandler(null);
+				}
+				else
+				{
+					itemLabel_rollOutHandler(null);
+				}
+			}
+			
+			private var keyboardPressed:Boolean = false;
+			
+			override protected function keyDownHandler(event:KeyboardEvent):void
+			{
+				if (event.keyCode != Keyboard.SPACE)
+				{
+					return;
+				}
+				
+				keyboardPressed = true;
+				event.updateAfterEvent();
+			}
+			
+			override protected function keyUpHandler(event:KeyboardEvent):void
+			{
+				if (event.keyCode != Keyboard.SPACE)
+				{
+					return;
+				}
+				
+				if (enabled && keyboardPressed)
+				{
+					// Mimic mouse click on the button.
+					keyboardPressed = false;
+					dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+				}
+				event.updateAfterEvent();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:VGroup height="25" gap="2" horizontalAlign="center">
+		<s:Label id="itemLabel" 
+				 fontWeight="bold" color="0xffffff"
+				 rollOver="itemLabel_rollOverHandler(event)" 
+				 rollOut="itemLabel_rollOutHandler(event)"/>
+		<!-- 向下的箭头 -->
+		<s:Graphic>
+			<s:Group>
+				<s:Path data="m 3 0 l -6 0 l 3 7 z">
+					<s:fill>
+						<s:SolidColor alpha="1" color="0xffffff"/>
+					</s:fill>
+				</s:Path>
+			</s:Group>
+		</s:Graphic>
+	</s:VGroup>
+</s:ItemRenderer>

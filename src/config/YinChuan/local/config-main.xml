@@ -1,0 +1,96 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+	
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"
+				   url="widgets/Navigation/NavigationWidget.swf" />
+
+	<map top="0" center="106.272498 38.468222" scale="24000"
+		 	   scalebarvisible="false" esrilogovisible="false"
+		 	   doubleclickzoomenabled="true">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+					   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="发布段" type="dynamic" visible="true"
+					   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_fbd/MapServer">
+				<sublayer id="0" popupconfig="popups/YinChuan/Popup-fbd.xml"/>	   
+			</layer>
+			
+			<layer label="车检器" type="feature" visible="false"
+					   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_device/FeatureServer/1"
+					   popupconfig="popups/YinChuan/PopUp-cjq.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/DuanMian-grey.png"
+										 				   height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/DuanMian-blue.png"
+											 				   height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/DuanMian-red.png"
+											 				   height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/DuanMian-yellow.png"
+											 				   height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="情报板" type="feature" visible="false"
+					   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_device/FeatureServer/0"
+					   popupconfig="popups/YinChuan/PopUp-qbb.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-grey.png"
+										 				   height="26" width="22" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-blue.png"
+											 				   height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-red.png"
+											 				   height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-yellow.png"
+											 				   height="26" width="22" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="ControlPanel" preload="open" right="20" bottom="20"
+					   config="widgets/ControlPanel/YinChuan/IconControlPanelWidget-main.xml"
+					   url="widgets/ControlPanel/IconControlPanelWidget.swf" />
+	</widgetcontainer>
+	
+	
+</configuration>

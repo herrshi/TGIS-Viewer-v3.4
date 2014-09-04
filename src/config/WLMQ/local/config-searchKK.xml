@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+				 config="widgets/Navigation/NavigationWidget.xml"
+				 url="widgets/Navigation/NavigationWidget.swf" />
+		    
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" initialextent="" 
+			 scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+					  url="http://{serverip}/arcgis/rest/services/wlmq/wlmq_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="卡口" type="feature" visible="true" autorefresh="0"
+					   url="http://{serverip}/arcgis/rest/services/wlmq/wlmq_device/MapServer/4"
+					   popupconfig="popups/WLMQ/PopUp-KaKou.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13" />
+				</simplerenderer>
+			</layer>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontianer layout="float">
+		
+	</widgetcontianer>
+	
+	<widgetcontainer layout="horizontal">
+		<widget label="卡口选择" preload="open"
+				icon="assets/images/i_search.png"
+				config="widgets/MultiLayerSearch/WLMQ/MultiLayerSearchWidget-kk.xml"
+				url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+	</widgetcontainer>
+
+</configuration>

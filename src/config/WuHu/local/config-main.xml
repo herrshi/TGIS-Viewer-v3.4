@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+	
+	<socketinfo enable="true">
+		<!-- 接收安全策略文件 -->
+		<securitysocketip>128.64.25.42</securitysocketip>
+		<securitysocketport>6000</securitysocketport>
+		<!-- 接收数据 -->
+		<datasocketip>128.64.25.42</datasocketip>
+		<datasocketport>6001</datasocketport>
+	</socketinfo>
+
+	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget  right="10" top="10" 
+				 config="widgets/Navigation/NavigationWidget.xml"
+				 url="widgets/Navigation/NavigationWidget.swf" />
+		    
+	<widget left="3" bottom="3"
+			config="widgets/Coordinate/CoordinateWidget.xml" 
+			url="widgets/Coordinate/CoordinateWidget.swf" />
+
+    <widget right="0" bottom="0"
+			config="widgets/OverviewMap/OverviewMapWidget.xml" 
+			url="widgets/OverviewMap/OverviewMapWidget.swf" />
+	
+			
+	 <widget left="150" top="10"
+			config="widgets/CarTrack/YiXing/CarTrackWidget-YiXing.xml" 
+			url="widgets/CarTrack/CarTrackWidget.swf" />
+	
+	
+			
+	<map top="83"  left="265" center="118.417947 31.337093" scale="24000"
+			 scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+					  url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base/MapServer" />
+		</basemaps>
+		
+		<operationallayers>
+			<layer label="信号机" type="feature" visible="false" autorefresh="0"
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/0"
+				   popupconfig="popups/WuHu/PopUp-XHJ.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-blue.png" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-red.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-yellow.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="摄像机" type="feature" visible="false" autorefresh="0"
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/1"
+				   popupconfig="popups/WuHu/PopUp-XHJ.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-red.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-yellow.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="float">
+<!-- 		<widget label="气象站" preload="open" -->
+<!-- 			config="widgets/Overlay/WuHu/PointOverlayWidget-QiXiangZhan.xml"  -->
+<!-- 			url="widgets/Overlay/PointOverlayWidget.swf"/> -->
+			
+		<widget label="警情" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-policeEvent.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+
+
+	</widgetcontainer>
+	
+	<widgetcontainer layout="fix">
+		<widget label="ControlPanel" preload="open" right="20" bottom="20"
+				config="widgets/ControlPanel/WuHu/IconControlPanelWidget-main.xml"
+				url="widgets/ControlPanel/IconControlPanelWidget.swf"/>
+	</widgetcontainer>
+
+</configuration>

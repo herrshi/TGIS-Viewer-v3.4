@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+		 xmlns:ControlPanel="widgets.ControlPanel.*"
+		 creationComplete="this_creationCompleteHandler(event)" 
+		 widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" xmlns:ListControlPanel="widgets.ControlPanel.ListControlPanel.*" >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.components.supportClasses.ItemRenderer;
+			
+			[Bindable]
+			private var _menuItemAC:ArrayCollection;
+			
+			[Bindable]
+			private var _menuListItemAC:ArrayCollection;
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				_menuItemAC = new ArrayCollection();
+				_menuListItemAC = new ArrayCollection();
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					var configListMenuItems:Array = [];
+					
+					//先从配置文件中读取所有的菜单项，每个菜单项一个对象
+					var menuXML:XML = configXML.menu[0];
+					for ( var i:uint = 0; i < menuXML.children().length(); i++ )
+					{
+						var menuItemXML:XML = menuXML.children()[ i ];
+						if ( menuItemXML.name() == "itemgroup" )
+						{
+							var itemGroupXMLList:XMLList = XMLList( menuItemXML );
+							createMenuItem(  itemGroupXMLList.item, true, itemGroupXMLList.item.length(), itemGroupXMLList.@label );
+						}
+						else
+						{
+							var itemXMLList:XMLList = XMLList( menuItemXML );
+							createMenuItem( itemXMLList, false );
+						}
+					}
+					
+					//整理菜单项，每个顶级菜单项一个对象，结果绑定到listMenuItemDataGroup
+					var menuItem:MenuItem;
+					for ( i = 0; i < configListMenuItems.length; )
+					{
+						//有子菜单
+						if ( configListMenuItems[ i ].grouped )
+						{
+							var groupMenuItemArray:Array = [];
+							
+							var groupLength:uint = configListMenuItems[ i ].groupLength;
+							for ( var j:uint = 0; j < groupLength; j++ )
+							{
+								groupMenuItemArray.push( 
+									{ 
+										menuItem: configListMenuItems[ i + j ], 
+										open: false 
+									} 
+								);
+							}
+							
+							menuItem = new MenuItem();
+							menuItem.isGroup = true;
+							menuItem.label = configListMenuItems[ i ].groupLabel;
+							menuItem.groupMenuItems = groupMenuItemArray;
+							
+							_menuItemAC.addItem( menuItem );
+							
+							//移到下一组group
+							i += groupLength;
+						}
+						else
+						{
+							menuItem = new MenuItem();
+							menuItem.isGroup = false;
+							menuItem.label = configListMenuItems[ i ].label;
+							menuItem.open = false;
+							
+							_menuItemAC.addItem( menuItem );
+							
+							i++;
+						}
+					}
+					
+					function createMenuItem( itemList:XMLList, grouped:Boolean, groupLength:uint = 0, groupLabel:String = "" ):void
+					{
+						for each ( var itemXML:XML in itemList )
+						{
+							var label:String = itemXML.@label;
+							var configItemObj:Object = 
+								{ 
+									grouped: grouped,
+									groupLength: groupLength,
+									groupLabel: groupLabel,
+									label: label
+								};
+							configListMenuItems.push( configItemObj );
+						}
+					}
+				}
+			}
+			
+			protected function menuItemDG_listMenuItemClickHandler(event:Event):void
+			{
+				var menuItem:MenuItem = ItemRenderer( event.target ).data as MenuItem;
+				if ( menuItem.isGroup )
+				{
+					_menuListItemAC = new ArrayCollection();
+					for each ( var menuObj:Object in menuItem.groupMenuItems )
+					{
+						var groupMenuItem:MenuItem = new MenuItem();
+						
+					}
+				}
+				else
+				{
+					menuItem.open = !menuItem.open;
+				}
+			}
+			
+			[Bindable]
+			private var xOver:int;
+			
+			protected function menuItemDG_listMenuItemMouseOutHandler(event:Event):void
+			{
+				
+			}
+			
+			protected function menuItemDG_listMenuItemMouseOverHandler(event:Event):void
+			{
+				var pointGlobal:Point = ItemRenderer( event.target) .localToGlobal( new Point( 0, 0 ) );
+				var pointLocal:Point = menuGroup.globalToLocal( pointGlobal ); // get the local coordinates where the menuItem will be shown
+				xOver = pointLocal.x;
+				
+				menuListContainer.visible = false;
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Group id="menuGroup">
+		<s:Rect width="100%" height="100%"
+				alpha="1">
+			<s:fill>
+				<s:SolidColor color="0x5f6267"/>
+			</s:fill>
+		</s:Rect>
+		
+		<ListControlPanel:MenuItemDataGroup id="menuItemDG" 
+											width="100%" 
+											horizontalCenter="0"
+											dataProvider="{_menuItemAC}" 
+											menuItemClick="menuItemDG_listMenuItemClickHandler(event)" 
+											menuItemMouseOver="menuItemDG_listMenuItemMouseOverHandler(event)"
+											menuItemMouseOut="menuItemDG_listMenuItemMouseOutHandler(event)" >
+			<ListControlPanel:layout>
+				<s:HorizontalLayout gap="12"
+									horizontalAlign="center"
+									useVirtualLayout="true"
+									verticalAlign="middle" 
+									paddingLeft="10" paddingRight="10" 
+									paddingTop="10" paddingBottom="5"/>
+			</ListControlPanel:layout>
+		</ListControlPanel:MenuItemDataGroup>
+		
+		<s:BorderContainer id="menuListContainer" 
+						   x="{xOver + 4 - menuListDG.width/2}" y="{menuItemDG.height}"
+						   width="{menuListDG.width+4}" height="{menuListDG.height+2}"
+						   backgroundColor="{getStyle('contentBackgroundColor')}"
+						   borderColor="{getStyle('color')}"
+						   borderVisible="true"
+						   cornerRadius="3" 
+						   visible="false">
+			<ListControlPanel:MenuListDataGroup id="menuListDG" 
+												dataProvider="{_menuListItemAC}"
+												width="150" 
+												focusEnabled="false" tabChildren="true">
+				<ListControlPanel:layout>
+					<s:VerticalLayout paddingTop="6"
+									  useVirtualLayout="true"
+									  verticalAlign="middle"/>
+				</ListControlPanel:layout>
+			</ListControlPanel:MenuListDataGroup>
+		</s:BorderContainer>
+	</s:Group>
+	
+</TGISViewer:BaseWidget>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2010-2011 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<!---
+@private
+-->
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:esri="http://www.esri.com/2008/ags">
+
+    <fx:Metadata>
+        [HostComponent("cn.seisys.TGISViewer.managers.MapManager")]
+    </fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			import cn.seisys.TGISViewer.AppEvent;
+			
+			protected function btnTest1_clickHandler(event:MouseEvent):void
+			{
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"importantClient","points":[{"id":"55","x":106.5848028,"y":29.56924,"fields":{"name":"重庆市规划展览馆","unitType":"直供直管","area":"渝中区","profession":"公共事业","accessPoint":"朝天门开闭所614,朝天门开闭所621"}},{"id":"56","x":106.5478472,"y":29.56554,"fields":{"name":"重庆市委","unitType":"直供直管","area":"渝中区","profession":"党政机关","accessPoint":"市委开闭所614开关,市委开闭所623开关"}}]}' );
+//				AppEvent.dispatch( AppEvent.LOCATOR_MAP_BY_NAME, "渝中区" );
+				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "设施设备",
+						layerIds: "27",
+						visible: true
+					} 
+				);*/
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"building", "points":[{"id":"A70210054", "x":"121.40131","y":"31.25625","fields":{"buildingType":"社会视频","direction":"0","police":"真如派出所","buildName":"上海天月浴室"}}]}' );
+//				AppEvent.dispatch( AppEvent.DRAW_BUFFER, { geometry: new MapPoint( 121.3833, 31.2624 ), distance: 500 } );
+
+//				AppEvent.dispatch( AppEvent.SET_RELATE_XHD, "1,2,3,4,5" );
+//				AppEvent.dispatch( AppEvent.BUFFER_SEARCH, { type:"event", id: "11", point: new MapPoint( 121.378389, 31.271251 ), distance: 500 } );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"badweather","points":[{"id":"600031001","x":112.95393363799996,"y":28.142063682000014,"fields":{"type":"","locationDescription":"","area":"","affectDescription":"","remark":""}}]}' );
+//				AppEvent.dispatch( AppEvent.GET_SIM_MOVE_POINT_CURRENT_POINT, "1" );
+
+				/*AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_START, 
+					{ 
+						id:"1", 
+						speed:"40", 
+						route:'{"paths":[[[120.031752,29.318386],[120.034350,29.308507],[120.038091,29.300940]],[[120.052110,29.321170],[120.051539,29.317286],[120.051939,29.314716]]]}' 
+					} 
+				);*/
+//				AppEvent.dispatch( AppEvent.SHOW_TRAVEL_TIME, '{"startPoint":{"x":120.322009,"y":31.51022,"name":"无锡市政府"},"endPoints":[{"x":120.317669,"y":31.579332,"pointName":"金城高架-贡湖大道","lineText":"距离: 5km<br>时间: 10min"},{"x":120.410868,"y":31.597596,"pointName":"高浪大桥","lineText":"距离: 12km<br>时间: 16min"},{"x":120.427315,"y":31.533633,"pointName":"无锡新区站","lineText":"距离: 21km<br>时间: 20min"}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"kkAlert","points":[{"id":"600031001","x":112.95393363799996,"y":28.142063682000014}]}' );
+//				AppEvent.dispatch( AppEvent.GET_DEVICE_COORDINATE, '{"type":"居委会","DeviceList":["07101014"]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"publicbus-currpos","points":[{"id":"11","x":13110442.569735,"y":4747188.861513}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_TEXTS, '{"type":"GongJiaoCheText","texts":[{"id":"102","text":"这是一个测试","position":{"x":13110442.569735,"y":4747188.861513}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_LINES, '{"type":"travelTimeLine","lines":[{"id":"1","line":{"paths":[[[120.322009,31.51022],[120.427315,31.533633]]]}}]}');
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeEvent","points":[{"id":45,"x":112.936783,"y":28.229695,"fields":{"caseId":"45","callPoliceTime":"2013-08-15 11:47:25","occurPlace":"岳麓大道(银北->金星路)","content":"拥堵测试"}},{"id":46,"x":112.970212,"y":28.185228,"fields":{"caseId":"46","callPoliceTime":"2013-08-15 11:47:25","occurPlace":"岳麓大道(银北->金星路)","content":"拥堵测试"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"fields":{"policeSn":"12786","dutyName":"副主任科员","highlight":"true","departmentName":"交警支队","policeName":"陈科"},"id":"12786","x":112.98639678955078,"y":28.187299728393555},{"fields":{"policeSn":"12479","dutyName":"副主任科员","highlight":"false","departmentName":"交警支队","policeName":"陈剑锋"},"id":"12479","x":112.9894027709961,"y":28.184999465942383}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeCar","points":[{"fields":{"policeCarId":"2","departmentName":"天心大队","plateNo":"沪A654321","gpsState":""},"id":"2","x":112.9364013671875,"y":28.187299728393555},{"fields":{"policeCarId":"1","departmentName":"芙蓉大队","plateNo":"沪A123456","gpsState":""},"id":"1","x":112.92939758300781,"y":28.184999465942383}]}' );
+//				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "police" );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"block","points":[{"id":45,"x":112.936783,"y":28.229695,"fields":{"statusDesc":"拥挤","statusUpdateTime":"2013-08-15 11:47:25","statusLastedMinutes":"0天2小时35分钟","speed":"10-20(公里/小时)","queueLength":"1000(米)","reason":"一般拥堵","description":"拥堵测试","issueSect":"岳麓大道(银北->金星路)","status":"1","isNotification":false}}]}' );
+				/*AppEvent.dispatch( AppEvent.SET_LAYER_FILTER_DEFINITION, 
+					{ 
+						serviceName: "", 
+						layerIds: "2", 
+						whereClause: "PCS='白玉派出所'" 
+					} 
+				);*/
+//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "社会资源" );
+//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "视频资源" );
+				/*MapUtil.forEachMapLayer(map, function(layer:Layer):void
+				{
+					if ( layer.visible )
+					{
+						if ( layer is FeatureLayer )
+						{
+							var featurelayer:FeatureLayer = layer as FeatureLayer;
+							for each ( var graphic:Graphic in featurelayer.graphicProvider )
+							{
+								for ( var name:String in graphic.attributes )
+								{
+									trace( "name: " + name + " value: " + graphic.attributes[name] );
+								}
+							}
+						}
+						else if ( layer is ArcGISDynamicMapServiceLayer )
+						{
+							var dynamiclayer:ArcGISDynamicMapServiceLayer = layer as ArcGISDynamicMapServiceLayer;
+						}
+					}
+					
+					if ( layer is ArcGISDynamicMapServiceLayer )
+					{
+						var dynamicLayer:ArcGISDynamicMapServiceLayer = layer as ArcGISDynamicMapServiceLayer;
+						for each ( var layerInfo:LayerInfo in dynamicLayer.layerInfos )
+						{
+							dynamicLayer.visibleLayers.addItem( layerInfo.layerId );
+						}
+					}
+				});*/
+				//测试加1000个点
+				/*var pointArray:Array = [];
+				for ( var i:uint = 0; i < 10; i++ )
+				{
+					for ( var j:uint = 0; j < 10; j++ )
+					{
+						var x:Number = 120.1464 + i / 1000;
+						var y:Number = 31.6398 - j / 1000;
+						var id:Number = i*10+j;
+						var pointObj:Object = 
+							{ 
+								id: id, 
+								x: x, 
+								y: y,
+								fields: 
+								{ 
+									名称: "信号机", 
+									编号: id, 
+									title: "信号机" + id
+								}, 
+								showMoveButton: true, 
+								showDeleteButton: true 
+							};
+						pointArray.push( pointObj );
+					}
+					
+				}
+				
+				var dataObj:Object = { type: "信号机", points: pointArray };
+				var dataString:String = JSON.stringify( dataObj );
+				AppEvent.dispatch( AppEvent.ADD_POINTS_BY_PAGE, dataString );*/
+				
+
+//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "房屋查询" );
+
+//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "添加岗点" );
+
+//				AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, "policeSentry" );
+				
+				//天津测试
+//				AppEvent.dispatch( AppEvent.ADD_POLYGONS, '{"type":"issuesect","polygons":[{"id":"500010","geometry":{"rings":[[[13110149.9266,4741771.5144],[13110174.9204,4741734.3772],[13109924.1976,4741543.4572],[13109733.132,4741455.0654],[13109711.9653,4741498.9863],[13109887.5936,4741574.3888],[13109894.2026,4741578.8093],[13110149.9266,4741771.5144]]]},"fields":{"name":"中新大道经八路路口至中泰大道","desc":"中新大道经八路路口至中泰大道","status":"free"}},{"id":"500021","geometry":{"rings":[[[13109232.8867,4741232.7212],[13108916.6428,4741002.2687],[13108884.8928,4741053.0688],[13109211.72,4741279.0234],[13109232.8867,4741232.7212]]]},"fields":{"name":"中新大道经七路（南）路口至经六路","desc":"中新大道经七路（南）路口至经六路","status":"free"}},{"id":"500006","geometry":{"rings":[[[13108331.0306,4740246.6172],[13108371.7509,4740218.9317],[13108244.7616,4740125.6055],[13108203.1929,4740102.4953],[13108016.9891,4740019.0192],[13107991.4433,4740060.5431],[13108182.2609,4740150.0341],[13108219.6866,4740173.5071],[13108331.0306,4740246.6172]]]},"fields":{"name":"中新大道和顺路路口至和意路","desc":"中新大道和顺路路口至和意路","status":"free"}},{"id":"500024","geometry":{"rings":[[[13107451.71,4739771.141],[13107698.6872,4739967.4832],[13107757.5855,4740001.9654],[13107848.3793,4740048.9879],[13107880.3182,4740007.6263],[13107786.9392,4739962.2112],[13107715.0461,4739914.6737],[13107510.7798,4739740.1816],[13107451.71,4739771.141]]]},"fields":{"name":"中新大道和顺路路口至中生大道","desc":"中新大道和顺路路口至中生大道","status":"free"}},{"id":"500004","geometry":{"rings":[[[13107559.4631,4739693.6149],[13107135.2923,4739382.0656],[13107103.0322,4739419.8402],[13107510.7798,4739740.1816],[13107559.4631,4739693.6149]]]},"fields":{"name":"中新大道和旭路路口至中生大道","desc":"中新大道和旭路路口至中生大道","status":"free"}}]}' );
+//				AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, "station" );
+//				AppEvent.dispatch( AppEvent.ADD_LINES, '{"type":"bustrack","lines":[{"id":"4","line":{"paths":[[[13107411.416914,4736595.529686],[13107411.416914,4736593.340771],[13107411.416914,4736593.340771],[13107405.471811,4736599.907517],[13107403.773211,4736593.340771],[13107402.07461,4736593.340771],[13107361.308195,4736573.640559],[13107355.363093,4736578.018381],[13107355.363093,4736575.82947],[13107250.049854,4736637.119158],[13107101.422299,4736746.565954],[13107007.149964,4736814.423562],[13107008.848565,4736812.2346],[13106889.946521,4736746.565954],[13106836.440601,4736685.275602],[13106686.114445,4736523.295747],[13106528.144587,4736580.207292],[13106388.859335,4736777.211269],[13106465.296364,4737011.432103],[13106543.431993,4737114.315866],[13106545.130593,4737116.504893],[13106641.101529,4737245.658361],[13106670.82704,4737282.872379],[13106720.935758,4737350.733586],[13106723.483659,4737359.489904],[13106810.112291,4737473.322729],[13106889.946521,4737556.509065],[13107010.547165,4737659.398375],[13107112.463203,4737790.747951],[13107140.490113,4737841.099075],[13107138.791513,4737843.28826],[13107062.354485,4737943.99128],[13106929.014335,4738138.832582],[13106925.617134,4738154.157338],[13106910.329728,4738248.295635],[13106908.631128,4738259.242005],[13106914.57623,4738412.492436],[13106977.424453,4738493.497173],[13107126.052008,4738620.478879],[13107182.955129,4738664.266044],[13107182.955129,4738664.266044],[13107190.598832,4738795.628677],[13107112.463203,4738916.045923],[13107049.61498,4739010.191315],[13106999.506261,4739080.253571],[13106943.452441,4739154.69525],[13106943.452441,4739161.26366],[13106821.153195,4739266.358796],[13106719.237158,4739353.938911],[13106669.128439,4739386.78165],[13106518.802284,4739540.049176],[13106478.035868,4739780.90284],[13106576.554705,4739967.020966],[13106760.003573,4740065.555479],[13106764.250074,4740067.745146],[13106861.91961,4740072.124481],[13106932.411536,4739982.348494],[13106808.413691,4739890.383676],[13106656.388934,4739723.973274],[13106687.813046,4739603.546403],[13106725.18226,4739533.48052],[13106656.388934,4739393.350211],[13106678.470743,4739371.455025],[13106748.962669,4739312.338262],[13106834.742,4739244.463886],[13106919.672032,4739167.832074]]]}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"stationStart","points":[{"id":"102","x":"117.7491361","y":"39.1196442","fields":{"name":"和畅路-中生大道-和顺路","id":"1089","address":"aasdfasdfasdf"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"stationEnd","points":[{"id":"72","x":"117.74461","y":"39.10428","fields:{"name":"永定洲公交站","id":"37713","address":"null"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"publicbus-currpos","points":[{"id":"798","x":"117.74588","y":"39.104107","fields":{"time":"2014-05-04 09:30:18","name":"无"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"schoolbus-currpos","points":[{"id":"102","x":"117.7491361","y":"39.1196442","fields":{"time":"2014-05-04 09:22:32","name":"津A12345"}}]}' );
+				
+				//乌鲁木齐测试
+//				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"新A88888","kkPoints":[{"deviceId":"650100100239","deviceDesc":"天区 光明路（北门环岛）西→东","passTime":"2014-06-04 22:19:18","picUrl":""}]}' );
+				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"新A88888","kkPoints":[{"deviceId":"650100100239","deviceDesc":"天区 光明路（北门环岛）西→东","passTime":"2014-06-04 22:19:18","picUrl":""},{"deviceId":"650100100050","deviceDesc":"天区 西河街（西向东单行）西→东","passTime":"2014-06-05 22:19:18","picUrl":""},{"deviceId":"650100100169","deviceDesc":"天区 中山路（新华路 - 和河滩南路）东→西","passTime":"2014-06-06 22:19:18","picUrl":""}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"sjjc","points":[{"id":"55","x":87.605499,"y":43.792701,"fields":{"eventid":"55","deviceid":"CE001","pos":"中山路（东向西单行）","region":"1天区","status":"异常"}}]}' );
+//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "ODOverlay" );
+//				AppEvent.dispatch( AppEvent.ADD_LINES, '{"type":"od","lines":[{"id":"4","fields":{"flowRate":90},"geometry":{"paths":[[[87.5856,43.823612],[87.595879,43.824297]]]}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_TEXTS, '{"type":"odStart","texts":[{"id":"1","text":"99","position":{"x":87.639046,"y":43.831502}}] }' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"odStart","points":[{"id":"1","x":87.5856,"y":43.823612}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"odEnd","points":[{"id":"1","x":87.595879,"y":43.824297}]}' );
+				
+				//无锡测试
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeEvent","points":[{"x":120.2657,"y":31.61856,"id":"J3202140506102191952","fields":{"fdtTime":"2014-05-06 10:21:58","caseLocation":"","caseContent":"两车相撞","caseLevel":"","caseType":""}}]}' );
+//				AppEvent.dispatch( AppEvent.SET_SEARCH_GEOMETRY, '{"geometry":{"rings":[[[120.28621671963847,31.566687790279886],[120.31477025170844,31.56280450991837],[120.30837426052477,31.543388108110793],[120.29284113907872,31.529225556204093],[120.27548059158018,31.542017538571436],[120.28621671963847,31.566687790279886]]]}}' );
+//				AppEvent.dispatch( AppEvent.SET_SEARCH_GEOMETRY, '{"geometry":{"ymin":31.6164851502099,"xmax":120.28621671963847,"xmin":120.25286619418077,"ymax":31.627678134781327}}' );
+				
+				//六盘水测试
+//				AppEvent.dispatch( AppEvent.GET_DEVICE_COORDINATE, '{"type":"摄像机","DeviceList":["52020114001322020006"]}' );
+//				AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, "policeSentry" );
+//				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"贵BU0051","kkPoints":[{"deviceId":"djkk11","deviceDesc":"凤凰大道-水西路","passTime":"2014-07-22 09:19:03","picUrl":""},{"deviceId":"djkk11","deviceDesc":"凤凰大道-水西路","passTime":"2014-07-22 09:19:16","picUrl":""},{"deviceId":"djkk31","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""}]}' ); 
+//				AppEvent.dispatch( AppEvent.GUARD_SET_DEVICE_SEARCH_DISTANCE, '[{"type":"摄像机","distance":500},{"type":"信号机","distance":100}]' );
+//				AppEvent.dispatch( AppEvent.GUARD_SHOW_GEOMETRY, '[{"jobId":"1","geometries":[{"geometry":{"paths":[[[104.82753544368516,26.605192984571427],[104.83929949889798,26.592629430460643],[104.84478177705541,26.600281777055393],[104.84638077485134,26.59422842825656]]]},"type":"esriGeometryPolyline","index":0}]}]' );
+//				AppEvent.dispatch( AppEvent.GUARD_SHOW_DEVICE, '[{"jobId":"1","devices": [{"type":"信号机","index":1,"id":"GMVDT66","desc":"人民路（西）","x":104.84551666700004,"y":26.59183333300001},{"type":"摄像机","index":1,"id":"1932","desc":"松坪北路曾家烙锅西小巷","x":104.838306,"y":26.59388899999999},{"type":"policeSentry","index":1,"id":"373AC306-EAED-2A64-60D0-67CA7A2CE5DC","desc":"gd1","x":104.83290350771429,"y":26.600395991183678},{"type":"policeSentry","index":2,"id":"81D31191-21B2-81F9-05B0-67CAAC9BE604","desc":"gd2","x":104.83838578587173,"y":26.59125886092129}]}]' );				
+				
+				//长沙测试
+//				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"湘B17628","kkPoints":[{"deviceId":"KK006","deviceDesc":"湘江大道/湘春路","passTime":"2013-12-29 13:26:00","picUrl":""},{"deviceId":"630011100","deviceDesc":"芙蓉路与城南路交叉路口","passTime":"2013-12-29 13:43:32","picUrl":""},{"deviceId":"630011100","deviceDesc":"芙蓉路与城南路交叉路口","passTime":"2013-12-29 14:07:04","picUrl":""},{"deviceId":"KK011","deviceDesc":"湘江大道/中山路","passTime":"2013-12-29 15:17:09","picUrl":""},{"deviceId":"600031001","deviceDesc":"韶山路与解放路交叉路口","passTime":"2013-12-30 14:37:42","picUrl":""},{"deviceId":"KK002","deviceDesc":"湘江大道/人民路口","passTime":"2013-12-30 14:45:38","picUrl":""},{"deviceId":"KK002","deviceDesc":"湘江大道/人民路口","passTime":"2013-12-30 15:14:22","picUrl":""},{"deviceId":"KK063","deviceDesc":"营盘路/蔡锷路","passTime":"2014-05-18 19:07:37","picUrl":""}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_GPS_TRACK, '{"type":"gpsPoliceTrack","id":"123","speed":"120","points":[{"time":"2013-10-29 09:33:00","x":112.89006,"y":28.220048},{"time":"2013-10-29 09:34:21","x":112.924842,"y":28.211596},{"time":"2013-10-29 09:35:21","x":112.940832,"y":28.192408},{"time":"2013-10-29 09:36:21","x":112.966416,"y":28.179845}]}' );
+				
+				//芜湖测试
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QiXiangZhan","points":[{"x":118.566158,"y":31.146213,"id":"QiXiangZhan1","fields":{}}]}' );
+			
+				
+				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeEvent","points":[{"x":118.2028,"y":31.09213,"id":"event001","fields":{}},{"x":118.58158,"y":31.14213,"id":"event002","fields":{}}]}' );
+				AppEvent.dispatch( AppEvent.SET_POLICE_EVENT_DATA ,'[ {"id": "event004","title": "交通警情-道路交通警情-机动车与非机动车","image": " ", "level": 1,"time": "2014-07-22 15:35","interaction119":"联动119", "interaction110":"联动110", "interaction120":"联动120", "interactionContent":"有危险品", "source": "122电话报警","content": "小汽车驶入非机动车道撞上电动车，发生擦挂事件","location": "锦江区锦华路100号万特欢乐世界正门口","deatCount": 0,"injuredCount": 3,"trappedCount": 5,"fields": {"报警人": "李四 男 138 8888 8888","涉案人": "张三 男 137 7777 7777"},"actions": "上报,回退,派警,结案,回访","logs": "2014-07-22 15: 35一分局刘某进行三快处理并结案；2014-07-22 15: 35一分局刘某电话核实；2014-07-22 15: 35交管局下发至一分局；"}]');
+				
+				//松江测试
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
+			}
+			
+			protected function btnTest2_clickHandler(event:MouseEvent):void
+			{
+				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "设施设备",
+						layerIds: "1,2,3,4",
+						visible: false
+					} 
+				);*/
+//				AppEvent.dispatch( AppEvent.DELETE_POINTS, '{"type":"building", "points":["A70210054"]}' );
+//				AppEvent.dispatch( AppEvent.DELETE_ALL_GPS_TRACK );
+//				AppEvent.dispatch( AppEvent.CLEAR_SELECTION );
+//				AppEvent.dispatch( AppEvent.DELETE_POINTS, '{"type": "kkAlert", "points": [600031001]}' );
+//				AppEvent.dispatch( AppEvent.DELETE_ALL_CAR_TRACK );
+//				AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_PAUSE, "1" );
+//				AppEvent.dispatch( AppEvent.HIDE_TRAVEL_TIME );
+//				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "badweather" );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"block","points":[{"id":1,"x":112.970212,"y":28.185228,"fields":{"statusDesc":"堵塞","statusLastedMinutes":"10","speed":10,"queueLength":1000,"reason":"2013-07-20 12:00:00","status":"2","isNotification":true}},{"id":2,"x":112.9985,"y":28.1794,"fields":{"peak":"早高峰","status":"拥堵","speed":10,"queue_length":1000,"occur_time":"2013-07-20 12:00:00","status":"1","isNotification":true}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"points":[{"id":1,"y":28.185228,"fields":{"corporation":"1111","type":"2222","start_date":"3333","plan_end_date":"4444"},"x":112.970212}],"type":"roadOccupy"}' );
+//				AppEvent.dispatch( AppEvent.HIDE_INFO_POPUP );
+				/*AppEvent.dispatch( AppEvent.SET_LAYER_FILTER_DEFINITION, 
+					{ 
+						serviceName: "", 
+						layerIds: "", 
+						whereClause: "" 
+					} 
+				);*/
+//				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "视频资源" );
+//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "社会资源" );
+//				AppEvent.dispatch( AppEvent.BUFFER_SEARCH, { type:"JiChaBuKong", id: "11", point: new MapPoint( 112.98639678955078, 28.187299728393555 ), distance: 500, token: "1234" } );
+//				AppEvent.dispatch( AppEvent.BUFFER_SEARCH, { type:"JiChaBuKong", id: "11", point: new MapPoint( 112.98639678955078, 28.187299728393555 ), distance: 500, token: "5678" } );
+//				AppEvent.dispatch( AppEvent.DELETE_POINTS, '{"type":"信号机","points":[{"id":"0"},{"id":"1"},{"id":"2"}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"station","points":[{"id":"102","x":"117.7491361","y":"39.1196442","fields":{"name":"和畅路-中生大道-和顺路","id":"1089","address":"aasdfasdfasdf"}}]}' );
+//				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "添加岗点" );
+//				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "信号机", id: "99" } );
+//				AppEvent.dispatch( AppEvent.ADD_LINES, '{"type":"od","lines": [{"id": "55","geometry":{"paths":[[[87.5856,43.823612],[87.595879,43.824297]]]},"fields": {"name":"重庆市规划展览馆","unitType":"直供直管","area": "渝中区","profession":"公共事业","flowRate":90,"accessPoint":"朝天门开闭所614,朝天门开闭所621"}}]}' );
+//				AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, "policeSentry" );
+				
+				//天津测试
+//				AppEvent.dispatch( AppEvent.ADD_POLYGONS, '{"type":"issuesect","polygons":[{"id":"500010","fields":{"name":"中新大道经八路路口至中泰大道","desc":"中新大道经八路路口至中泰大道","status":"crowd"}},{"id":"500021","fields":{"name":"中新大道经七路（南）路口至经六路","desc":"中新大道经七路（南）路口至经六路","status":"crowd"}},{"id":"500006","fields":{"name":"中新大道和顺路路口至和意路","desc":"中新大道和顺路路口至和意路","status":"crowd"}},{"id":"500024","fields":{"name":"中新大道和顺路路口至中生大道","desc":"中新大道和顺路路口至中生大道","status":"jam"}},{"id":"500004","fields":{"name":"中新大道和旭路路口至中生大道","desc":"中新大道和旭路路口至中生大道","status":"jam"}}]}' );
+				
+				//六盘水测试
+//				AppEvent.dispatch( AppEvent.GUARD_DELETE_DEVICE_BY_PAGE, '{"type": "policeSentry", "id":"373AC306-EAED-2A64-60D0-67CA7A2CE5DC"}' );
+//				AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, "policeSentry" );
+//				AppEvent.dispatch( AppEvent.DELETE_ALL_CAR_TRACK );
+				AppEvent.dispatch( AppEvent.GUARD_SET_DEVICE_SEARCH_DISTANCE, '[{"type":"摄像机","distance":500}]' );
+				
+			}
+			
+			protected function btnTest3_clickHandler(event:MouseEvent):void
+			{
+//				AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_STOP, "1" );
+				//AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "信号机" );
+				
+				/*芜湖测试*/
+				
+			
+		    }
+		]]>
+	</fx:Script>
+	
+	<s:states>
+        <s:State name="normal"/>
+        <s:State name="decorated"/>
+        <s:State name="resized"/>
+        <s:State name="disabled"/>
+    </s:states>
+
+    <s:transitions>
+        <s:Transition id="toresize"
+                      fromState="*"
+                      toState="resized">
+            <s:Move duration="500" target="{map}"/>
+        </s:Transition>
+    </s:transitions>
+
+    <s:Group id="managerView"
+             width="100%" height="100%">
+        <!-- Start map at size 0 so that only one extentChange is fired after it's been sized and had its extent set. -->
+        <esri:Map id="map"
+                  width="0" height="0"
+                  left.resized="{hostComponent.mapLeft}" right.resized="{hostComponent.mapRight}" 
+				  top.resized="{hostComponent.mapTop}" bottom.resized="{hostComponent.mapBottom}"
+				  infoWindowRendererHighlightColor="{getStyle('selectionColor')}"/>
+    </s:Group>
+	<s:HGroup right="10" bottom="10" visible="true">
+		<s:Button id="btnTest1" label="test1" click="btnTest1_clickHandler(event)"/>
+		<s:Button id="btnTest2" label="test2" click="btnTest2_clickHandler(event)"/>
+		<s:Button id="btnTest3" label="test3" click="btnTest3_clickHandler(event)"/>
+	</s:HGroup>
+	
+</s:Skin>

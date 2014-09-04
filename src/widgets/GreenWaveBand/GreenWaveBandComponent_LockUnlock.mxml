@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   width="100%" 
+				   height.normal="30" height.showControl="60"
+				   backgroundAlpha="0.8"
+				   borderVisible="{_mouseClicked}" 
+				   borderColor="{getStyle('selectionColor')}" 
+				   borderWeight="3">
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.seisys.TGISViewer.AppEvent;
+			
+			public static const GWB_LOCK:String = "lock";
+			public static const GWB_UNLOCK:String = "unlock";
+			public static const GWB_FLASH:String = "flash";
+			
+			[Bindable]
+			public var bandObj:Object;
+			
+			private var _mouseOvered:Boolean = false;
+
+			public function get mouseOvered():Boolean
+			{
+				return _mouseOvered;
+			}
+
+			public function set mouseOvered(value:Boolean):void
+			{
+				_mouseOvered = value;
+				if ( _mouseOvered )
+				{
+					this.currentState = "showControl";
+				}
+				else
+				{
+					//控制栏非固定状态则隐藏控制栏
+					if ( imgNotNailed.visible )
+					{
+						this.currentState = "normal";
+					}
+				}
+			}
+			
+			
+
+			
+			[Bindable]
+			private var _mouseClicked:Boolean = false;
+			
+			protected function imgLock_clickHandler(event:MouseEvent):void
+			{
+				_mouseClicked = true;
+				AppEvent.dispatch( AppEvent.GWB_PLAY_CONTROL, 
+					{ 
+						id: bandObj.id, 
+						status: GWB_LOCK 
+					} 
+				);
+			}
+			
+			protected function imgUnlock_clickHandler(event:MouseEvent):void
+			{
+				_mouseClicked = false;
+				AppEvent.dispatch( AppEvent.GWB_PLAY_CONTROL, 
+					{ 
+						id: bandObj.id, 
+						status: GWB_UNLOCK 
+					} 
+				);
+			}
+			
+			protected function imgFlash_clickHandler(event:MouseEvent):void
+			{
+				_mouseClicked = true;
+				AppEvent.dispatch( AppEvent.GWB_PLAY_CONTROL, 
+					{ 
+						id: bandObj.id, 
+						status: GWB_FLASH 
+					} 
+				);
+			}
+			
+			protected function imgNotNailed_clickHandler(event:MouseEvent):void
+			{
+				//控制栏固定
+				imgNotNailed.visible = imgNotNailed.includeInLayout = false;
+				imgNailed.visible = imgNailed.includeInLayout = true;
+			}
+			
+			protected function imgNailed_clickHandler(event:MouseEvent):void
+			{
+				//控制栏不固定
+				imgNotNailed.visible = imgNotNailed.includeInLayout = true;
+				imgNailed.visible = imgNailed.includeInLayout = false;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="showControl"/>
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition fromState="normal" toState="showControl">
+			<s:Sequence>
+				<s:Resize target="{this}" heightTo="60"/>
+				<s:Fade duration="100" target="{grpPlayControl}"/>
+			</s:Sequence>
+		</s:Transition>
+		
+		<s:Transition fromState="showControl" toState="normal">
+			<s:Sequence>
+				<s:Fade duration="100" target="{grpPlayControl}"/>
+				<s:Resize target="{this}" heightTo="30"/>
+			</s:Sequence>
+		</s:Transition>
+	</s:transitions>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="5"/>
+	</s:layout>
+	
+	<s:Group width="100%">
+		<s:Label id="lblBandName" text="{bandObj.name}" left="0"/>
+		<s:Image id="imgNotNailed" source="assets/images/i_pin_small.png" right="0" 
+				 alpha="0.5" toolTip="自动隐藏" buttonMode="true" 
+				 click="imgNotNailed_clickHandler(event)"/>
+		<s:Image id="imgNailed" source="assets/images/i_pin_small.png" right="0" 
+				 visible="false" includeInLayout="false"
+				 toolTip="自动隐藏" buttonMode="true" 
+				 click="imgNailed_clickHandler(event)"/>
+	</s:Group>
+	
+	<s:HGroup id="grpPlayControl" height="100%" 
+			  visible.normal="false" includeInLayout.normal="false" 
+			  visible.showControl="true" includeInLayout.showControl="true"
+			  verticalAlign="middle" horizontalAlign="right">
+		
+		<s:Image id="imgLock" toolTip="锁定绿波" source="assets/images/lock.png" 
+				 buttonMode="true"
+				 click="imgLock_clickHandler(event)"/>
+		<s:Image id="imgUnlock" toolTip="解锁绿波" source="assets/images/unlock.png" 
+				 buttonMode="true"
+				 click="imgUnlock_clickHandler(event)"/>
+		<s:Image id="imgFlash" toolTip="黄闪" source="assets/images/yellowLamp.png"
+				 buttonMode="true"
+				 click="imgFlash_clickHandler(event)"/>
+	</s:HGroup>
+</s:BorderContainer>

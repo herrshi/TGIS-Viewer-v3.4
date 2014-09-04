@@ -1,0 +1,1427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// 多图层综合搜索
+// 可以搜索地图服务中的图层，也可以搜索overlay组件的动态加点
+// 搜索分为三类：缓冲区搜索、图形搜索、文字搜索
+// 搜索结果可以传给页面
+// 图形搜索时用户绘制的图形可以传给页面，页面可以将保存过的图形传入，直接进行搜索
+///////////////////////////////////////////////////////////////////////////
+-->
+
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   xmlns:esri="http://www.esri.com/2008/ags"
+					   xmlns:checkTree="cn.seisys.TGISViewer.components.checkTree.*"
+					   layout="absolute"
+					   widgetConfigLoaded="widgetConfigLoadedHandler(event)" 
+					   creationComplete="creationCompleteHandler(event)" >
+	
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.Units;
+			import com.esri.ags.events.DrawEvent;
+			import com.esri.ags.events.FindEvent;
+			import com.esri.ags.events.IdentifyEvent;
+			import com.esri.ags.geometry.Extent;
+			import com.esri.ags.geometry.Geometry;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.Polygon;
+			import com.esri.ags.geometry.Polyline;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.portal.PopUpRenderer;
+			import com.esri.ags.renderers.IRenderer;
+			import com.esri.ags.symbols.SimpleFillSymbol;
+			import com.esri.ags.symbols.SimpleLineSymbol;
+			import com.esri.ags.tasks.GeometryService;
+			import com.esri.ags.tasks.GeometryServiceSingleton;
+			import com.esri.ags.tasks.supportClasses.FindResult;
+			import com.esri.ags.tasks.supportClasses.IdentifyParameters;
+			import com.esri.ags.tasks.supportClasses.IdentifyResult;
+			import com.esri.ags.tasks.supportClasses.RelationParameters;
+			import com.esri.ags.tools.DrawTool;
+			import com.esri.ags.utils.GeometryUtil;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.managers.CursorManager;
+			import mx.rpc.AsyncResponder;
+			import mx.rpc.Fault;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
+			import mx.utils.StringUtil;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.WidgetStates;
+			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
+			import cn.seisys.TGISViewer.components.checkTree.CheckTreeItemRenderer;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			import cn.seisys.TGISViewer.utils.LocalizationUtil;
+			import cn.seisys.TGISViewer.utils.MapServiceUtil;
+			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
+			import cn.seisys.TGISViewer.utils.RendererParser;
+			
+			[Bindable] private var _searchUrl:String;
+			
+			private var _searchFieldArray:Array;
+			private var _searchLayerIds:Array;
+			
+			private var _searchResultLayer:GraphicsLayer;
+			
+			private var _popUpRendererTable:Hashtable;
+			
+			private var _bufferResultLayer:GraphicsLayer;
+			
+			[Bindable]
+			private var _selectionColor:Number;
+			
+			private var _drawSymbol:SimpleFillSymbol;
+			
+			private var _searchOverlayerInfoArray:Array = [];
+			
+			/**
+			 * 是否显示传送搜索结果到页面的按钮
+			 * */
+			[Bindable]
+			private var _showSendResult:Boolean = true;
+			
+			/**
+			 * 是否显示保存搜索区域的按钮
+			 * */
+			[Bindable]
+			private var _showSaveArea:Boolean = false;
+			
+			/**
+			 * 是否显示统计按钮
+			 * */
+			[Bindable]
+			private var _showStatistic:Boolean = false;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				_popUpRendererTable = new Hashtable();
+				
+				_selectionColor = getStyle( "selectionColor" );
+				_drawSymbol = new SimpleFillSymbol( "solid", _selectionColor, 0.2, 
+					new SimpleLineSymbol( "solid", _selectionColor, 1, 2 ) );
+				
+				geometryService.url = GeometryServiceSingleton.instance.url;
+				geometryService.token = GeometryServiceSingleton.instance.token;
+				geometryService.proxyURL = GeometryServiceSingleton.instance.proxyURL;
+				
+				_bufferResultLayer = new GraphicsLayer();
+				_bufferResultLayer.name = "BufferResultLayer";
+				_bufferResultLayer.symbol = _drawSymbol;
+				map.addLayer( _bufferResultLayer );
+				
+				_searchResultLayer = new GraphicsLayer();
+				_searchResultLayer.name = "SearchResultLayer";
+				map.addLayer( _searchResultLayer );
+				
+				AppEvent.addListener( AppEvent.SET_SEARCH_GEOMETRY, appevent_setSearchGeometryHandler );
+				AppEvent.addListener( AppEvent.CLEAR_SEARCH_RESULT, appevent_clearSearchResult );
+			}
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					//find参数
+					_searchUrl = configXML.layerinfo.find.url;
+					if ( _searchUrl != "" )
+					{
+						if ( configData.arcgisServerIP )
+						{
+							_searchUrl = _searchUrl.replace( "{serverip}", configData.arcgisServerIP );
+						}
+						
+						var layerIdString:String = configXML.layerinfo.find.layerids;
+						if ( layerIdString )
+						{
+							_searchLayerIds = layerIdString.split( "," );
+						}
+						
+						setLayerCheckBox();
+					}
+					
+					
+					var findFields:String = configXML.layerinfo.find.fields;
+					_searchFieldArray = findFields.split( "," );
+					
+					//renderer
+					var rendererParser:RendererParser = new RendererParser();
+					var renderer:IRenderer = rendererParser.parseRenderer( configXML.layerinfo[0] );
+					_searchResultLayer.renderer = renderer;
+					
+					//popup
+					for each ( var popUpXML:XML in configXML.layerinfo.popups.popup )
+					{
+						var layerName:String = popUpXML.@layername;
+						var popUpInfo:PopUpInfoWithButtons = PopUpInfoParser.parsePopUpInfo( popUpXML );
+						
+						var popUpRenderer:ClassFactory = new ClassFactory( PopUpRenderer );
+						popUpRenderer.properties = 
+							{ 
+								popUpInfo: popUpInfo
+							};
+						_popUpRendererTable.add( layerName, popUpRenderer );
+					}
+					
+					//overlay
+					if ( configXML.overlays[0] )
+					{
+						for each ( var overlayXML:XML in configXML.overlays[0].overlay )
+						{
+							var name:String = overlayXML.@name;
+							var label:String = overlayXML.@label;
+							var titleField:String = overlayXML.@titlefield;
+							var idField:String = overlayXML.@idfield;
+							var selected:Boolean = overlayXML.@defaultselected == "false" ? false : true;
+							
+							_searchOverlayerInfoArray.push( 
+								{ 
+									name: name,
+									label: label,
+									titleField: titleField,
+									idField: idField,
+									selected: selected
+								} 
+							);
+						}
+						setOverlayCheckBox();
+					}
+					
+					var showBufferSearch:Boolean = configXML.showbuffersearch == "false" ? false : true;
+					if ( showBufferSearch )
+					{
+						AppEvent.addListener( AppEvent.BUFFER_SEARCH, appevent_BufferSearchHandler );
+						wTemplate.addTitlebarButton( "assets/images/i_draw_point.png", 
+							"缓冲搜索", showStateBufferSearch );
+						showStateBufferSearch();
+					}
+					
+					var showGraphicSearch:Boolean = configXML.showgraphicsearch == "false" ? false : true;
+					if ( showGraphicSearch )
+					{
+						wTemplate.addTitlebarButton( "assets/images/i_searchgraphical.png", 
+							"图形搜索", showStateGraphicalSearch );
+						if ( !showBufferSearch )
+						{
+							showStateGraphicalSearch();
+						}
+					}
+					
+					var showTextSearch:Boolean = configXML.showtextsearch == "false" ? false : true;
+					if ( showTextSearch )
+					{
+						wTemplate.addTitlebarButton( "assets/images/i_searchtext.png", 
+							"文字搜索", showStateTextSearch);
+						if ( !showBufferSearch && !showGraphicSearch )
+						{
+							showStateTextSearch();
+						}
+					}
+					
+					_showSendResult = configXML.showsendresult == "false" ? false : true;
+					_showSaveArea = configXML.showsavearea == "true" ? true : false;
+					_showStatistic = configXML.showstatistic == "true" ? true : false;
+//					wTemplate.addTitlebarButton( "assets/images/i_table.png", "搜索结果", showStateResults);
+					fade.targets = [ bufferlInput, graphicalInput, textInput, resultsList ];
+				}
+			}
+			
+			/**
+			 * 读取要搜索的overlay图层，生成对应的checkbox
+			 * checkbox是否选中由配置文件控制
+			 * */
+			private function setOverlayCheckBox():void
+			{
+				for each ( var overlayObj:Object in _searchOverlayerInfoArray )
+				{
+					createOverlayCheckBoxGroup( layerGroupBuffer );
+					createOverlayCheckBoxGroup( layerGroupGraphic );
+					createOverlayCheckBoxGroup( layerGroupText );
+					
+					function createOverlayCheckBoxGroup( parentContent:TileGroup ):void
+					{
+						var checkBox:CheckBox = new CheckBox();
+						checkBox.label = overlayObj.label;
+						//用name来区分overlay和layer的checkbox
+						checkBox.name = "overlay";
+						checkBox.id = overlayObj.name;
+						checkBox.selected = overlayObj.selected;
+						checkBox.addEventListener( Event.CHANGE, overlayCheckBox_changeHandler );
+						parentContent.addElement( checkBox );
+					}
+				}
+			}
+			
+			private function overlayCheckBox_changeHandler( event:Event ):void
+			{
+				var checkBox:CheckBox = event.currentTarget as CheckBox;
+				for each ( var overlayObj:Object in _searchOverlayerInfoArray )
+				{
+					if ( checkBox.id == overlayObj.name )
+					{
+						overlayObj.selected = checkBox.selected;
+						break;
+					}
+				}
+				
+				//更新全选checkBox
+				var tileGroup:TileGroup = checkBox.parent as TileGroup;
+				var chkSelectAll:CheckBox;
+				switch( tileGroup.id )
+				{
+					case "layerGroupBuffer":
+					{
+						chkSelectAll = chkSelectAllLayerBuffer;
+						break;
+					}
+						
+					case "layerGroupGraphic":
+					{
+						chkSelectAll = chkSelectAllLayerGraphic;
+						break;
+					}
+						
+					case "layerGroupText":
+					{
+						chkSelectAll = chkSelectAllLayerText;
+						break;
+					}
+				}
+				
+				for ( var i:uint = 0; i < tileGroup.numElements; i++ )
+				{
+					if ( tileGroup.getElementAt( i ) is CheckBox )
+					{
+						var checkbox:CheckBox = tileGroup.getElementAt( i ) as CheckBox;
+						if ( !checkbox.selected )
+						{
+							chkSelectAll.selected = false;
+							return;
+						}
+					}
+				}
+				chkSelectAll.selected = true;
+			}
+			
+			/**
+			 * 分析地图服务地址，获取地图服务中包含哪些图层
+			 * 为每个图层加入一个checkbox，若图层可见则选中checkbox
+			 * */
+			private function setLayerCheckBox():void
+			{
+				var jsonService:HTTPService = new HTTPService();
+				jsonService.url = _searchUrl + "/?f=json";
+				jsonService.resultFormat = "text";
+				jsonService.addEventListener( ResultEvent.RESULT, onJSONResult );
+				jsonService.addEventListener( FaultEvent.FAULT, onJsonFault );
+				jsonService.send();
+				
+				function onJSONResult( event:ResultEvent ):void
+				{
+					var rawData:String = event.result as String;
+					var jsonObj:Object = JSON.parse( rawData );
+					var layerArray:Array = jsonObj.layers;
+					createLayerCheckBoxGroup( layerArray, layerGroupBuffer );
+					createLayerCheckBoxGroup( layerArray, layerGroupGraphic );
+					createLayerCheckBoxGroup( layerArray, layerGroupText );
+					
+					checkSelectAllCheckBoxState( layerGroupBuffer, chkSelectAllLayerBuffer );
+					checkSelectAllCheckBoxState( layerGroupGraphic, chkSelectAllLayerGraphic );
+					checkSelectAllCheckBoxState( layerGroupText, chkSelectAllLayerText );
+				}
+				
+				function createLayerCheckBoxGroup( layerArray:Array, parentContent:TileGroup ):void
+				{
+					for each ( var layerObj:Object in layerArray )
+					{
+						var layerId:String = layerObj.id;
+						//如果设置了layerids，就只显示layerids中指定的图层
+						if ( !_searchLayerIds || _searchLayerIds.indexOf( layerId ) >=0 )
+						{
+							var checkBox:CheckBox = new CheckBox();
+							checkBox.label = layerObj.name;
+							checkBox.name = "layer";
+							checkBox.id = layerObj.id;
+							//配置了layerids就默认选中，否则按照图层是否可见
+							checkBox.selected = ( _searchLayerIds ? true : layerObj.defaultVisibility );
+							checkBox.addEventListener( Event.CHANGE, layerCheckBox_changeHandler );
+							parentContent.addElement( checkBox );
+						}
+					}
+				}
+				
+				function onJsonFault( event:FaultEvent ):void
+				{
+					var sInfo:String = "";
+					
+					if (event.fault.rootCause is IOErrorEvent)
+					{
+						var ioe:IOErrorEvent = event.fault.rootCause as IOErrorEvent;
+						sInfo += event.fault.rootCause + "\n\n";
+					}
+					
+					if (event.fault.rootCause is SecurityErrorEvent)
+					{
+						var sec:SecurityErrorEvent = event.fault.rootCause as SecurityErrorEvent;
+						// config file with crossdomain issue
+						if (sec.errorID == 2048)
+						{
+							sInfo += LocalizationUtil.getDefaultString('configFileCrossDomain', "\n", sec.toString()) + "\n\n";
+						}
+							// some other Security error
+						else
+						{
+							sInfo += event.fault.rootCause + "\n\n";
+						}
+					}
+					
+					if (event.statusCode) // e.g. 404 - Not Found - http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+					{
+						sInfo += LocalizationUtil.getDefaultString('httpResponseStatus', event.statusCode) + "\n\n";
+					}
+					
+					sInfo += LocalizationUtil.getDefaultString('faultCode', event.fault.faultCode) + "\n\n";
+					sInfo += LocalizationUtil.getDefaultString('faultInfo', event.fault.faultString) + "\n\n";
+					sInfo += LocalizationUtil.getDefaultString('faultDetail', event.fault.faultDetail);
+					
+					AppEvent.showError(sInfo, widgetTitle);
+				}
+			}
+			
+			private function layerCheckBox_changeHandler( event:Event ):void
+			{
+				var checkBox:CheckBox = event.currentTarget as CheckBox;
+				var tileGroup:TileGroup = checkBox.parent as TileGroup;
+				var chkSelectAll:CheckBox;
+				switch( tileGroup.id )
+				{
+					case "layerGroupBuffer":
+					{
+						chkSelectAll = chkSelectAllLayerBuffer;
+						break;
+					}
+						
+					case "layerGroupGraphic":
+					{
+						chkSelectAll = chkSelectAllLayerGraphic;
+						break;
+					}
+					
+					case "layerGroupText":
+					{
+						chkSelectAll = chkSelectAllLayerText;
+						break;
+					}
+				}
+				
+				checkSelectAllCheckBoxState( tileGroup, chkSelectAll );
+			}
+			
+			/**
+			 * 检查tilegroup中每个checkbox的状态，确实是否需要选上全选
+			 * */
+			private function checkSelectAllCheckBoxState( tileGroup:TileGroup, chkSelectAll:CheckBox ):void
+			{
+				for ( var i:uint = 0; i < tileGroup.numElements; i++ )
+				{
+					if ( tileGroup.getElementAt( i ) is CheckBox )
+					{
+						var checkbox:CheckBox = tileGroup.getElementAt( i ) as CheckBox;
+						if ( !checkbox.selected )
+						{
+							chkSelectAll.selected = false;
+							return;
+						}
+					}
+				}
+				chkSelectAll.selected = true;
+			}
+			
+			protected function chkSelectAllLayer_changeHandler(event:Event):void
+			{
+				var chkSelectAll:CheckBox = event.currentTarget as CheckBox;
+				var tileGroup:TileGroup;
+				switch( chkSelectAll.id )
+				{
+					case "chkSelectAllLayerBuffer":
+					{
+						tileGroup = layerGroupBuffer;
+						break;
+					}
+						
+					case "chkSelectAllLayerGraphic":
+					{
+						tileGroup = layerGroupGraphic;
+						break;
+					}
+						
+					case "chkSelectAllLayerText":
+					{
+						tileGroup = layerGroupText;
+						break;
+					}
+				}
+				for ( var i:uint = 0; i < tileGroup.numElements; i++ )
+				{
+					if ( tileGroup.getElementAt( i ) is CheckBox )
+					{
+						var checkbox:CheckBox = tileGroup.getElementAt( i ) as CheckBox;
+						checkbox.selected = chkSelectAll.selected;
+					}
+				}
+			}
+			
+			protected function btnFind_clickHandler(event:MouseEvent):void
+			{
+				_searchResultLayer.clear();
+				_treeDataSource.removeAll();
+				
+				var layerIdArray:Array = getSelectedLayerId( layerGroupText );
+				var searchTextArray:Array = txtKeyWord.text.split( " " );
+				if ( layerIdArray.length > 0 && searchTextArray.length > 0 )
+				{
+					for each ( var searchText:String in searchTextArray )
+					{
+						findParam.layerIds = layerIdArray;
+						findParam.searchFields = _searchFieldArray;
+						findParam.searchText = searchText;
+						
+						CursorManager.setBusyCursor();
+						findTask.execute( findParam );
+					}
+				}
+				
+			}
+			
+			private function getSelectedLayerId( tileGroup:TileGroup ):Array
+			{
+				var result:Array = [];
+				for ( var i:uint = 0; i < tileGroup.numElements; i++ )
+				{
+					if ( tileGroup.getElementAt( i ) is CheckBox )
+					{
+						var checkbox:CheckBox = tileGroup.getElementAt( i ) as CheckBox;
+						if ( ( checkbox.name == "layer" ) && checkbox.selected )
+						{
+							result.push( checkbox.id );
+						}
+					}
+				}
+				return result;
+			}
+			
+			[Bindable]
+			private var _treeDataSource:ArrayCollection = new ArrayCollection();
+			
+			protected function findTask_executeCompleteHandler(event:FindEvent):void
+			{
+				CursorManager.removeBusyCursor();
+				
+				for each ( var findResult:FindResult in event.findResults )
+				{
+					var label:String = findResult.value;
+					var graphic:Graphic = findResult.feature;
+					var layerName:String = findResult.layerName;
+					
+					graphic.attributes.layerName = layerName;
+					
+					var layerNode:Object = getLayerNode( layerName );
+					var children:ArrayCollection = layerNode.children;
+					children.addItem( 
+						{ 
+							label:label, 
+							graphic:graphic, 
+							state: CheckTreeItemRenderer.STATE_CHECKED 
+						} 
+					);
+					
+					var popUpRenderer:ClassFactory = _popUpRendererTable.find( layerName );
+					if ( !popUpRenderer )
+					{
+						popUpRenderer = _popUpRendererTable.find( "default" );
+					}
+					graphic.infoWindowRenderer = popUpRenderer;
+					_searchResultLayer.add( graphic );
+				}
+				
+				showStateResults();
+			}
+			
+			private function faultEventHandler( event:FaultEvent ):void
+			{
+				CursorManager.removeBusyCursor();
+				var strInfo: String = "Error: ";
+				strInfo += "Event Headers: " + event.headers + "\n";
+				strInfo += "Event Target: " + event.target + "\n";
+				strInfo += "Event Type: " + event.type + "\n";
+				strInfo += "Fault Code: " + event.fault.faultCode + "\n";
+				strInfo += "Fault Info: " + event.fault.faultString + "\n";
+				strInfo += "Fault Detail: " + event.fault.faultDetail;
+				showError( strInfo );
+			}
+			
+			private function faultHandler( fault:Fault, token:Object ):void
+			{
+				var strInfo: String = "Error: ";
+				strInfo += "Fault Code: " + fault.faultCode + "\n";
+				strInfo += "Fault Info: " + fault.faultString + "\n";
+				strInfo += "Fault Detail: " + fault.faultDetail;
+				showError( strInfo );
+			}
+			
+			
+			private function getLayerNode( layerName:String ):Object
+			{
+				var layerNode:Object;
+				for each ( layerNode in _treeDataSource )
+				{
+					if ( layerNode.label == layerName )
+					{
+						return layerNode;
+					}
+				}
+				
+				layerNode = { label: layerName, children: new ArrayCollection(), state: 1 };
+				_treeDataSource.addItem( layerNode );
+				return layerNode;
+			}
+			
+			private function showStateBufferSearch():void
+			{
+				this.currentState = "bufferInput";
+				wTemplate.selectedTitlebarButtonIndex = 0;
+			}
+			
+			private function showStateGraphicalSearch():void
+			{
+				this.currentState = "graphicalInput";
+				wTemplate.selectedTitlebarButtonIndex = 1;
+			}
+			
+			private function showStateTextSearch():void
+			{
+				this.currentState = "textInput";
+				wTemplate.selectedTitlebarButtonIndex = 2;
+			}
+			
+			private function showStateResults():void
+			{
+				/*this.currentState = "resultsList";
+				wTemplate.selectedTitlebarButtonIndex = 3;*/
+			}
+			
+			private function iconRollOverHandler(event:MouseEvent):void
+			{
+				clearSelectionFilter();
+				event.target.filters = [ glowFilter ];
+			}
+			
+			private function iconRollOutHandler(event:MouseEvent):void
+			{
+				clearSelectionFilter();
+			}
+			
+			private var _selectedDrawingIcon:Image;
+			
+			private function clearSelectionFilter():void
+			{
+				for ( var i:int = 0; i < imageGroup.numChildren; i++ )
+				{
+					if ( imageGroup.getChildAt(i).filters && imageGroup.getChildAt(i).filters.length > 0 )
+					{
+						if ( !( _selectedDrawingIcon && imageGroup.getChildAt(i) === _selectedDrawingIcon ) )
+						{
+							imageGroup.getChildAt(i).filters = [];
+						}
+					}
+				}
+			}
+			
+			/**
+			 * 清除搜索结果
+			 * */
+			private function clearSearchResult():void
+			{
+				_drawGraphic = null;
+				_bufferResultLayer.clear();
+				_searchResultLayer.clear();
+				_treeDataSource.removeAll();
+				AppEvent.dispatch( AppEvent.HIDE_INFO_POPUP );
+			}
+			
+			private function activateDrawTool(event:MouseEvent):void
+			{
+				// apply glow
+				_selectedDrawingIcon = Image(event.currentTarget);
+				clearSelectionFilter();
+				_selectedDrawingIcon.filters = [ glowFilter ];
+				
+				var value:String = _selectedDrawingIcon.name;
+				
+				setMapAction( _selectedDrawingIcon.name, "", _drawSymbol, searchDrawEnd );
+			}
+			
+			private var _drawGraphic:Graphic;
+			
+			private function searchDrawEnd(event:DrawEvent):void
+			{
+				clearSearchResult();
+				_drawGraphic = event.graphic;
+				
+				_selectedDrawingIcon = null;
+				clearSelectionFilter();
+				
+				event.target.deactivate();
+				
+				var geom:Geometry = _drawGraphic.geometry;
+				if ( geom is Polygon && GeometryUtil.polygonSelfIntersecting( geom as Polygon ) )
+				{
+					geometryService.simplify( [geom], 
+						new AsyncResponder( geometryService_simplifyCompleteHandler, faultHandler ) );
+				}
+				else
+				{
+					_bufferResultLayer.add( _drawGraphic );
+					if ( _searchUrl != "" )
+					{
+						searchLayer( geom, getSelectedLayerId( layerGroupGraphic ) );
+					}
+					
+					if ( _searchOverlayerInfoArray.length > 0 )
+					{
+						searchOverlay( geom );
+					}
+				}
+			}
+			
+			protected function geometryService_simplifyCompleteHandler( item:Object, token:Object = null ):void
+			{
+				var simplifyResultArray:Array = item as Array;
+				var geom:Geometry = simplifyResultArray[0] as Polygon;
+				_bufferResultLayer.add( new Graphic( geom ) );
+				searchLayer( geom, getSelectedLayerId( layerGroupGraphic ) );
+			}
+			
+			protected function txtKeyWord_keyDownHandler(event:KeyboardEvent):void
+			{
+				if ( event.keyCode == 13 )
+				{
+					btnFind.dispatchEvent( new MouseEvent( MouseEvent.CLICK ) );
+				}
+			}
+			
+			private var _popUpRenderer:PopUpRenderer = new PopUpRenderer();
+			
+			protected function trResult_changeHandler(event:ListEvent):void
+			{
+				var selectedItem:Object = trResult.selectedItem;
+				if ( selectedItem )
+				{
+					var graphic:Graphic = selectedItem.graphic;
+					if ( graphic )
+					{
+						var centerPoint:MapPoint = MapServiceUtil.getGeomCenter( graphic );
+						map.centerAt( centerPoint );
+						
+						var popUpRendererClassFactory:ClassFactory = graphic.infoWindowRenderer as ClassFactory;
+						_popUpRenderer.popUpInfo = popUpRendererClassFactory.properties.popUpInfo;
+						_popUpRenderer.graphic = graphic;
+						
+						map.infoWindow.content = _popUpRenderer;
+						map.infoWindow.contentOwner = graphic;
+						map.infoWindow.show( centerPoint );
+					}
+				}
+			}
+			
+			protected function trResult_doubleClickHandler(event:MouseEvent):void
+			{
+				var selectedItem:Object = trResult.selectedItem;
+				var isOpen:Boolean = trResult.isItemOpen( selectedItem );
+				trResult.expandItem( selectedItem, !isOpen );
+			}
+			
+			private var _bufferSearchType:String = "";
+			
+			private var _bufferSearchId:String = "";
+			
+			private var _bufferSearchCenterPoint:MapPoint;
+			
+			private function appevent_BufferSearchHandler( event:AppEvent ):void
+			{
+				_bufferResultLayer.clear();
+				_searchResultLayer.clear();
+				_treeDataSource.removeAll();
+				showStateBufferSearch();
+				
+				_bufferSearchType = event.data.type;
+				_bufferSearchId = event.data.id;
+				_bufferSearchCenterPoint = event.data.point;
+				_bufferSearchCenterPoint.spatialReference = map.spatialReference;
+				
+				bufferSearch();
+			}
+			
+			private function bufferSearch():void
+			{
+				if ( !_bufferSearchCenterPoint || StringUtil.trim( _bufferSearchId ) == "" )
+				{
+					showError( "请先选择缓冲要素" );
+					return;
+				}
+				
+				_bufferResultLayer.clear();
+				_searchResultLayer.clear();
+				_treeDataSource.removeAll();
+				
+				var distance:Number = Number( rdgrpBufferDistance.selectedValue );
+				
+				bufferParam.geometries = [ _bufferSearchCenterPoint ];
+				bufferParam.distances = [ distance ];
+				geometryService.buffer( bufferParam, 
+					new AsyncResponder( geometryService_bufferCompleteHandler, faultHandler, null ) );
+			}
+			
+			protected function geometryService_bufferCompleteHandler( item:Object, token:Object = null ):void
+			{
+				var bufferResultArray:Array = item as Array;
+				for ( var i:uint = 0; i < bufferResultArray.length; i++ )
+				{
+					var bufferPolygon:Polygon = bufferResultArray[i] as Polygon;
+					bufferPolygon.spatialReference = map.spatialReference;
+					_bufferResultLayer.add( new Graphic( bufferPolygon ) );
+					if ( _searchUrl != "" )
+					{
+						searchLayer( bufferPolygon, getSelectedLayerId( layerGroupBuffer ) );
+					}
+					if ( _searchOverlayerInfoArray.length > 0 )
+					{
+						searchOverlay( bufferPolygon );
+					}
+				}
+				
+				showStateResults();
+			}
+			
+			private var _identifyParam:IdentifyParameters = new IdentifyParameters();
+			
+			private function searchLayer( geom:Geometry, selectedLayers:Array ):void
+			{
+				if ( selectedLayers.length > 0 )
+				{
+					identifyParam.layerIds = selectedLayers;
+					identifyParam.geometry = geom;
+					identifyTask.execute( identifyParam );
+				}
+				
+			}
+			
+			protected function identifyTask_executeCompleteHandler(event:IdentifyEvent):void
+			{
+//				_searchResultLayer.clear();
+				
+				var results:Array = event.identifyResults;
+				if ( results && results.length > 0 )
+				{
+					for each ( var identifyResult:IdentifyResult in results )
+					{
+						var displayFieldName:String = identifyResult.displayFieldName;
+						var layerName:String = identifyResult.layerName;
+						var graphic:Graphic = identifyResult.feature;
+						var label:String = graphic.attributes[displayFieldName];
+						
+						var popUpRenderer:ClassFactory = _popUpRendererTable.find( layerName );
+						if ( !popUpRenderer )
+						{
+							popUpRenderer = _popUpRendererTable.find( "default" );
+						}
+						var popUpInfo:PopUpInfoWithButtons = popUpRenderer.properties.popUpInfo;
+						var idFieldName:String = popUpInfo.idFieldName;
+						graphic.attributes.layerName = layerName;
+						graphic.id = graphic.attributes[idFieldName];
+						
+						var layerNode:Object = getLayerNode( layerName );
+						var children:ArrayCollection = layerNode.children;
+						children.addItem( 
+							{ 
+								label:label, 
+								graphic:graphic, 
+								state: CheckTreeItemRenderer.STATE_CHECKED 
+							} 
+						);
+						
+						
+						graphic.infoWindowRenderer = popUpRenderer;
+						_searchResultLayer.add( graphic );
+					}
+					
+					showStateResults();
+				}
+			}
+			
+			protected function btnClearResult_clickHandler(event:MouseEvent):void
+			{
+				clearSearchResult();
+			}
+			
+			protected function btnSendDevice_clickHandler(event:MouseEvent):void
+			{
+				if ( _treeDataSource.length == 0 )
+				{
+					return;
+				}
+				
+				var data:Array = [];
+				
+				for each ( var layerNode:Object in _treeDataSource )
+				{
+					var layerName:String = layerNode.label;
+					var children:ArrayCollection = layerNode.children;
+					
+					var points:Array = [];
+					var layerObj:Object = { type:layerName, points:points };
+					
+					for each ( var deviceNode:Object in children )
+					{
+						if ( deviceNode.state == CheckTreeItemRenderer.STATE_CHECKED )
+						{
+							var graphic:Graphic = deviceNode.graphic;
+							var centerPoint:MapPoint = MapServiceUtil.getGeomCenter( graphic );
+							var id:String = graphic.id;
+							var deviceObj:Object = 
+								{ 
+									id: id, 
+									name: deviceNode.label,
+									x: centerPoint.x, 
+									y: centerPoint.y 
+								};
+							
+							//计算距离
+							if ( _bufferSearchCenterPoint )
+							{
+								var polyline:Polyline = new Polyline();
+								var path:Array = [ _bufferSearchCenterPoint, centerPoint ];
+								polyline.addPath( path );
+								var lengthResultArray:Array = GeometryUtil.geodesicLengths( 
+									[polyline], Units.METERS );
+								var distance:int = Math.round( lengthResultArray[0] );
+								deviceObj.distance = distance;
+							}
+							points.push( deviceObj );
+						}
+					}
+					if ( points.length > 0 )
+					{
+						//按照距离排序
+						if ( _bufferSearchCenterPoint )
+						{
+							points.sortOn( "distance", Array.NUMERIC );
+						}
+						
+						data.push( layerObj );
+					}
+				}
+				if ( data.length > 0 )
+				{
+					var dataString:String = JSON.stringify( data );
+					AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+						{ 
+							functionName: "receiveSearchResult",
+							params: [_bufferSearchType, _bufferSearchId, dataString]
+						} 
+					);
+					
+					_bufferResultLayer.clear();
+					_searchResultLayer.clear();
+					_treeDataSource.removeAll();
+					this.setState( WidgetStates.WIDGET_MINIMIZED );
+				}
+			}
+			
+			
+			private function searchOverlay( geom:Geometry ):void
+			{
+				//请求所有数据，筛选其中的overlay数据
+				AppEvent.dispatch( AppEvent.DATA_FETCH_ALL, null, dataAllFetchedHandler );
+				
+				function dataAllFetchedHandler( dataTable:Hashtable ):void
+				{
+					var overlayGeometryArray:Array = [];
+					var overlayGraphicArray:Array = [];
+					
+					for each ( var overlayObj:Object in _searchOverlayerInfoArray )
+					{
+						var overlayName:String = overlayObj.name;
+						
+						//检查checkbox是否选中
+						var selected:Boolean = false;
+						for ( var i:uint = 0; i < layerGroupBuffer.numElements; i++ )
+						{
+							if ( layerGroupBuffer.getElementAt( i ) is CheckBox )
+							{
+								var checkBox:CheckBox = layerGroupBuffer.getElementAt( i ) as CheckBox;
+								if ( checkBox.name == "overlay" && checkBox.id == overlayName )
+								{
+									selected = checkBox.selected;
+									break;
+								}
+							}
+						}
+						if ( !selected )
+						{
+							continue;
+						}
+						
+						var graphicProvider:ArrayCollection = dataTable.find( overlayName ) as ArrayCollection;
+						if ( graphicProvider && graphicProvider.length > 0 )
+						{
+							for each ( var graphic:Graphic in graphicProvider )
+							{
+								graphic.geometry.spatialReference = map.spatialReference;
+								graphic.attributes.overlayName = overlayName;
+								graphic.attributes.overlayLabel = overlayObj.label;
+								graphic.attributes.titleField = overlayObj.titleField;
+								overlayGraphicArray.push( graphic );
+								overlayGeometryArray.push( graphic.geometry );
+							}
+						}
+					}
+					
+					if ( overlayGeometryArray.length > 0 )
+					{
+						relationParams.geometries1 = overlayGeometryArray;
+						relationParams.geometries2 = [geom];
+						geometryService.relation( 
+							relationParams, 
+							new AsyncResponder( geometryService_relationCompleteHandler, 
+								faultHandler, overlayGraphicArray ) 
+						);
+					}
+				}
+			}
+			
+			private function geometryService_relationCompleteHandler( item:Object, token:Object = null ):void
+			{
+				var result:Array = item as Array;
+				var graphicArray:Array = token as Array;
+				
+				for each (var obj:Object in result)
+				{
+					var resultPoint:MapPoint = obj.geometry1 as MapPoint;
+					var overlayGraphic:Graphic = new Graphic( resultPoint );
+					
+					for each ( var graphic:Graphic in graphicArray )
+					{
+						var overlayPoint:MapPoint = graphic.geometry as MapPoint;
+						if ( resultPoint.x == overlayPoint.x && resultPoint.y == overlayPoint.y )
+						{
+							var overlayName:String = graphic.attributes.overlayName;
+							var overlayLabel:String = graphic.attributes.overlayLabel;
+							var titleField:String = graphic.attributes.titleField;
+							
+							overlayGraphic.attributes = graphic.attributes;
+							overlayGraphic.attributes.layerName = overlayName;
+							overlayGraphic.id = graphic.id;
+							
+							var layerNode:Object = getLayerNode( overlayLabel );
+							var children:ArrayCollection = layerNode.children;
+							children.addItem( 
+								{ 
+									label:graphic.attributes[titleField], 
+									graphic:overlayGraphic, 
+									state: CheckTreeItemRenderer.STATE_CHECKED 
+								} 
+							);
+							
+							var popUpRenderer:ClassFactory = _popUpRendererTable.find( overlayName );
+							if ( !popUpRenderer )
+							{
+								popUpRenderer = _popUpRendererTable.find( "default" );
+							}
+							overlayGraphic.infoWindowRenderer = popUpRenderer;
+							_searchResultLayer.add( overlayGraphic );
+							break;
+						}
+					} 
+				}
+			}
+			
+			private function appevent_setSearchGeometryHandler( event:AppEvent ):void
+			{
+				clearSearchResult();
+				
+				var params:String = event.data as String;
+				var paramObj:Object = JSON.parse( params );
+				
+				var geometryObj:Object = paramObj.geometry;
+				var distance:Number = paramObj.distance;
+				var geometry:Geometry;
+				//多边形对象
+				if ( geometryObj.rings )
+				{
+					geometry = Polygon.fromJSON( geometryObj );
+				}
+				//矩形对象
+				else if ( geometryObj.xmin )
+				{
+					geometry = Extent.fromJSON( geometryObj );
+				}
+				if ( geometry )
+				{
+					_bufferResultLayer.add( new Graphic( geometry ) );
+				}
+				
+				if ( _searchUrl != "" )
+				{
+					searchLayer( geometry, getSelectedLayerId( layerGroupGraphic ) );
+				}
+				
+				if ( _searchOverlayerInfoArray.length > 0 )
+				{
+					searchOverlay( geometry );
+				}
+				this.setState( WidgetStates.WIDGET_OPENED );
+			}
+			
+			private function appevent_clearSearchResult( event:AppEvent ):void
+			{
+				clearSearchResult();
+			}
+			
+			protected function wTemplate_openHandler(event:Event):void
+			{
+				if ( _bufferResultLayer )
+				{
+					map.addLayer( _bufferResultLayer );
+				}
+				
+				if ( _searchResultLayer )
+				{
+					map.addLayer( _searchResultLayer );
+				}
+			}
+			
+			protected function wTemplate_closedHandler(event:Event):void
+			{
+				_bufferResultLayer.clear();
+				map.removeLayer( _bufferResultLayer );
+				_searchResultLayer.clear();
+				map.removeLayer( _searchResultLayer );
+				map.infoWindow.hide();
+			}
+			
+			protected function wTemplate_minimizedHandler(event:Event):void
+			{
+				/*map.removeLayer( _bufferResultLayer );
+				map.removeLayer( _searchResultLayer );
+				map.infoWindow.hide();*/
+			}
+			
+			protected function btnBufferSearch_clickHandler(event:MouseEvent):void
+			{
+				bufferSearch();
+			}
+			
+			protected function btnSaveArea_clickHandler(event:MouseEvent):void
+			{
+				if ( _drawGraphic )
+				{
+					var jsonGeometryObj:Object = _drawGraphic.geometry.toJSON();
+					jsonGeometryObj.spatialReference = null;
+					delete jsonGeometryObj.spatialReference;
+					var dataObj:Object = { type: "searchArea", geometry: jsonGeometryObj };
+					var dataString:String = JSON.stringify( dataObj );
+					AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+						{
+							functionName: "addPolygonGeometry",
+							params: [ dataString ]
+						} 
+					);
+				}
+			}
+			
+			protected function imgClear_clickHandler(event:MouseEvent):void
+			{
+				clearSearchResult();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:GlowFilter id="glowFilter"
+					  alpha="1"
+					  color="{getStyle('focusColor')}"
+					  inner="true"
+					  strength="2"/>
+		
+		<esri:GeometryService id="geometryService"/>
+		
+		<esri:BufferParameters id="bufferParam" 
+							   unit="{GeometryService.UNIT_METER}" 
+							   outSpatialReference="{map.spatialReference}"
+							   geodesic="true"/>
+		
+		<esri:RelationParameters id="relationParams" 
+								 spatialRelationship="{RelationParameters.SPATIAL_REL_WITHIN}"/>
+		
+		<esri:FindTask id="findTask" 
+					   url="{_searchUrl}" 
+					   executeComplete="findTask_executeCompleteHandler(event)" 
+					   fault="faultEventHandler(event)"/>
+		
+		<esri:FindParameters id="findParam" 
+							 contains="true" 
+							 returnGeometry="true"/>
+		
+		<esri:IdentifyTask id="identifyTask" 
+						   url="{_searchUrl}" 
+						   executeComplete="identifyTask_executeCompleteHandler(event)" 
+						   fault="faultEventHandler(event)"/>
+		
+		<esri:IdentifyParameters id="identifyParam" 
+								 returnGeometry="true" 
+								 tolerance="3"
+								 layerOption="all"
+								 width="{map.width}" height="{map.height}" 
+								 mapExtent="{map.extent}" 
+								 spatialReference="{map.spatialReference}"/>
+		
+		<!--<s:NumberValidator id="bufferDistanceValidator" 
+						   source="{txtBufferDistance}" property="text" domain="int"
+						   minValue="1" maxValue="5000" 
+						   notAnIntegerError="{VALIDATOR_ERROR_STRING}" 
+						   greaterThanMaxError="{VALIDATOR_ERROR_STRING}" 
+						   lessThanMinError="{VALIDATOR_ERROR_STRING}"
+						   trigger="{btnBufferSearch}" triggerEvent="click" 
+						   valid="bufferDistanceValidator_validHandler(event)"/>-->
+		
+		<s:RadioButtonGroup id="rdgrpBufferDistance"/>
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace ns "http://www.esri.com/2008/ags";
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace TGISViewer "cn.seisys.TGISViewer.*";
+		@namespace esri "http://www.esri.com/2008/ags";
+		mx|Tree {
+			folderClosedIcon: ClassReference(null);
+			folderOpenIcon: ClassReference(null);
+			defaultLeafIcon: ClassReference(null);
+		}
+	</fx:Style>
+	
+	<TGISViewer:states>
+		<s:State name="bufferInput"/>
+		<s:State name="graphicalInput"/>
+		<s:State name="textInput"/>
+	</TGISViewer:states>
+	
+	<TGISViewer:transitions>
+		<s:Transition autoReverse="true" toState="*">
+			<s:Fade id="fade"/>
+		</s:Transition>
+	</TGISViewer:transitions>
+	
+	<TGISViewer:WidgetTemplate id="wTemplate"
+							   width="430" height="400"
+							   enableCloseButton="false"
+							   open="wTemplate_openHandler(event)" 
+							   closed="wTemplate_closedHandler(event)" 
+							   minimized="wTemplate_minimizedHandler(event)">
+		<TGISViewer:layout>
+			<s:VerticalLayout gap="0"/>
+		</TGISViewer:layout>
+		
+		<s:Group id="grpInput" width="100%" height="150">
+			<s:Group id="bufferlInput"
+					 width="100%" height="100%"
+					 visible="false"
+					 visible.bufferInput="true">
+				
+				<s:layout>
+					<s:VerticalLayout gap="2" paddingTop="10" paddingLeft="10" 
+									  paddingRight="10" paddingBottom="5"/>
+				</s:layout>
+				
+				<s:HGroup width="100%" height="30" verticalAlign="middle">
+					<s:Label text="查询范围: " left="5" verticalCenter="0"/>
+					<s:CheckBox id="chkSelectAllLayerBuffer" label="全部" left="70" 
+								verticalCenter="0" selected="true" 
+								change="chkSelectAllLayer_changeHandler(event)"/>
+				</s:HGroup>
+				
+				<s:Scroller id="layerContainerBuffer" width="100%" height="50">
+					<s:TileGroup id="layerGroupBuffer" width="100%" height="100%" paddingLeft="5"/>
+				</s:Scroller>
+				
+				<s:HGroup width="100%" height="30" verticalAlign="middle">
+					<s:Label text="缓冲距离: "/>
+					<s:RadioButton id="rdbtnBufferDistance500" label="500米" 
+								   group="{rdgrpBufferDistance}" 
+								   value="500"/>
+					<s:RadioButton id="rdbtnBufferDistance1000" label="1000米"
+								   selected="true"
+								   group="{rdgrpBufferDistance}" 
+								   value="1000"/>
+					<s:RadioButton id="rdbtnBufferDistance1500" label="1500米"
+								   group="{rdgrpBufferDistance}" 
+								   value="1500"/>
+					<s:RadioButton id="rdbtnBufferDistance2000" label="2000米"
+								   group="{rdgrpBufferDistance}" 
+								   value="2000"/>
+					<s:RadioButton id="rdbtnBufferDistance3000" label="3000米"
+								   group="{rdgrpBufferDistance}" 
+								   value="3000"/>
+				</s:HGroup>
+				
+				<s:HGroup width="100%" height="30" verticalAlign="middle" horizontalAlign="center">
+					<s:Button id="btnBufferSearch" label="搜索" 
+							  click="btnBufferSearch_clickHandler(event)"/>
+				</s:HGroup>
+				
+				<!--<s:HGroup width="100%" height="30" verticalAlign="middle" 
+				visible="false" includeInLayout="false">
+				<s:Label text="缓冲距离: "/>
+				<s:TextInput id="txtBufferDistance" text="500" textAlign="right" width="100%"/>
+				<s:Label text="米"/>
+				<s:Button id="btnBufferSearch" label="搜索"/>
+				</s:HGroup>-->
+			</s:Group>
+			
+			<s:Group id="graphicalInput"
+					 width="100%" height="100%"
+					 visible="false"
+					 visible.graphicalInput="true">
+				<s:layout>
+					<s:VerticalLayout gap="2" paddingTop="10" paddingLeft="10" 
+									  paddingRight="10" paddingBottom="5"/>
+				</s:layout>
+				
+				<s:HGroup width="100%" height="30" verticalAlign="middle">
+					<s:Label text="查询范围: " left="5" verticalCenter="0"/>
+					<s:CheckBox id="chkSelectAllLayerGraphic" label="全部" 
+								left="70" verticalCenter="0"
+								change="chkSelectAllLayer_changeHandler(event)"/>
+				</s:HGroup>
+				
+				<s:Scroller id="layerContainerGraphic" width="100%" height="100%">
+					<s:TileGroup id="layerGroupGraphic" width="100%" height="100%" paddingLeft="5"/>
+				</s:Scroller>
+				
+				<s:HGroup id="imageGroup"
+						  width="100%" height="30"
+						  gap="10"
+						  horizontalAlign="center">
+					<s:Image name="{DrawTool.EXTENT}" 
+							 source="assets/images/i_draw_rect.png" 
+							 useHandCursor="true"
+							 rollOut="iconRollOutHandler(event)"
+							 rollOver="iconRollOverHandler(event)"
+							 click="activateDrawTool(event)"/>
+					<s:Image name="{DrawTool.POLYGON}" 
+							 source="assets/images/i_draw_poly.png" 
+							 useHandCursor="true"
+							 rollOut="iconRollOutHandler(event)"
+							 rollOver="iconRollOverHandler(event)"
+							 click="activateDrawTool(event)"/>
+					<s:Image name="{DrawTool.FREEHAND_POLYGON}" 
+							 source="assets/images/i_draw_freepoly.png" 
+							 useHandCursor="true"
+							 rollOut="iconRollOutHandler(event)"
+							 rollOver="iconRollOverHandler(event)"
+							 click="activateDrawTool(event)"/>
+					<s:Image name="{DrawTool.CIRCLE}" 
+							 source="assets/images/i_draw_circle.png" 
+							 useHandCursor="true"
+							 rollOut="iconRollOutHandler(event)"
+							 rollOver="iconRollOverHandler(event)"
+							 click="activateDrawTool(event)"/>
+					<s:Image name="{DrawTool.ELLIPSE}" 
+							 source="assets/images/i_draw_ellipse.png" 
+							 useHandCursor="true"
+							 rollOut="iconRollOutHandler(event)"
+							 rollOver="iconRollOverHandler(event)"
+							 click="activateDrawTool(event)"/>
+					<!--<s:Image name="clear" 
+							 source="assets/images/i_clear.png" 
+							 useHandCursor="true"
+							 rollOut="iconRollOutHandler(event)"
+							 rollOver="iconRollOverHandler(event)"
+							 click="imgClear_clickHandler(event)"/>-->
+				</s:HGroup>
+			</s:Group>
+			
+			<s:Group id="textInput"
+					 width="100%" height="100%"
+					 visible="false"
+					 visible.textInput="true">
+				<s:layout>
+					<s:VerticalLayout gap="2" paddingTop="10" paddingLeft="10" 
+									  paddingRight="10" paddingBottom="5"/>
+				</s:layout>
+				
+				<s:HGroup width="100%" height="30" verticalAlign="middle">
+					<s:Label text="查询范围: " left="5" verticalCenter="0"/>
+					<s:CheckBox id="chkSelectAllLayerText" label="全部" left="70" 
+								verticalCenter="0"
+								change="chkSelectAllLayer_changeHandler(event)"/>
+				</s:HGroup>
+				
+				<s:Scroller id="layerContainerText" width="100%" height="100%">
+					<s:TileGroup id="layerGroupText" width="100%" height="100%" paddingLeft="5"/>
+				</s:Scroller>
+				
+				<s:HGroup width="100%" height="30" verticalAlign="middle">
+					<s:Label text="关键字: "/>
+					<s:TextInput id="txtKeyWord" width="100%"
+								 keyDown="txtKeyWord_keyDownHandler(event)"/>
+					<s:Button id="btnFind" label="搜索" width="50"
+							  click="btnFind_clickHandler(event)"/>
+				</s:HGroup>
+			</s:Group>
+		</s:Group>
+		
+		
+		<s:Group id="resultsList"
+				 width="100%" height="100%">
+			<s:layout>
+				<s:VerticalLayout gap="2" paddingTop="10" paddingLeft="10" 
+								  paddingRight="10" paddingBottom="5"/>
+			</s:layout>
+
+			<checkTree:CheckTree id="trResult" width="100%" height="100%" 
+								 borderAlpha="0"
+								 labelField="label" dataProvider="{_treeDataSource}"
+								 checkBoxStateField="state" checkBoxEnableState="true" 
+								 checkBoxBgColor="{_selectionColor}" 
+								 change="trResult_changeHandler(event)" 
+								 doubleClick="trResult_doubleClickHandler(event)"/>
+			
+			<s:HGroup id="grpResultButton" width="100%" height="30" 
+					  horizontalAlign="center" verticalAlign="middle">
+				<s:Button id="btnSaveArea" label="保存区域" 
+						  visible="{_showSaveArea}" includeInLayout="{_showSaveArea}"
+						  click="btnSaveArea_clickHandler(event)"/>
+				<s:Button id="btnStatistic" label="统计" 
+						  visible="{_showStatistic}" includeInLayout="{_showStatistic}"
+						  click="btnSendDevice_clickHandler(event)"/>
+				<s:Button id="btnSendDevice" label="确定" 
+						  visible="{_showSendResult}" includeInLayout="{_showSendResult}"
+						  click="btnSendDevice_clickHandler(event)"/>
+				<s:Button id="btnClearResult" label="清除" 
+						  click="btnClearResult_clickHandler(event)"/>
+			</s:HGroup>
+		</s:Group>
+	</TGISViewer:WidgetTemplate>
+</TGISViewer:BaseWidget>

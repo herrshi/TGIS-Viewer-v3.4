@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<configuration>
+	<menu>
+		<itemgroup label="图层">
+			<item label="警员">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="PoliceOverlay" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="警车">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="PoliceCarOverlay" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="诱导板">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="诱导板" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+		</itemgroup>
+
+		<item label="打印">
+
+		</item>
+	</menu>
+
+</configuration>
