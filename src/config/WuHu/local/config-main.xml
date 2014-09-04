@@ -41,7 +41,7 @@
 	
 	
 			
-	<map top="83"  left="265" center="118.417947 31.337093" scale="24000"
+	<map top="0"  center="118.417947 31.337093" scale="24000"
 			 scalebarvisible="false" esrilogovisible="false">
 		<basemaps>
 			<layer label="基础图层" type="tiled" visible="true"
