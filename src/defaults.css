@@ -82,17 +82,7 @@ esri|InfoWindow
            info-placement: top;  
   } 
 
-mx|TabNavigator{
-	tabHeight:32;
-	tabWidth:130;
-	paddingTop:2;
-	paddingLeft:1;
-	horizontalGap:1;
-	tabStyleName:"myTab";
-	firstTabStyleName:"myTab";
-	lastTabStyleName: "myTab";
-	borderVisible:true;
-}
+
 .myTab{
 	fontFamily:宋体;
 	fontSize:13;
