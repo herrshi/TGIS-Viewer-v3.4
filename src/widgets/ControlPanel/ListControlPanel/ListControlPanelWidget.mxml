@@ -138,11 +138,11 @@
 			
 			protected function menuItemDG_listMenuItemMouseOverHandler(event:Event):void
 			{
-				var pointGlobal:Point = ItemRenderer( event.target) .localToGlobal( new Point( 0, 0 ) );
+				/*var pointGlobal:Point = ItemRenderer( event.target) .localToGlobal( new Point( 0, 0 ) );
 				var pointLocal:Point = menuGroup.globalToLocal( pointGlobal ); // get the local coordinates where the menuItem will be shown
 				xOver = pointLocal.x;
 				
-				menuListContainer.visible = false;
+				menuListContainer.visible = false;*/
 			}
 			
 		]]>

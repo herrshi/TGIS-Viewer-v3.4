@@ -192,15 +192,19 @@
 				
 			
 				AppEvent.addListener( AppEvent.FIND_DEVICE, appevent_findDeviceHandler );
+				
 				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_widgetRunHandler );
 				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_widgetCloseHandler );
+				
 				AppEvent.addListener( AppEvent.ADD_POINTS, appevent_addPointsHandler );
 				AppEvent.addListener( AppEvent.DELETE_ALL_POINTS, appevent_deleteAllPointsHandler );
 				AppEvent.addListener( AppEvent.DELETE_POINTS, appevent_deletePointsHandler );
+				
 				AppEvent.addListener( AppEvent.START_MOVE_OVERLAY, appevent_startMoveOverlayHandler );
 				AppEvent.addListener( AppEvent.STOP_EDIT_OVERLAY, appevent_stopEditOverlayHandler );
 				AppEvent.addListener( AppEvent.START_ADD_OVERLAY, appevent_startAddOverlayHandler );
 				AppEvent.addListener( AppEvent.STOP_ADD_OVERLAY, appevent_stopAddOverlayHandler );
+				
 				AppEvent.addListener( AppEvent.EDITORTOOBAR_UNDO, appevent_editorToolbarUndoHandler );
 				AppEvent.addListener( AppEvent.EDITORTOOBAR_REDO, appevent_editorToolbarRedoHandler );
 				AppEvent.addListener( AppEvent.EDITORTOOBAR_COMMIT, appevent_editorToolbarCommitHandler );
@@ -688,6 +692,8 @@
 				closeWidget( "编辑工具栏" );
 				
 				editTool.deactivate();
+				setMapAction( null, null, null, null );
+				
 				_pointOverlayLayer.removeEventListener( MouseEvent.CLICK, pointOverlayLayer_ClickHandler );
 				_pointOverlayLayer.infoWindowRenderer = _popUpRenderer;
 			}

@@ -337,21 +337,46 @@
 			protected function btnSaveGeometry_clickHandler(event:MouseEvent):void
 			{
 				var geometryArray:Array = [];
+				
+				//已保存过的路线
+				var savedCount:uint = 0;
+				for each ( var showGraphic:Graphic in _showGeometryLayer.graphicProvider )
+				{
+					//删掉坐标系属性
+					var geometryJson:Object = showGraphic.geometry.toJSON();
+					geometryJson.spatialReference = null;
+					delete geometryJson.spatialReference;
+					
+					var geometryObj:Object = 
+						{
+							index: showGraphic.attributes.index,
+							type: showGraphic.geometry.type,
+							geometry: geometryJson
+						};
+					geometryArray.push( geometryObj );
+					savedCount++;
+				}
+				
+				//新增的路线
 				for each ( var drawGraphic:Graphic in _drawLayer.graphicProvider )
 				{
 					var drawIndex:uint = drawGraphic.attributes.drawIndex;
-					//删掉spatialReference属性
-					var geometryJson:Object = drawGraphic.geometry.toJSON();
+					
+					geometryJson = drawGraphic.geometry.toJSON();
+					//删掉坐标系属性
 					geometryJson.spatialReference = null;
 					delete geometryJson.spatialReference;
-					var geometryObj:Object = 
+					
+					geometryObj = 
 						{
-							index: drawGraphic.attributes.drawIndex,
+							index: drawIndex + savedCount,
 							type: drawGraphic.geometry.type,
 							geometry: geometryJson
 						};
 					geometryArray.push( geometryObj );
 				}
+				
+				
 				
 				var dataString:String = JSON.stringify( geometryArray );
 				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
@@ -367,9 +392,19 @@
 			
 			protected function btnClearGeometry_clickHandler(event:MouseEvent):void
 			{
+				//清除用户画的路线和搜索出的设备
 				_drawLayer.clear();
 				_searchResultLayer.clear();
 				_drawIndex = 0;
+				
+				//清除岗点
+				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "policeSentry" );
+				
+				//清除页面添加的路线和线路
+				_showGeometryLayer.clear();
+				_showDeviceLayer.clear();
+				//通知页面任务已清除
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, { functionName: "deleteJobByMap" } );
 			}
 			
 			private function identifyDevice( geometryType:String ):void
@@ -532,6 +567,7 @@
 					for each ( var geometryObj:Object in geometryArray )
 					{
 						var type:String = geometryObj.type;
+						var index:uint = geometryObj.index;
 						var graphic:Graphic;
 						switch( type )
 						{
@@ -547,7 +583,11 @@
 						}
 						if ( graphic )
 						{
-							graphic.attributes = { jobId: jobId };
+							graphic.attributes = 
+								{ 
+									jobId: jobId, 
+									index: index 
+								};
 							_showGeometryLayer.add( graphic );
 						}
 					}
@@ -574,7 +614,14 @@
 						{
 							var graphic:Graphic = new Graphic( new MapPoint( x, y ) );
 							graphic.id = id;
-							graphic.attributes = { type: type, layerName: type, desc: desc, jobId: jobId, id: id };
+							graphic.attributes = 
+								{ 
+									type: type, 
+									layerName: type, 
+									desc: desc, 
+									jobId: jobId, 
+									id: id 
+								};
 							
 							var popUpRenderer:ClassFactory = _showDevicePopUpRendererTable.find( type );
 							if ( !popUpRenderer )

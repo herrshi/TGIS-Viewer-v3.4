@@ -13,16 +13,26 @@
 			<field name="policeName" />
 			<field name="departmentName" alias="所属部门" visible="true"/>
 			<field name="dutyName" alias="职务" visible="true"/>
-			<field name="gpsState" alias="GPS状态" visible="true"/>
-			<field name="interphoneCode" alias="PDA编号" visible="true"/>
-			<field name="pdaCode" alias="PDA编号" visible="true"/>
 			<field name="policeId" alias="警员id" visible="true"/>
 			<field name="policeSn" alias="警号" visible="true"/>
-			<field name="workContent" alias="工作内容" visible="true"/>
+			<field name="gpsState" alias="GPS状态" visible="true"/>
+			<field name="interphoneCode" alias="手持终端编号" visible="true"/>
+			<field name="pdaCode" alias="PDA编号" visible="true"/>
+			<field name="phoneNum" alias="电话" visible="true"/>
+			<field name="m350Sn" alias="350M编号" visible="true"/>
+			<field name="acquisitionTime" alias="采集时间" visible="true"/>
+			<field name="gpsState" alias="GPS状态" visible="true"/>
+			<field name="distance" alias="距离" visible="true"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 	</popup>
 	
+	<buttons>
+		<button label="呼叫" action="openDevice" type="callPDA" idfield="policeId" />
+		<button label="短信" action="openDevice" type="sendMessage" idfield="policeId" />
+		<button label="查看轨迹" action="openDevice" type="gpsPoliceTrack" idfield="policeId" />
+	</buttons>
+		
 	<simplerenderer>
 		<picturemarkersymbol url="assets/images/mapIcons/JingCha-blue.png" yoffset="13"/>
 	</simplerenderer>

@@ -8,7 +8,7 @@
 		<font name="微软雅黑" size="14" />
 	</style>
 	
-	<socketinfo enable="true">
+	<socketinfo enable="false">
 		<!-- 接收安全策略文件 -->
 		<securitysocketip>128.64.25.42</securitysocketip>
 		<securitysocketport>6000</securitysocketport>
@@ -22,24 +22,13 @@
 	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
 
 	<!-- UI elements -->
-	<widget  right="10" top="10" 
+	<widget  left="10" top="10" 
 				 config="widgets/Navigation/NavigationWidget.xml"
 				 url="widgets/Navigation/NavigationWidget.swf" />
 		    
 	<widget left="3" bottom="3"
 			config="widgets/Coordinate/CoordinateWidget.xml" 
 			url="widgets/Coordinate/CoordinateWidget.swf" />
-
-    <widget right="0" bottom="0"
-			config="widgets/OverviewMap/OverviewMapWidget.xml" 
-			url="widgets/OverviewMap/OverviewMapWidget.swf" />
-	
-			
-	 <widget left="150" top="10"
-			config="widgets/CarTrack/YiXing/CarTrackWidget-YiXing.xml" 
-			url="widgets/CarTrack/CarTrackWidget.swf" />
-	
-	
 			
 	<map top="0"  center="118.417947 31.337093" scale="24000"
 			 scalebarvisible="false" esrilogovisible="false">
@@ -106,13 +95,31 @@
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeEvent.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 
-
+		<widget label="警员" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-police.xml"
+			url="widgets/Overlay/PointOverlayWidget.swf"  />
+		
+		<widget label="gps节点" preload="open" 
+			config="widgets/Overlay/WuHu/PointOverlayWidget-gpsTrack.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="警员轨迹线" preload="open"
+			config="widgets/Overlay/WuHu/PolylineOverlayWidget-gpsPoliceTrack.xml"
+			url="widgets/Overlay/PolylineOverlayWidget.swf" />
+		
+		<widget label="警员模拟移动" preload="open"
+			config="widgets/SimulationMovePoint/WuHu/SimulationMovePointWidget-gpsPoliceTrack.xml"
+			url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
+				
+		<widget label="gpsPoliceTrack" preload="open" 
+			config="widgets/GPSTrack/WuHu/GPSTrackWidget-police.xml"
+			url="widgets/GPSTrack/GPSTrackWidget.swf"/>
 	</widgetcontainer>
 	
 	<widgetcontainer layout="fix">
 		<widget label="ControlPanel" preload="open" right="20" bottom="20"
-				config="widgets/ControlPanel/WuHu/IconControlPanelWidget-main.xml"
-				url="widgets/ControlPanel/IconControlPanelWidget.swf"/>
+			config="widgets/ControlPanel/WuHu/IconControlPanelWidget.xml"
+			url="widgets/ControlPanel/IconControlPanelWidget.swf"/>
 	</widgetcontainer>
 
 </configuration>
