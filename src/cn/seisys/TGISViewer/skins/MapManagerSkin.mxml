@@ -184,10 +184,10 @@
 				
 				//芜湖测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QiXiangZhan","points":[{"x":118.566158,"y":31.146213,"id":"QiXiangZhan1","fields":{}}]}' );
-//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeEvent","points":[{"x":118.2028,"y":31.09213,"id":"event001","fields":{}},{"x":118.58158,"y":31.14213,"id":"event002","fields":{}}]}' );
-//				AppEvent.dispatch( AppEvent.SET_POLICE_EVENT_DATA ,'[ {"id": "event004","title": "交通警情-道路交通警情-机动车与非机动车","image": " ", "level": 1,"time": "2014-07-22 15:35","interaction119":"联动119", "interaction110":"联动110", "interaction120":"联动120", "interactionContent":"有危险品", "source": "122电话报警","content": "小汽车驶入非机动车道撞上电动车，发生擦挂事件","location": "锦江区锦华路100号万特欢乐世界正门口","deatCount": 0,"injuredCount": 3,"trappedCount": 5,"fields": {"报警人": "李四 男 138 8888 8888","涉案人": "张三 男 137 7777 7777"},"actions": "上报,回退,派警,结案,回访","logs": "2014-07-22 15: 35一分局刘某进行三快处理并结案；2014-07-22 15: 35一分局刘某电话核实；2014-07-22 15: 35交管局下发至一分局；"}]');
+				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeEvent","points":[{"x":118.423486,"y":31.337093,"id":"event001","fields":{}},{"x":118.58158,"y":31.14213,"id":"event002","fields":{}}]}' );
 //				AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, "policeSentry" );
-				AppEvent.dispatch( AppEvent.GUARD_SHOW_GEOMETRY, '[{"jobId":"1","geometries":[{"type":"esriGeometryPolyline","geometry":{"paths":[[[118.38836554077551,31.330811222944604],[118.41235050771428,31.327042156711368],[118.42713838197332,31.329269332212824],[118.44244307516281,31.332353113676383]]]},"index":0}]}]' );
+//				AppEvent.dispatch( AppEvent.GUARD_SHOW_GEOMETRY, '[{"jobId":"1","geometries":[{"type":"esriGeometryPolyline","geometry":{"paths":[[[118.38836554077551,31.330811222944604],[118.41235050771428,31.327042156711368],[118.42713838197332,31.329269332212824],[118.44244307516281,31.332353113676383]]]},"index":0}]}]' );
+				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1693,"x":118.489,"y":31.333,"fields":{"policeSn":"X20438","policeName":"郝晟茂","departmentName":"开发区大队","dutyName":"民警","pdaCode":"","interphoneCode":"","acquisitionTime":"2014-09-01 00:00:01","gpsState":"","distance":"0","phoneNum":"","m350Sn":""}},{"id":1692,"x":118.419,"y":31.334,"fields":{"policeSn":"X20433","policeName":"曹积","departmentName":"镜湖大队","dutyName":"民警","pdaCode":"","interphoneCode":"","acquisitionTime":"2014-09-01 00:00:01","gpsState":"","distance":"0","phoneNum":"","m350Sn":""}},{"id":708,"x":118.482,"y":31.334,"fields":{"policeSn":"005291","policeName":"周涛","departmentName":"镜湖大队","dutyName":"民警","pdaCode":"","interphoneCode":"","acquisitionTime":"2014-09-01 00:00:01","gpsState":"04","distance":"0","phoneNum":"","m350Sn":"00000001"}},{"id":712,"x":118.4232,"y":31.3703,"fields":{"policeSn":"005295","policeName":"刘刚","departmentName":"开发区大队","dutyName":"民警","pdaCode":"","interphoneCode":"","acquisitionTime":"2014-09-01 00:00:01","gpsState":"1","distance":"0","phoneNum":"","m350Sn":""}}]}' );
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
@@ -241,7 +241,8 @@
 //				AppEvent.dispatch( AppEvent.GUARD_SET_DEVICE_SEARCH_DISTANCE, '[{"type":"摄像机","distance":500}]' );
 				
 				//芜湖测试
-				AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, "policeSentry" );
+//				AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, "policeSentry" );
+				AppEvent.dispatch( AppEvent.SET_POLICE_EVENT_DATA ,'[ {"id": "event001","title": "交通警情-道路交通警情-机动车与非机动车","image": " ", "level": 1,"time": "2014-07-22 15:35","interaction119":"联动119", "interaction110":"联动110", "interaction120":"联动120", "interactionContent":"有危险品", "source": "122电话报警","content": "小汽车驶入非机动车道撞上电动车，发生擦挂事件","location": "锦江区锦华路100号万特欢乐世界正门口","deatCount": 0,"injuredCount": 3,"trappedCount": 5,"fields": {"报警人": "李四 男 138 8888 8888","涉案人": "张三 男 137 7777 7777"},"actions": "上报,回退,派警,结案,回访","logs": "2014-07-22 15: 35一分局刘某进行三快处理并结案；2014-07-22 15: 35一分局刘某电话核实；2014-07-22 15: 35交管局下发至一分局；"}]');
 			}
 			
 			protected function btnTest3_clickHandler(event:MouseEvent):void

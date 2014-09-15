@@ -7,6 +7,16 @@
 	
 	<type>policeSentry</type>
 	
+	<popup>
+		<title>{spotName}</title>
+		<fields>
+			<field name="spotName" />
+			<field name="spotType" alias="岗点类型" visible="true"/>
+			<field name="spotId" />
+		</fields>
+		<showzoomtobutton>false</showzoomtobutton>
+	</popup>
+	
 	<simplerenderer>
 		<picturemarkersymbol url="assets/images/mapIcons/GangDian-blue.png" yoffset="13" />
 	</simplerenderer>
