@@ -25,6 +25,13 @@
 			<idfield>DEVICEID</idfield>
 			<descfield>NAME</descfield>
 		</param>
+		
+		<param>
+			<type>电子警察</type>
+			<layerids>3</layerids>
+			<idfield>CROSSINGIN</idfield>
+			<descfield>CROSSINGNA</descfield>
+		</param>
 	</identifyparams>
 	
 	<uniquevaluerenderer field="layerName">
@@ -43,6 +50,10 @@
 		<uniquevalueinfo value="摄像机">
 			<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" />
 		</uniquevalueinfo>
+		
+		<uniquevalueinfo value="电子警察">
+			<picturemarkersymbol url="assets/images/mapIcons/DianZiJingCha-blue.png" yoffset="13" />
+		</uniquevalueinfo>
 			
 		<uniquevalueinfo value="policeSentry">
 			<picturemarkersymbol url="assets/images/mapIcons/GangDian-blue.png" yoffset="13" />
@@ -53,7 +64,7 @@
 		</uniquevalueinfo>
 	</uniquevaluerenderer>
 	
-	<!-- 新增路线是搜索出的设备popup配置 -->	
+	<!-- 新增路线时搜索出的设备popup配置 -->	
 	<searchresultpopups>
 		<popup layername="default">
 			<title>{DESC}</title>
@@ -91,6 +102,21 @@
 				<button label="添加" action="addDeviceToJob" type="摄像机" idfield="JIANYIBIAN" />
 				<button label="删除" action="deleteDeviceFromJob" type="摄像机" idfield="JIANYIBIAN" />
 				<button label="详细信息" action="openDevice" type="SXJ" idfield="JIANYIBIAN" />
+			</buttons>
+		</popup>
+		
+		<popup layername="电子警察">
+			<title>{CROSSINGNA}</title>
+			<idfieldname>CROSSINGIN</idfieldname>
+			<fields>
+				<field name="CROSSINGNA" />
+				<field name="CROSSINGIN" alias="编号" visible="true" />
+			</fields>
+			<showzoomtobutton>false</showzoomtobutton>
+			<buttons>
+				<button label="添加" action="addDeviceToJob" type="电子警察" idfield="CROSSINGIN" />
+				<button label="删除" action="deleteDeviceFromJob" type="电子警察" idfield="CROSSINGIN" />
+				<button label="详细信息" action="openDevice" type="DZJC" idfield="CROSSINGIN" />
 			</buttons>
 		</popup>
 		
@@ -143,6 +169,19 @@
 			<showzoomtobutton>false</showzoomtobutton>
 			<buttons>
 				<button label="详细信息" action="openDevice" type="SXJ" idfield="id" />
+			</buttons>
+		</popup>
+		
+		<popup layername="电子警察">
+			<title>{desc}</title>
+			<idfieldname>id</idfieldname>
+			<fields>
+				<field name="desc" />
+				<field name="id" alias="编号" visible="true" />
+			</fields>
+			<showzoomtobutton>false</showzoomtobutton>
+			<buttons>
+				<button label="详细信息" action="openDevice" type="DZJC" idfield="id" />
 			</buttons>
 		</popup>
 		

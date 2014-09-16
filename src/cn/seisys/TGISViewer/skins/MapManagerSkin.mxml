@@ -174,7 +174,7 @@
 //				AppEvent.dispatch( AppEvent.GET_DEVICE_COORDINATE, '{"type":"摄像机","DeviceList":["52020114001322020006"]}' );
 //				AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, "policeSentry" );
 //				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"贵BU0051","kkPoints":[{"deviceId":"djkk11","deviceDesc":"凤凰大道-水西路","passTime":"2014-07-22 09:19:03","picUrl":""},{"deviceId":"djkk11","deviceDesc":"凤凰大道-水西路","passTime":"2014-07-22 09:19:16","picUrl":""},{"deviceId":"djkk31","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""}]}' ); 
-//				AppEvent.dispatch( AppEvent.GUARD_SET_DEVICE_SEARCH_DISTANCE, '[{"type":"摄像机","distance":500},{"type":"信号机","distance":100}]' );
+				AppEvent.dispatch( AppEvent.GUARD_SET_DEVICE_SEARCH_DISTANCE, '[{"type":"摄像机","distance":500},{"type":"信号机","distance":500},{"type":"电子警察","distance":500}]' );
 //				AppEvent.dispatch( AppEvent.GUARD_SHOW_GEOMETRY, '[{"jobId":"1","geometries":[{"geometry":{"paths":[[[104.82753544368516,26.605192984571427],[104.83929949889798,26.592629430460643],[104.84478177705541,26.600281777055393],[104.84638077485134,26.59422842825656]]]},"type":"esriGeometryPolyline","index":0}]}]' );
 //				AppEvent.dispatch( AppEvent.GUARD_SHOW_DEVICE, '[{"jobId":"1","devices": [{"type":"信号机","index":1,"id":"GMVDT66","desc":"人民路（西）","x":104.84551666700004,"y":26.59183333300001},{"type":"摄像机","index":1,"id":"1932","desc":"松坪北路曾家烙锅西小巷","x":104.838306,"y":26.59388899999999},{"type":"policeSentry","index":1,"id":"373AC306-EAED-2A64-60D0-67CA7A2CE5DC","desc":"gd1","x":104.83290350771429,"y":26.600395991183678},{"type":"policeSentry","index":2,"id":"81D31191-21B2-81F9-05B0-67CAAC9BE604","desc":"gd2","x":104.83838578587173,"y":26.59125886092129}]}]' );				
 				

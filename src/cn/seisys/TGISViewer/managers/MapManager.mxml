@@ -1773,7 +1773,7 @@ Class used to configure the viewer map component (including layers) and handle m
 			
 			private function map_ClickHandler( event:MouseEvent ):void
 			{
-//				map.infoWindow.hide();
+				map.infoWindow.hide();
 			}
 			
 			private function hideInfoPopUpHandler( event:AppEvent ):void
