@@ -488,37 +488,45 @@
 					var x:Number = pointObj.x;
 					var y:Number = pointObj.y;
 					var id:String = pointObj.id;
+					var fields:Object = pointObj.fields;
 					
 					if ( !id || id == "" )
 						continue;
 					
 					var graphic:Graphic = getGraphicById( id );
+					//已存在的点
 					if ( graphic )
 					{
-						//若已经存在此点且传入坐标则更新位置，否则只更新属性
+						//若传入坐标则更新位置
 						if ( !isNaN( x ) && !isNaN( y ) )
 						{
 							graphic.geometry = new MapPoint( x, y );
 						}
+						//若传入fields则更新attributes
+						if ( fields )
+						{
+							var attributes:Object = graphic.attributes;
+							//fields可能只传了变化的字段，不能直接覆盖attributes
+							for ( var fieldName:String in fields )
+							{
+								attributes[ fieldName ] = fields[ fieldName ];
+							}
+						}
 					}
+					//不存在的点
 					else
 					{
-						//若不存在此点且传入坐标则新建点，否则退出
 						if ( !isNaN( x ) && !isNaN( y ) )
 						{
 							graphic = new Graphic( new MapPoint( x, y ) );
 							graphic.id = id;
+							graphic.attributes = fields;
 							_pointOverlayLayer.add( graphic );
 						}
 						else
 						{
 							continue;
 						}
-					}
-					var fields:Object = pointObj.fields;
-					if ( fields )
-					{
-						graphic.attributes = fields;
 					}
 					
 					//trace(infoWin);
