@@ -17,30 +17,32 @@
 		<datasocketport>6001</datasocketport>
 	</socketinfo>
 
-	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+	<arcgisserverip>128.64.151.220:6080</arcgisserverip>
 
 	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
 
 	<!-- UI elements -->
 	<widget  left="10" top="10" 
-				 config="widgets/Navigation/NavigationWidget.xml"
-				 url="widgets/Navigation/NavigationWidget.swf" />
+		config="widgets/Navigation/NavigationWidget.xml"
+		url="widgets/Navigation/NavigationWidget.swf" />
 		    
 	<widget left="3" bottom="3"
-			config="widgets/Coordinate/CoordinateWidget.xml" 
-			url="widgets/Coordinate/CoordinateWidget.swf" />
+		config="widgets/Coordinate/CoordinateWidget.xml" 
+		url="widgets/Coordinate/CoordinateWidget.swf" />
 			
 	<map top="0"  center="118.417947 31.337093" scale="24000"
 			 scalebarvisible="false" esrilogovisible="false">
 		<basemaps>
-			<layer label="基础图层" type="tiled" visible="true"
-					  url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base/MapServer" />
+			<layer label="矢量图" type="tiled" visible="true"
+				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base_new/MapServer" />
+<!-- 			<layer label="卫星图" type="tiled" visible="false" -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" /> -->
 		</basemaps>
 		
 		<operationallayers>
 			<layer label="信号机" type="feature" visible="false" autorefresh="0"
-				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/0"
-				   popupconfig="popups/WuHu/PopUp-XHJ.xml">
+				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/0"
+				popupconfig="popups/WuHu/PopUp-XHJ.xml">
 
 				<uniquevaluerenderer field="STATE">
 					<defaultlabel>未知</defaultlabel>
@@ -61,8 +63,8 @@
 			</layer>
 			
 			<layer label="摄像机" type="feature" visible="false" autorefresh="0"
-				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/1"
-				   popupconfig="popups/WuHu/PopUp-XHJ.xml">
+				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/1"
+				popupconfig="popups/WuHu/PopUp-XHJ.xml">
 
 				<uniquevaluerenderer field="STATE">
 					<defaultlabel>未知</defaultlabel>
@@ -104,10 +106,22 @@
 			url="widgets/Overlay/PointOverlayWidget.swf" />
 	</widgetcontainer>
 	
-	<widgetcontainer layout="fix">
-		<widget label="ControlPanel" preload="open" right="20" bottom="20"
-			config="widgets/ControlPanel/WuHu/IconControlPanelWidget-main.xml"
-			url="widgets/ControlPanel/IconControlPanelWidget.swf"/>
+<!-- 	<widgetcontainer layout="fix"> -->
+<!-- 		<widget label="ControlPanel" preload="open" right="20" bottom="20" -->
+<!-- 			config="widgets/ControlPanel/WuHu/IconControlPanelWidget-main.xml" -->
+<!-- 			url="widgets/ControlPanel/IconControlPanelWidget.swf"/> -->
+<!-- 	</widgetcontainer> -->
+	
+	<widgetcontainer layout="horizontal">
+		<widget label="搜索" preload="minimized" 
+			icon="assets/images/i_search.png"
+			config="widgets/MultiLayerSearch/WuHu/MultiLayerSearchWidget-roadAndPoi.xml"
+			url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
 	</widgetcontainer>
-
+	
+<!-- 	<widgetcontainer layout="vertical"> -->
+<!-- 		<widget label="底图切换" preload="open" -->
+<!-- 			config="widgets\MapSwitcher\MapSwitcherWidget.xml" -->
+<!-- 			url="widgets\MapSwitcher\MapSwitcherWidget.swf"/> -->
+<!-- 	</widgetcontainer> -->
 </configuration>

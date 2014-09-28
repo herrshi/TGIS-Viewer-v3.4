@@ -777,7 +777,8 @@
 							{ 
 								arrowLength: _arrowInfo.length, 
 								arrowAngle: angle,
-								rendererInfo: rendererInfo
+								rendererInfo: rendererInfo,
+								id: graphic.id
 							};
 						_lineArrowLayer.add( arrowGraphic );
 					}

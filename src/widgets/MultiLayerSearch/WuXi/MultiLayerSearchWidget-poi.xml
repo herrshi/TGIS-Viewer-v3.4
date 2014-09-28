@@ -5,8 +5,8 @@
 	
 	<layerinfo>
 		<find>
-			<url>http://{serverip}/arcgis/rest/services/wuxi/wx_search/MapServer</url>
-			<fields>NAMEC,JNAME,BYNAMEC</fields>
+			<url>http://{serverip}/arcgis/rest/services/wuxi/wx_device_new/MapServer</url>
+			<fields>DES,JNAME</fields>
 		</find>
 
 		<uniquevaluerenderer field="layerName">
@@ -15,33 +15,51 @@
 			<uniquevalueinfo value="主要道路">
 				<simplelinesymbol color="0x3E6FBC" width="2" />
 			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="电子警察">
+				<picturemarkersymbol url="assets/images/mapIcons/DianZiJingCha-blue.png" yoffset="13" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="监控">
+				<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="卡口">
+				<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="信号灯">
+				<picturemarkersymbol url="assets/images/mapIcons/XinHaoDeng-green.png"/>
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="信号机">
+				<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-blue.png" yoffset="13" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="流量检测器">
+				<picturemarkersymbol url="assets/images/mapIcons/DuanMian-blue.png" yoffset="13" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="情报板">
+				<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-blue.png" yoffset="13" />
+			</uniquevalueinfo>
 		</uniquevaluerenderer>
 
 		<popups>
 			<popup layername="default">
-				<title>{NAME}</title>
+				<title>{DES}</title>
 				<fields>
-					<field name="NAME" />
-				</fields>
-				<showzoomtobutton>false</showzoomtobutton>
-			</popup>
-			
-			<popup layername="兴趣点">
-				<title>{NAMEC}</title>
-				<fields>
-					<field name="NAMEC" />
+					<field name="DES" />
 				</fields>
 				<showzoomtobutton>false</showzoomtobutton>
 			</popup>
 			
 			<popup layername="路口">
 				<title>{JNAME}</title>
-				<idfieldname>JID</idfieldname>
 				<fields>
 					<field name="JNAME" />
-					<field name="JID"/>
+					<field name="JID" />
 				</fields>
-				<showzoomtobutton>false</showzoomtobutton>
 				<buttons>
 					<button label="关联" action="addDeviceToJob" type="路口" idfield="JID"/>
 				</buttons>
@@ -54,7 +72,6 @@
 					<field name="BYNAMEC" />
 					<field name="EDGEID"/>
 				</fields>
-				<showzoomtobutton>false</showzoomtobutton>
 				<buttons>
 					<button label="关联" action="addDeviceToJob" type="主要道路" idfield="EDGEID"/>
 				</buttons>

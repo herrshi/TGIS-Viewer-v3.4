@@ -35,4 +35,8 @@
 	<simplerenderer>
 		<picturemarkersymbol url="assets/images/mapIcons/JingCha-blue.png" yoffset="13"/>
 	</simplerenderer>
+	
+	<clickfunction>
+		<action>showInfoWindow</action>
+	</clickfunction>
 </configuration>

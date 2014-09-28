@@ -51,6 +51,7 @@
 			
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
+			import cn.seisys.TGISViewer.skins.MyPopUpRendererSkin;
 			import cn.seisys.TGISViewer.utils.Hashtable;
 			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
 			import cn.seisys.TGISViewer.utils.RendererParser;
@@ -96,6 +97,7 @@
 			 * 编辑模式时禁用弹出窗，非编辑模式时启动弹出窗
 			 * */
 			private var _popUpRenderer:ClassFactory;
+			private var _popUpInfo:PopUpInfoWithButtons;
 			
 			/**
 			 * 当前模式
@@ -232,14 +234,14 @@
 					if ( configXML.popup[0] )
 					{
 						var popupXML:XML = configXML.popup[0];
-						var popUpInfo:PopUpInfoWithButtons = PopUpInfoParser.parsePopUpInfo( popupXML );
+						_popUpInfo = PopUpInfoParser.parsePopUpInfo( popupXML );
 						
 						_popUpRenderer = new ClassFactory( PopUpRenderer );
 						_popUpRenderer.properties = 
 							{ 
-								popUpInfo: popUpInfo
+								popUpInfo: _popUpInfo
 							};
-						_pointOverlayLayer.infoWindowRenderer = _popUpRenderer;
+//						_pointOverlayLayer.infoWindowRenderer = _popUpRenderer;
 					}
 					
 					//renderer
@@ -259,7 +261,7 @@
 					{
 						_clickFunctionInfo = 
 							{
-								action: String( configXML.clickfunction.action ),
+								action: String( configXML.clickfunction.action ) || "showInfoWindow",
 								type: String( configXML.clickfunction.type ),
 								idField: String( configXML.clickfunction.idfield )
 								/*widgetName: String( configXML.clickfunction.widgetname );*/
@@ -541,11 +543,28 @@
 							case "getpoliceeventdata":
 								graphic.addEventListener(MouseEvent.CLICK, openDetail_clickHandler);
 								//graphic.addEventListener(MouseEvent.CLICK, openInfoWin_clickHandler);
+								break;
+							case "showinfowindow":
+								graphic.addEventListener( MouseEvent.CLICK, showInfowWindow_clickHandler );
+								break;
 						}
 					}
 				}
 				addSharedData( widgetTitle, _pointOverlayLayer.graphicProvider as ArrayCollection );
 			}
+			
+			private function showInfowWindow_clickHandler( event:MouseEvent ):void
+			{
+				var graphic:Graphic = event.currentTarget as Graphic;
+				var popupRenderer:PopUpRenderer = new PopUpRenderer();
+				popupRenderer.graphic = graphic;
+				popupRenderer.popUpInfo = _popUpInfo;
+				popupRenderer.setStyle( "skinClass", Class( MyPopUpRendererSkin ) );
+				map.infoWindow.content = popupRenderer;
+				map.infoWindow.contentOwner = popupRenderer.graphic;
+				map.infoWindow.show( graphic.geometry as MapPoint );
+			}
+			
 			//向js页面请求数据，传id号到js页面
 			private function  openDetail_clickHandler(event:MouseEvent):void
 			{

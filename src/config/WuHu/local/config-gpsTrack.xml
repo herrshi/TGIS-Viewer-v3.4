@@ -9,7 +9,7 @@
 		<font name="微软雅黑" size="14" />
 	</style>
 
-	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+	<arcgisserverip>128.64.151.220:6080</arcgisserverip>
 
 	<geometryservice
 		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
@@ -24,8 +24,10 @@
 	<map top="0" center="118.417947 31.337093" scale="24000"
 		 scalebarvisible="false" esrilogovisible="false">
 		<basemaps>
-			<layer label="基础图层" type="tiled" visible="true"
-					  url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base/MapServer" />
+			<layer label="矢量图" type="tiled" visible="true"
+				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base_new/MapServer" />
+<!-- 			<layer label="卫星图" type="tiled" visible="false" -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" /> -->
 		</basemaps>
 		<operationallayers>
 <!-- 			<layer label="注记图层" type="dynamic" visible="true"  -->
@@ -63,6 +65,16 @@
 		<widget label="gpsPoliceTrack" preload="open" 
 				config="widgets/GPSTrack/WuHu/GPSTrackWidget-police.xml"
 				url="widgets/GPSTrack/GPSTrackWidget.swf"/>
+		
+<!-- 		<widget label="底图切换" preload="open" right="20" top="20" -->
+<!-- 			config="widgets/MapSwitcher/MapSwitcherWidget.xml" -->
+<!-- 			url="widgets/MapSwitcher/MapSwitcherWidget.swf"/> -->
 	</widgetcontainer>
-
+	
+	<widgetcontainer layout="horizontal">
+		<widget label="搜索" preload="minimized" 
+			icon="assets/images/i_search.png"
+			config="widgets/MultiLayerSearch/WuHu/MultiLayerSearchWidget-roadAndPoi.xml"
+			url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+	</widgetcontainer>
 </configuration>

@@ -47,5 +47,9 @@
 		<widget label="岗点" preload="open"
 				config="widgets/Overlay/LiuPanShui/PointOverlayWidget-policeSentry.xml"
 				url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="PoliceOverlay" preload="open"
+				config="widgets/Overlay/LiuPanShui/PointOverlayWidget-police.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf" />
 	</widgetcontainer>
 </configuration>

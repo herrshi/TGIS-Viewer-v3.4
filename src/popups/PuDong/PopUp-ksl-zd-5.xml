@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <configuration>
-	<title>{匝道发布段_5级.HWAYNAME}({匝道发布段_5级.FROM1}-{匝道发布段_5级.TO1})</title>
+	<title>{HWAYNAME}({FROM1}-{TO1})</title>
 	<fields>
-		<field name="匝道发布段_5级.FROM1" />
-		<field name="匝道发布段_5级.TO1"/>
-		<field name="匝道发布段_5级.HWAYNAME"/>
-		<field name="匝道发布段_5级.SECTIONID" alias="编号" visible="true" />
+		<field name="FROM1" />
+		<field name="TO1"/>
+		<field name="HWAYNAME"/>
+		<field name="SECTIONID" alias="编号" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
-	   <button label="人工发布" action="openDevice" type="FBD_KSL" idfield="匝道发布段_5级.SECTIONID" />
+	   <button label="人工发布" action="openDevice" type="FBD_KSL" idfield="SECTIONID" />
 	</buttons>
 </configuration>

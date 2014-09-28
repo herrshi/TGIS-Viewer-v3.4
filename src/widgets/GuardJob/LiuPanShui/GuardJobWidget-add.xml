@@ -18,11 +18,10 @@
 			<descfield>MINGCHENG</descfield>
 		</param>
 		
-		<!-- 信号机图层未提供，暂时用地磁的代替 -->
 		<param>
 			<type>信号机</type>
 			<layerids>2</layerids>
-			<idfield>DEVICEID</idfield>
+			<idfield>ID</idfield>
 			<descfield>NAME</descfield>
 		</param>
 		
@@ -75,18 +74,16 @@
 			<showzoomtobutton>false</showzoomtobutton>
 		</popup>
 
-		<popup layername="地磁">
+		<popup layername="信号机">
 			<title>{NAME}</title>
-			<idfieldname>DEVICEID</idfieldname>
+			<idfieldname>ID</idfieldname>
 			<fields>
 				<field name="NAME" />
-				<field name="DEVICEID" alias="编号" visible="true" />
+				<field name="ID" alias="编号" visible="true" />
 			</fields>
 			<showzoomtobutton>false</showzoomtobutton>
 			<buttons>
-				<button label="添加" action="addDeviceToJob" type="信号机" idfield="DEVICEID" />
-				<button label="删除" action="deleteDeviceFromJob" type="信号机" idfield="DEVICEID" />
-				<button label="详细信息" action="openDevice" type="XHJ" idfield="DEVICEID" />
+				<button label="详细信息" action="openDevice" type="XHJ" idfield="ID" />
 			</buttons>
 		</popup>
 

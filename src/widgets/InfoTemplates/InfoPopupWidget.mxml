@@ -26,9 +26,10 @@
     <fx:Script>
         <![CDATA[
             import com.esri.ags.Graphic;
-            import cn.seisys.TGISViewer.IInfowindowTemplate;
-
+            
             import mx.events.FlexEvent;
+            
+            import cn.seisys.TGISViewer.IInfowindowTemplate;
 
             private var _graphic:Graphic;
 
