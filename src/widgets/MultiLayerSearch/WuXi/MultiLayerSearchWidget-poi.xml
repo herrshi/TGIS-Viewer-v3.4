@@ -6,7 +6,7 @@
 	<layerinfo>
 		<find>
 			<url>http://{serverip}/arcgis/rest/services/wuxi/wx_device_new/MapServer</url>
-			<fields>DES,JNAME</fields>
+			<fields>DES,JNAME,BYNAMEC,FSTR_DESC</fields>
 		</find>
 
 		<uniquevaluerenderer field="layerName">
@@ -14,6 +14,16 @@
 			
 			<uniquevalueinfo value="主要道路">
 				<simplelinesymbol color="0x3E6FBC" width="2" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="高速公路">
+				<simplelinesymbol color="0x3E6FBC" width="2" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="快速路">
+				<simplefillsymbol style="solid" color="0x3E6FBC" alpha="0.5">
+					<outline style="solid" color="0x3E6FBC" width="1"/>
+				</simplefillsymbol>
 			</uniquevalueinfo>
 			
 			<uniquevalueinfo value="电子警察">
@@ -74,6 +84,30 @@
 				</fields>
 				<buttons>
 					<button label="关联" action="addDeviceToJob" type="主要道路" idfield="EDGEID"/>
+				</buttons>
+			</popup>
+			
+			<popup layername="高速公路">
+				<title>{BYNAMEC}</title>
+				<idfieldname>EDGEID</idfieldname>
+				<fields>
+					<field name="BYNAMEC" />
+					<field name="EDGEID"/>
+				</fields>
+				<buttons>
+					<button label="关联" action="addDeviceToJob" type="高速公路" idfield="EDGEID"/>
+				</buttons>
+			</popup>
+			
+			<popup layername="快速路">
+				<title>{FSTR_DESC}</title>
+				<idfieldname>FSTR_ISSUE</idfieldname>
+				<fields>
+					<field name="FSTR_DESC" />
+					<field name="FSTR_ISSUE"/>
+				</fields>
+				<buttons>
+					<button label="关联" action="addDeviceToJob" type="快速路" idfield="FSTR_ISSUE"/>
 				</buttons>
 			</popup>
 		</popups>

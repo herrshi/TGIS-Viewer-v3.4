@@ -12,7 +12,7 @@
     See use restrictions in use_restrictions.txt.
 -->
 <!---
-    The default skin class for the PopUpRenderer component.
+    在默认skin底部增加了按钮
     <p><b>Since:</b> ArcGIS API for Flex 2.3</p>
 -->
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"

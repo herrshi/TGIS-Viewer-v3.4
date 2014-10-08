@@ -8,6 +8,7 @@ package cn.seisys.TGISViewer.managers
 	import flash.external.ExternalInterface;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
 	
 	import cn.seisys.TGISViewer.AppEvent;
 	import cn.seisys.TGISViewer.ViewerContainer;

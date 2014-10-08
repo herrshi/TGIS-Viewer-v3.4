@@ -223,7 +223,7 @@
 				if ( !type || ( type.toLowerCase() != _textType.toLowerCase() ) )
 					return;
 				
-				var pointArray:Array = paramObj.points;
+				var pointArray:Array = paramObj.ids;
 				for each ( var id:String in pointArray )
 				{
 					for each ( var graphic:Graphic in _textOverlayLayer.graphicProvider )

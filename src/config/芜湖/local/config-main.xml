@@ -18,7 +18,8 @@
 	</socketinfo>
 
 	<arcgisserverip>128.64.151.220:6080</arcgisserverip>
-
+<!-- 	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip> -->
+	
 	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
 
 	<!-- UI elements -->
@@ -32,11 +33,15 @@
 			
 	<map top="0"  center="118.417947 31.337093" scale="24000"
 			 scalebarvisible="false" esrilogovisible="false">
+<!-- 	<map top="0" center="112.9894 28.185" scale="96000" -->
+<!-- 		scalebarvisible="false" esrilogovisible="false"> -->
 		<basemaps>
+<!-- 			<layer label="矢量图" type="tiled" visible="true" -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/changsha/changsha_base_GHY/MapServer" /> -->
 			<layer label="矢量图" type="tiled" visible="true"
 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base_new/MapServer" />
-<!-- 			<layer label="卫星图" type="tiled" visible="false" -->
-<!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" /> -->
+			<layer label="卫星图" type="tiled" visible="false"
+				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" />
 		</basemaps>
 		
 		<operationallayers>
@@ -119,9 +124,9 @@
 			url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
 	</widgetcontainer>
 	
-<!-- 	<widgetcontainer layout="vertical"> -->
-<!-- 		<widget label="底图切换" preload="open" -->
-<!-- 			config="widgets\MapSwitcher\MapSwitcherWidget.xml" -->
-<!-- 			url="widgets\MapSwitcher\MapSwitcherWidget.swf"/> -->
-<!-- 	</widgetcontainer> -->
+	<widgetcontainer layout="vertical">
+		<widget label="底图切换" preload="open"
+			config="widgets\MapSwitcher\MapSwitcherWidget.xml"
+			url="widgets\MapSwitcher\MapSwitcherWidget.swf"/>
+	</widgetcontainer>
 </configuration>

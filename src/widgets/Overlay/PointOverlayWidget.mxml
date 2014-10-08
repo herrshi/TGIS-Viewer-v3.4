@@ -51,7 +51,7 @@
 			
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
-			import cn.seisys.TGISViewer.skins.MyPopUpRendererSkin;
+			import cn.seisys.TGISViewer.skins.ClassicPopUpRendererSkinWithButtons;
 			import cn.seisys.TGISViewer.utils.Hashtable;
 			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
 			import cn.seisys.TGISViewer.utils.RendererParser;
@@ -559,7 +559,7 @@
 				var popupRenderer:PopUpRenderer = new PopUpRenderer();
 				popupRenderer.graphic = graphic;
 				popupRenderer.popUpInfo = _popUpInfo;
-				popupRenderer.setStyle( "skinClass", Class( MyPopUpRendererSkin ) );
+				popupRenderer.setStyle( "skinClass", Class( ClassicPopUpRendererSkinWithButtons ) );
 				map.infoWindow.content = popupRenderer;
 				map.infoWindow.contentOwner = popupRenderer.graphic;
 				map.infoWindow.show( graphic.geometry as MapPoint );
