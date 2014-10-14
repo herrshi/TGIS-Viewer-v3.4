@@ -154,7 +154,7 @@
 					return;
 				
 				//点集
-				var pointArray:Array = paramObj.texts;
+				var pointArray:Array = paramObj.texts || paramObj.points;
 				for each ( var pointObj:Object in pointArray )
 				{
 					//坐标

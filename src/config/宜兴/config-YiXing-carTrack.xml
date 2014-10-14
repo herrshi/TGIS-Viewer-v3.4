@@ -37,8 +37,8 @@
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="fix">
 		<widget label="单车轨迹" preload="open"
-				config="widgets/CarTrack/YiXing/CarTrackWidget.xml"
-				url="widgets/CarTrack/CarTrackWidget.swf"/>
+				url="widgets/CarTrack/CarTrackWidget.swf"
+				config="widgets/CarTrack/YiXing/CarTrackWidget.xml"/>
 		
 		<widget label="轨迹线" preload="open"
 				config="widgets/Overlay/YiXing/PolylineOverlayWidget-carTrack.xml"
