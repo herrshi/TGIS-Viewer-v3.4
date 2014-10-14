@@ -176,7 +176,7 @@
 //				AppEvent.dispatch( AppEvent.GET_DEVICE_COORDINATE, '{"type":"摄像机","DeviceList":["52020114001322020006"]}' );
 //				AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, "policeSentry" );
 //				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"贵BU0051","kkPoints":[{"deviceId":"djkk11","deviceDesc":"凤凰大道-水西路","passTime":"2014-07-22 09:19:03","picUrl":""},{"deviceId":"djkk11","deviceDesc":"凤凰大道-水西路","passTime":"2014-07-22 09:19:16","picUrl":""},{"deviceId":"djkk31","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""}]}' ); 
-//				AppEvent.dispatch( AppEvent.GUARD_SET_DEVICE_SEARCH_DISTANCE, '[{"type":"摄像机","distance":500},{"type":"信号机","distance":500},{"type":"电子警察","distance":500}]' );
+				AppEvent.dispatch( AppEvent.GUARD_SET_DEVICE_SEARCH_DISTANCE, '[{"type": "信号机","distance":50},{"type": "摄像机","distance":50},{"type": "电子警察","distance":50},{"type": "岗点","distance":100}]' );
 //				AppEvent.dispatch( AppEvent.GUARD_SHOW_GEOMETRY, '[{"jobId":"1","geometries":[{"geometry":{"paths":[[[104.82753544368516,26.605192984571427],[104.83929949889798,26.592629430460643],[104.84478177705541,26.600281777055393],[104.84638077485134,26.59422842825656]]]},"type":"esriGeometryPolyline","index":0}]}]' );
 //				AppEvent.dispatch( AppEvent.GUARD_SHOW_DEVICE, '[{"jobId":"1","devices": [{"type":"信号机","index":1,"id":"GMVDT66","desc":"人民路（西）","x":104.84551666700004,"y":26.59183333300001},{"type":"摄像机","index":1,"id":"1932","desc":"松坪北路曾家烙锅西小巷","x":104.838306,"y":26.59388899999999},{"type":"policeSentry","index":1,"id":"373AC306-EAED-2A64-60D0-67CA7A2CE5DC","desc":"gd1","x":104.83290350771429,"y":26.600395991183678},{"type":"policeSentry","index":2,"id":"81D31191-21B2-81F9-05B0-67CAAC9BE604","desc":"gd2","x":104.83838578587173,"y":26.59125886092129}]}]' );				
 				
@@ -198,7 +198,7 @@
 //				AppEvent.dispatch( AppEvent.ADD_GPS_TRACK, '{"type":"QingSaoCheGpsTrack","id":"123","speed":"0","points":[{"time":"2013-10-29 09:33:00","x":121.30102,"y":30.98638},{"time":"2013-10-29 09:34:21","x":121.31102,"y":30.985757},{"time":"2013-10-29 09:35:21","x":121.302624,"y":30.986414}]}' );
 				
 				//宜兴测试
-				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"苏BZC831","kkPoints":[{"deviceId":"kk00001","deviceDesc":"卡口00001","x":119.81815,"y":31.34591,"passTime":"2014-10-14 08:04:00","picUrl":"http://xxxxxx/aa.jpg"},{"deviceId":"kk00002","deviceDesc":"卡口00002","x":119.82491,"y":31.3232,"passTime":"2014-10-14 08:29:00","picUrl":"http://xxxx/bb.jpg"}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"苏BZC831","kkPoints":[{"deviceId":"kk00001","deviceDesc":"卡口00001","x":119.81815,"y":31.34591,"passTime":"2014-10-14 08:04:00","picUrl":"http://xxxxxx/aa.jpg"},{"deviceId":"kk00002","deviceDesc":"卡口00002","x":119.82491,"y":31.3232,"passTime":"2014-10-14 08:29:00","picUrl":"http://xxxx/bb.jpg"}]}' );
 			}
 			
 			protected function btnTest2_clickHandler(event:MouseEvent):void
@@ -254,7 +254,7 @@
 //				AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, "policeSentry" );
 //				AppEvent.dispatch( AppEvent.SET_POLICE_EVENT_DATA ,'[ {"id": "event001","title": "交通警情-道路交通警情-机动车与非机动车","image": " ", "level": 1,"time": "2014-07-22 15:35","interaction119":"联动119", "interaction110":"联动110", "interaction120":"联动120", "interactionContent":"有危险品", "source": "122电话报警","content": "小汽车驶入非机动车道撞上电动车，发生擦挂事件","location": "锦江区锦华路100号万特欢乐世界正门口","deatCount": 0,"injuredCount": 3,"trappedCount": 5,"fields": {"报警人": "李四 男 138 8888 8888","涉案人": "张三 男 137 7777 7777"},"actions": "上报,回退,派警,结案,回访","logs": "2014-07-22 15: 35一分局刘某进行三快处理并结案；2014-07-22 15: 35一分局刘某电话核实；2014-07-22 15: 35交管局下发至一分局；"}]');
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":118.419,"y":31.334,"fields":{"gpsState":"离岗"}}]}' );
-				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "police", id: "712" } );
+//				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "police", id: "712" } );
 			}
 			
 			protected function btnTest3_clickHandler(event:MouseEvent):void
@@ -289,7 +289,7 @@
 				  left.resized="{hostComponent.mapLeft}" right.resized="{hostComponent.mapRight}"
 				  top.resized="{hostComponent.mapTop}" bottom.resized="{hostComponent.mapBottom}"/>
     </s:Group>
-	<s:HGroup visible="true" right="10" bottom="10">
+	<s:HGroup visible="false" right="10" bottom="10">
 		<s:Button id="btnTest1" label="test1" click="btnTest1_clickHandler(event)"/>
 		<s:Button id="btnTest2" label="test2" click="btnTest2_clickHandler(event)"/>
 		<s:Button id="btnTest3" label="test3" click="btnTest3_clickHandler(event)"/>

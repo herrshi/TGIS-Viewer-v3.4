@@ -21,6 +21,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.esri.ags.Graphic;
+			import com.esri.ags.SpatialReference;
 			import com.esri.ags.events.DrawEvent;
 			import com.esri.ags.geometry.Geometry;
 			import com.esri.ags.geometry.MapPoint;
