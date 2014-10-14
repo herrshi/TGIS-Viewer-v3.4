@@ -35,7 +35,7 @@
 			private var _pointSymbol:Symbol = new SimpleMarkerSymbol();
 			private var _pointLayer:GraphicsLayer;
 			
-			private var _moveSpeed:Number = 40;
+			private var _moveSpeed:Number;
 			private var _timerTick:Number = 200;
 			
 			private var _routeAC:ArrayCollection;
@@ -91,7 +91,7 @@
 				//将文字图层移动到最上层
 				map.reorderLayer( _pointLayer.id, map.layerIds.length - 1 );
 				
-				_moveSpeed = event.data.speed || _moveSpeed;
+				_moveSpeed = event.data.speed || 0;
 				
 				var id:String = event.data.id;
 				var route:String = event.data.route;
@@ -100,26 +100,31 @@
 					'{"type":"' + _polylineType + '","lines":[{"id":"' + id + '","line":' + route + '}]}' );
 				
 				var polyline:Polyline = Polyline.fromJSON( JSONUtil.decode( route ) );
-				map.extent = polyline.extent.expand( 1.5 );
-				var paths:Array = polyline.paths;
-				for each ( var path:Array in paths )
+//				map.extent = polyline.extent.expand( 1.5 );
+				
+				if ( _moveSpeed > 0 )
 				{
-					if ( path.length > 1 )
+					var paths:Array = polyline.paths;
+					for each ( var path:Array in paths )
 					{
-						var timer:Timer = new Timer( _timerTick );
-						var pointGraphic:Graphic = new Graphic();
-						_pointLayer.add( pointGraphic );
-						var routeObj:Object = 
-							{ 
-								id: id, 
-								timer: timer, 
-								path: path, 
-								pointGraphic: pointGraphic 
-							};
-						_routeAC.addItem( routeObj );
-						movePoint( routeObj );
+						if ( path.length > 1 )
+						{
+							var timer:Timer = new Timer( _timerTick );
+							var pointGraphic:Graphic = new Graphic();
+							_pointLayer.add( pointGraphic );
+							var routeObj:Object = 
+								{ 
+									id: id, 
+									timer: timer, 
+									path: path, 
+									pointGraphic: pointGraphic 
+								};
+							_routeAC.addItem( routeObj );
+							movePoint( routeObj );
+						}
 					}
 				}
+				
 			}
 			
 			private function movePoint( routeObj:Object ):void

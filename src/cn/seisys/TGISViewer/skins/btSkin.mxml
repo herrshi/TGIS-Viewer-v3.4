@@ -18,10 +18,10 @@
 	<s:Rect  top="0" right="0" bottom="0" 
 			 left="0" includeIn="down" >
 		<s:fill>
-			<s:SolidColor color="0x4799CE" alpha="1" color.down="0x4799CE" color.over="0x4799CE"/>
+			<s:SolidColor color="0x58abed" alpha="1" color.down="0x58abed" color.over="0x58abed"/>
 		</s:fill>
 		<s:stroke>
-			<s:SolidColorStroke alpha="1" color="0x4799CE" weight="1"/>
+			<s:SolidColorStroke alpha="1" color="0x58abed" weight="1"/>
 		</s:stroke>
 	</s:Rect>
 	
@@ -44,6 +44,6 @@
 		</s:fill>
 	</s:Rect>
 	
-	<s:Label id="lableElement" width="50" fontSize="16" horizontalCenter="0" text="{hostComponent.label}"
+	<s:Label id="lableElement" fontSize="16" horizontalCenter="0" text="{hostComponent.label}"
 			 textAlign="center" verticalAlign="middle" verticalCenter="1" visible.down="true"/>
 </s:Skin>

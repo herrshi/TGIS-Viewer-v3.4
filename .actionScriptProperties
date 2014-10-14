@@ -71,6 +71,7 @@
     <module application="src/index.mxml" destPath="widgets/Coordinate/CoordinateWidget.swf" optimize="true" sourcePath="src/widgets/Coordinate/CoordinateWidget.mxml"/>
     <module application="src/index.mxml" destPath="widgets/Samples/ThematicQuery/ThematicQueryWidget.swf" optimize="true" sourcePath="src/widgets/Samples/ThematicQuery/ThematicQueryWidget.mxml"/>
     <module application="src/index.mxml" destPath="widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.swf" optimize="true" sourcePath="src/widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.mxml"/>
+    <module application="src/index.mxml" destPath="widgets/HeatMap/HeatMapWidget.swf" optimize="true" sourcePath="src/widgets/HeatMap/HeatMapWidget.mxml"/>
   </modules>
   <workers managerFilePath="src/Workers.as">
     <worker embed="true" path="src/workers/SocketWorker.as"/>
@@ -78,5 +79,3 @@
   <buildCSSFiles/>
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
 </actionScriptProperties>
-
-

@@ -372,6 +372,7 @@
 				if ( type && ( type.toLowerCase() == _lineType.toLowerCase() ) )
 				{
 					_lineOverlayLayer.clear();
+					_lineArrowLayer.clear();
 				}
 			}
 			

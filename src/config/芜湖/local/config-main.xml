@@ -4,7 +4,7 @@
 		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
 		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
 		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
-		<alpha>0.8</alpha>
+		<alpha>1</alpha>
 		<font name="微软雅黑" size="14" />
 	</style>
 	
@@ -31,7 +31,7 @@
 		config="widgets/Coordinate/CoordinateWidget.xml" 
 		url="widgets/Coordinate/CoordinateWidget.swf" />
 			
-	<map top="0"  center="118.417947 31.337093" scale="24000"
+	<map top="0"  center="118.417947 31.337093" scale="48000"
 			 scalebarvisible="false" esrilogovisible="false">
 <!-- 	<map top="0" center="112.9894 28.185" scale="96000" -->
 <!-- 		scalebarvisible="false" esrilogovisible="false"> -->
@@ -45,6 +45,11 @@
 		</basemaps>
 		
 		<operationallayers>
+			<layer label="发布段" type="dynamic" visible="true" autorefresh="0" 
+				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_fbd/MapServer">
+				<sublayer id="0" popupconfig="popups/WuHu/PopUp-FBD.xml"/>	
+			</layer>
+			
 			<layer label="信号机" type="feature" visible="false" autorefresh="0"
 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/0"
 				popupconfig="popups/WuHu/PopUp-XHJ.xml">

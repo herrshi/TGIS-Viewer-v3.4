@@ -7,21 +7,29 @@
 	
 	<type>policeSentry</type>
 	
+	<popupskinclass>policeSentry</popupskinclass>
 	<popup>
 		<title>{spotName}</title>
 		<fields>
 			<field name="spotName" />
-			<field name="spotType" alias="岗点类型" visible="true"/>
+			<field name="deptName" alias="所属单位：" visible="true" />
+			<field name="spotType" alias="岗点类型：" visible="true"/>
+			<field name="taskPeriod" alias="当前班次：" visible="true"/>
 			<field name="spotId" />
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
+		<showdetaillink>true</showdetaillink>
 	</popup>
 	
 	<simplerenderer>
-		<picturemarkersymbol url="assets/images/mapIcons/GangDian-blue.png" yoffset="13" />
+		<picturemarkersymbol url="assets/images/mapIcons/WuHu/GangDian-blue.png" yoffset="18" />
 	</simplerenderer>
 	
 	<drawsymbol>
-		<picturemarkersymbol url="assets/images/mapIcons/GangDian-blue.png" yoffset="13" />
+		<picturemarkersymbol url="assets/images/mapIcons/WuHu/GangDian-blue.png" yoffset="18" />
 	</drawsymbol>
+	
+	<clickfunction>
+		<action>showInfoWindow</action>
+	</clickfunction>
 </configuration>

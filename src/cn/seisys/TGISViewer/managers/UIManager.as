@@ -397,6 +397,8 @@ public class UIManager extends EventDispatcher
         if (numberOfStyleColors > 4)
         {
             cssStyleDeclarationNavigator.setStyle("backgroundColor", backgroundColor);
+			cssStyleDeclarationNavigator.setStyle( "fontFamily", mainFontFamily );
+			cssStyleDeclarationNavigator.setStyle( "fontSize", fontSize );
         }
         cssStyleDeclarationNavigator.setStyle("backgroundAlpha", styleAlpha);
 
@@ -456,14 +458,14 @@ public class UIManager extends EventDispatcher
             topLevelStyleManager.setStyleDeclaration("mx.controls.HSlider", cssStyleDeclarationTI, false);
             topLevelStyleManager.setStyleDeclaration("spark.components.HSlider", cssStyleDeclarationTI, false);
         }
-
+		
         if (numberOfStyleColors > 4)
         {
             var cssStyleDeclarationChartDataTips:CSSStyleDeclaration = new CSSStyleDeclaration();
             cssStyleDeclarationChartDataTips.setStyle("backgroundColor", backgroundColor);
             topLevelStyleManager.setStyleDeclaration("mx.charts.chartClasses.DataTip", cssStyleDeclarationChartDataTips, false);
         }
-
+		
         var cssStyleDeclarationModal:CSSStyleDeclaration = topLevelStyleManager.getStyleDeclaration("global")
         cssStyleDeclarationModal.setStyle("modalTransparencyColor", 0x777777);
         cssStyleDeclarationModal.setStyle("modalTransparencyBlur", 1);

@@ -20,8 +20,8 @@
 @private
 -->
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
-        xmlns:s="library://ns.adobe.com/flex/spark"
-        xmlns:esri="http://www.esri.com/2008/ags">
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:esri="http://www.esri.com/2008/ags">
 
     <fx:Metadata>
         [HostComponent("cn.seisys.TGISViewer.managers.MapManager")]
@@ -107,37 +107,7 @@
 						}
 					}
 				});*/
-				//测试加1000个点
-				/*var pointArray:Array = [];
-				for ( var i:uint = 0; i < 10; i++ )
-				{
-					for ( var j:uint = 0; j < 10; j++ )
-					{
-						var x:Number = 120.1464 + i / 1000;
-						var y:Number = 31.6398 - j / 1000;
-						var id:Number = i*10+j;
-						var pointObj:Object = 
-							{ 
-								id: id, 
-								x: x, 
-								y: y,
-								fields: 
-								{ 
-									名称: "信号机", 
-									编号: id, 
-									title: "信号机" + id
-								}, 
-								showMoveButton: true, 
-								showDeleteButton: true 
-							};
-						pointArray.push( pointObj );
-					}
-					
-				}
 				
-				var dataObj:Object = { type: "信号机", points: pointArray };
-				var dataString:String = JSON.stringify( dataObj );
-				AppEvent.dispatch( AppEvent.ADD_POINTS_BY_PAGE, dataString );*/
 				
 
 //				AppEvent.dispatch( AppEvent.WIDGET_RUN, "房屋查询" );
@@ -170,6 +140,37 @@
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeEvent","points":[{"x":120.2657,"y":31.61856,"id":"J3202140506102191952","fields":{"fdtTime":"2014-05-06 10:21:58","caseLocation":"","caseContent":"两车相撞","caseLevel":"","caseType":""}}]}' );
 //				AppEvent.dispatch( AppEvent.SET_SEARCH_GEOMETRY, '{"geometry":{"rings":[[[120.28621671963847,31.566687790279886],[120.31477025170844,31.56280450991837],[120.30837426052477,31.543388108110793],[120.29284113907872,31.529225556204093],[120.27548059158018,31.542017538571436],[120.28621671963847,31.566687790279886]]]}}' );
 //				AppEvent.dispatch( AppEvent.SET_SEARCH_GEOMETRY, '{"geometry":{"ymin":31.6164851502099,"xmax":120.28621671963847,"xmin":120.25286619418077,"ymax":31.627678134781327}}' );
+				//测试加1000个点
+				/*var pointArray:Array = [];
+				for ( var i:uint = 0; i < 10; i++ )
+				{
+					for ( var j:uint = 0; j < 10; j++ )
+					{
+						var x:Number = 120.1464 + i / 1000;
+						var y:Number = 31.6398 - j / 1000;
+						var id:Number = i*10+j;
+						var pointObj:Object = 
+							{ 
+								id: id, 
+								x: x, 
+								y: y,
+								fields: 
+									{ 
+										名称: "信号机", 
+										编号: id, 
+										title: "信号机" + id
+									}, 
+								showMoveButton: true, 
+								showDeleteButton: true 
+							};
+						pointArray.push( pointObj );
+					}
+				
+				}
+				
+				var dataObj:Object = { type: "信号机", points: pointArray };
+				var dataString:String = JSON.stringify( dataObj );
+				AppEvent.dispatch( AppEvent.ADD_POINTS_BY_PAGE, dataString );*/
 				
 				//六盘水测试
 //				AppEvent.dispatch( AppEvent.GET_DEVICE_COORDINATE, '{"type":"摄像机","DeviceList":["52020114001322020006"]}' );
@@ -188,11 +189,13 @@
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeEvent","points":[{"x":118.423486,"y":31.337093,"id":"event001","fields":{}},{"x":118.58158,"y":31.14213,"id":"event002","fields":{}}]}' );
 //				AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, "policeSentry" );
 //				AppEvent.dispatch( AppEvent.GUARD_SHOW_GEOMETRY, '[{"jobId":"1","geometries":[{"type":"esriGeometryPolyline","geometry":{"paths":[[[118.38836554077551,31.330811222944604],[118.41235050771428,31.327042156711368],[118.42713838197332,31.329269332212824],[118.44244307516281,31.332353113676383]]]},"index":0}]}]' );
-//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":118.419,"y":31.334,"fields":{"policeSn":"X20433","policeName":"曹积","departmentName":"镜湖大队","dutyName":"民警","pdaCode":"","interphoneCode":"","acquisitionTime":"2014-09-01 00:00:01","gpsState":"在岗","distance":"0","phoneNum":"","m350Sn":""}}]}' );
-				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":112.9894,"y":28.185,"fields":{"policeSn":"X20433","policeName":"曹积","departmentName":"镜湖大队","dutyName":"民警","pdaCode":"","interphoneCode":"","acquisitionTime":"2014-09-01 00:00:01","gpsState":"在岗","distance":"0","phoneNum":"","m350Sn":""}}]}' );
+				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":"712","x":118.4232,"y":31.3703,"fields":{"policeSn":"005295","policeName":"刘刚","departmentName":"开发区大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:27","gpsState":"GPS信号丢失","distance":0,"phoneNum":"","m350Sn":"","stateColor":"3"}},{"id":"1723","x":118.41523,"y":31.33239,"fields":{"policeSn":"1010007","policeName":"弋江警七","departmentName":"弋江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:27","gpsState":"切换到集群模式","distance":0,"phoneNum":"","m350Sn":"8010007","stateColor":"1"}},{"id":"1727","x":118.40467,"y":31.33185,"fields":{"policeSn":"2010001","policeName":"鸠江警一","departmentName":"鸠江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:27","gpsState":"随同状态信息和数据请求一同发送","distance":0,"phoneNum":"","m350Sn":"9010001","stateColor":"1"}},{"id":"1717","x":118.40467,"y":31.33184,"fields":{"policeSn":"1010001","policeName":"弋江警一","departmentName":"弋江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:27","gpsState":"GPS信号丢失","distance":0,"phoneNum":"","m350Sn":"8010001","stateColor":"3"}},{"id":"1722","x":118.40901,"y":31.33312,"fields":{"policeSn":"1010006","policeName":"弋江警六","departmentName":"弋江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:27","gpsState":"切换到直通模式","distance":0,"phoneNum":"","m350Sn":"8010006","stateColor":"1"}},{"id":"1692","x":118.40595,"y":31.33955,"fields":{"policeSn":"X20433","policeName":"曹积","departmentName":"镜湖大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:27","gpsState":"发射打开","distance":0,"phoneNum":"","m350Sn":"","stateColor":"1"}},{"id":"1732","x":118.40901,"y":31.33313,"fields":{"policeSn":"2010006","policeName":"鸠江警六","departmentName":"鸠江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:27","gpsState":"按时间变化","distance":0,"phoneNum":"","m350Sn":"9010006","stateColor":"1"}},{"id":"1706","x":118.48797,"y":31.35967,"fields":{"policeSn":"X20001","policeName":"谢璞","departmentName":"开发区大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:21","gpsState":"GPS信号丢失","distance":0,"phoneNum":"","m350Sn":"","stateColor":"3"}},{"id":"1704","x":118.44797,"y":31.35967,"fields":{"policeSn":"X30105","policeName":"刘珂杉","departmentName":"开发区大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:20","gpsState":"GPS信号丢失","distance":0,"phoneNum":"","m350Sn":"","stateColor":"3"}},{"id":"1731","x":118.40901,"y":31.33211,"fields":{"policeSn":"2010005","policeName":"鸠江警五","departmentName":"鸠江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:18","gpsState":"按距离变化","distance":0,"phoneNum":"","m350Sn":"9010005","stateColor":"1"}},{"id":"1728","x":118.40467,"y":31.33287,"fields":{"policeSn":"2010002","policeName":"鸠江警二","departmentName":"鸠江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:18","gpsState":"电量不足","distance":0,"phoneNum":"","m350Sn":"9010002","stateColor":"1"}},{"id":"1724","x":118.41523,"y":31.33341,"fields":{"policeSn":"1010008","policeName":"弋江警八","departmentName":"弋江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:18","gpsState":"发射关闭","distance":0,"phoneNum":"","m350Sn":"8010008","stateColor":"2"}},{"id":"1693","x":118.489,"y":31.333,"fields":{"policeSn":"X20438","policeName":"郝晟茂","departmentName":"开发区大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:18","gpsState":"GPS信号丢失","distance":0,"phoneNum":"","m350Sn":"","stateColor":"3"}},{"id":"708","x":118.482,"y":31.334,"fields":{"policeSn":"005291","policeName":"周涛","departmentName":"镜湖大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:18","gpsState":"关机","distance":0,"phoneNum":"","m350Sn":"00010001","stateColor":"2"}},{"id":"1721","x":118.40901,"y":31.3321,"fields":{"policeSn":"1010005","policeName":"弋江警五","departmentName":"弋江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:18","gpsState":"拔下车载适配器","distance":0,"phoneNum":"","m350Sn":"8010005","stateColor":"1"}},{"id":"1718","x":118.40467,"y":31.33286,"fields":{"policeSn":"1010002","policeName":"弋江警二","departmentName":"弋江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:18","gpsState":"GPS信号恢复","distance":0,"phoneNum":"","m350Sn":"8010002","stateColor":"1"}},{"id":"1730","x":118.40901,"y":31.331,"fields":{"policeSn":"2010004","policeName":"鸠江警四","departmentName":"鸠江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:17","gpsState":"开机","distance":0,"phoneNum":"","m350Sn":"9010004","stateColor":"1"}},{"id":"1729","x":118.40467,"y":31.33389,"fields":{"policeSn":"2010003","policeName":"鸠江警三","departmentName":"鸠江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:17","gpsState":"关机","distance":0,"phoneNum":"","m350Sn":"9010003","stateColor":"2"}},{"id":"1694","x":118.489,"y":31.383,"fields":{"policeSn":"X30225","policeName":"陈正辉","departmentName":"高速一大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:17","gpsState":"GPS信号丢失","distance":0,"phoneNum":"","m350Sn":"","stateColor":"3"}},{"id":"1725","x":118.41523,"y":31.33443,"fields":{"policeSn":"1010009","policeName":"弋江警九","departmentName":"弋江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:17","gpsState":"发射打开","distance":0,"phoneNum":"","m350Sn":"8010009","stateColor":"1"}},{"id":"1720","x":118.40901,"y":31.33108,"fields":{"policeSn":"1010004","policeName":"弋江警四","departmentName":"弋江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:17","gpsState":"插入车载适配器","distance":0,"phoneNum":"","m350Sn":"8010004","stateColor":"1"}},{"id":"1719","x":118.40467,"y":31.33388,"fields":{"policeSn":"1010003","policeName":"弋江警三","departmentName":"弋江大队","dutyName":"民警","pdaCode":"","acquisitionTime":"2014-09-01 00:00:17","gpsState":"紧急呼叫","distance":0,"phoneNum":"","m350Sn":"8010003","stateColor":"1"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":112.9894,"y":28.185,"fields":{"policeSn":"X20433","policeName":"曹积","departmentName":"镜湖大队","dutyName":"民警","pdaCode":"","interphoneCode":"","acquisitionTime":"2014-09-01 00:00:01","gpsState":"在岗","distance":"0","phoneNum":"","m350Sn":""}}]}' );
+				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeSentry","points":[{"id":37,"x":"118.410437","y":"31.34109","fields":{"spotId":37,"spotName":"16点岗点","spotType":"一级岗","deptName":"镜湖大队","taskPeriod":"晚班上午【09:30~12:00】","colorState":"1","policeName":"李三,王五","policeId":"111,222"}}]}' );
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_GPS_TRACK, '{"type":"QingSaoCheGpsTrack","id":"123","speed":"0","points":[{"time":"2013-10-29 09:33:00","x":121.30102,"y":30.98638},{"time":"2013-10-29 09:34:21","x":121.31102,"y":30.985757},{"time":"2013-10-29 09:35:21","x":121.302624,"y":30.986414}]}' );
 			}
 			
 			protected function btnTest2_clickHandler(event:MouseEvent):void
@@ -235,8 +238,8 @@
 				
 				//天津测试
 //				AppEvent.dispatch( AppEvent.ADD_POLYGONS, '{"type":"issuesect","polygons":[{"id":"500010","fields":{"name":"中新大道经八路路口至中泰大道","desc":"中新大道经八路路口至中泰大道","status":"crowd"}},{"id":"500021","fields":{"name":"中新大道经七路（南）路口至经六路","desc":"中新大道经七路（南）路口至经六路","status":"crowd"}},{"id":"500006","fields":{"name":"中新大道和顺路路口至和意路","desc":"中新大道和顺路路口至和意路","status":"crowd"}},{"id":"500024","fields":{"name":"中新大道和顺路路口至中生大道","desc":"中新大道和顺路路口至中生大道","status":"jam"}},{"id":"500004","fields":{"name":"中新大道和旭路路口至中生大道","desc":"中新大道和旭路路口至中生大道","status":"jam"}}]}' );
-				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "stationStart" );
-				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "stationEnd" );
+//				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "stationStart" );
+//				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "stationEnd" );
 				
 				//六盘水测试
 //				AppEvent.dispatch( AppEvent.GUARD_DELETE_DEVICE_BY_PAGE, '{"type": "policeSentry", "id":"373AC306-EAED-2A64-60D0-67CA7A2CE5DC"}' );
@@ -247,7 +250,8 @@
 				//芜湖测试
 //				AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, "policeSentry" );
 //				AppEvent.dispatch( AppEvent.SET_POLICE_EVENT_DATA ,'[ {"id": "event001","title": "交通警情-道路交通警情-机动车与非机动车","image": " ", "level": 1,"time": "2014-07-22 15:35","interaction119":"联动119", "interaction110":"联动110", "interaction120":"联动120", "interactionContent":"有危险品", "source": "122电话报警","content": "小汽车驶入非机动车道撞上电动车，发生擦挂事件","location": "锦江区锦华路100号万特欢乐世界正门口","deatCount": 0,"injuredCount": 3,"trappedCount": 5,"fields": {"报警人": "李四 男 138 8888 8888","涉案人": "张三 男 137 7777 7777"},"actions": "上报,回退,派警,结案,回访","logs": "2014-07-22 15: 35一分局刘某进行三快处理并结案；2014-07-22 15: 35一分局刘某电话核实；2014-07-22 15: 35交管局下发至一分局；"}]');
-				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":118.419,"y":31.334,"fields":{"gpsState":"离岗"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":118.419,"y":31.334,"fields":{"gpsState":"离岗"}}]}' );
+				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "police", id: "712" } );
 			}
 			
 			protected function btnTest3_clickHandler(event:MouseEvent):void
@@ -256,7 +260,7 @@
 				//AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "信号机" );
 				
 				/*芜湖测试*/
-				
+				AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, "police" );
 			
 		    }
 		]]>
@@ -270,23 +274,19 @@
     </s:states>
 
     <s:transitions>
-        <s:Transition id="toresize"
-                      fromState="*"
-                      toState="resized">
+        <s:Transition id="toresize" fromState="*" toState="resized">
             <s:Move duration="500" target="{map}"/>
         </s:Transition>
     </s:transitions>
 
-    <s:Group id="managerView"
-             width="100%" height="100%">
+    <s:Group id="managerView" width="100%" height="100%">
         <!-- Start map at size 0 so that only one extentChange is fired after it's been sized and had its extent set. -->
-        <esri:Map id="map"
-                  width="0" height="0"
-                  left.resized="{hostComponent.mapLeft}" right.resized="{hostComponent.mapRight}" 
-				  top.resized="{hostComponent.mapTop}" bottom.resized="{hostComponent.mapBottom}"
-				  infoWindowRendererHighlightColor="{getStyle('selectionColor')}"/>
+        <esri:Map id="map" width="0" height="0"
+				  infoWindowRendererHighlightColor="{getStyle('selectionColor')}"
+				  left.resized="{hostComponent.mapLeft}" right.resized="{hostComponent.mapRight}"
+				  top.resized="{hostComponent.mapTop}" bottom.resized="{hostComponent.mapBottom}"/>
     </s:Group>
-	<s:HGroup right="10" bottom="10" visible="true">
+	<s:HGroup visible="true" right="10" bottom="10">
 		<s:Button id="btnTest1" label="test1" click="btnTest1_clickHandler(event)"/>
 		<s:Button id="btnTest2" label="test2" click="btnTest2_clickHandler(event)"/>
 		<s:Button id="btnTest3" label="test3" click="btnTest3_clickHandler(event)"/>

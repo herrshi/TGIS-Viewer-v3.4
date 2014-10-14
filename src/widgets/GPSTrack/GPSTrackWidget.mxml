@@ -46,7 +46,7 @@
 				}
 				
 				_id = paramObj.id;
-				var speed:Number = paramObj.speed || 40;
+				var speed:Number = paramObj.speed || 0;
 				
 				var pointArray:Array = paramObj.points;
 				var trackPath:Array = [];
@@ -83,6 +83,12 @@
 					index++;
 				}
 				var trackPolyline:Polyline = new Polyline( [trackPath] );
+				
+				//显示路线
+				var trackPointJsonString:String = JSON.stringify( trackPointSymbolObj );
+				AppEvent.dispatch( AppEvent.ADD_POINTS, trackPointJsonString );
+				
+				//显示移动点
 				AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_START, 
 					{ 
 						type: _simMovePointType,
@@ -92,8 +98,7 @@
 					} 
 				);
 				
-				var trackPointJsonString:String = JSON.stringify( trackPointSymbolObj );
-				AppEvent.dispatch( AppEvent.ADD_POINTS, trackPointJsonString );
+				
 			}
 			
 			private function appevent_deleteAllGpsTrackHandler( event:AppEvent ):void

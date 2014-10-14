@@ -56,6 +56,8 @@ package cn.seisys.TGISViewer.managers
 			
 			ExternalInterface.addCallback( "getDeviceCoordinate", dispatchGetDeviceCoordinateEvent );
 			
+			ExternalInterface.addCallback( "findDevice", dispatchFindDeviceEvent );
+			
 			ExternalInterface.addCallback( "showTravelTime", dispatchShowTravelTimeEvent );
 			ExternalInterface.addCallback( "hideTravelTime", dispatchHideTravelTimeEvent );
 			

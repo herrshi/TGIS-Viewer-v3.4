@@ -38,9 +38,27 @@
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="fix">
 		<widget label="清扫车" preload="open"
-			config="widgets/Overlay/SongJiang/PointOverlayWidget-QingSaoChe.xml" url="widgets/Overlay/PointOverlayWidget.swf" />
+			config="widgets/Overlay/SongJiang/PointOverlayWidget-QingSaoChe.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="设备" preload="open"
-			config="widgets/Overlay/SongJiang/PointOverlayByPageWidget.xml" url="widgets/Overlay/PointOverlayByPageWidget.swf" />
+			config="widgets/Overlay/SongJiang/PointOverlayByPageWidget.xml" 
+			url="widgets/Overlay/PointOverlayByPageWidget.swf"/>
+		
+		<widget label="gps节点" preload="open" 
+			config="widgets/Overlay/SongJiang/PointOverlayWidget-gpsTrack.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="清扫车轨迹线" preload="open"
+			config="widgets/Overlay/SongJiang/PolylineOverlayWidget-gpsTrack-QingSaoChe.xml"
+			url="widgets/Overlay/PolylineOverlayWidget.swf" />
+		
+		<widget label="清扫车模拟移动" preload="open"
+			config="widgets/SimulationMovePoint/SongJiang/SimulationMovePointWidget-gpsTrack-QingSaoChe.xml"
+			url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
+		
+		<widget label="清扫车GpsTrack" preload="open" 
+			config="widgets/GPSTrack/SongJiang/GPSTrackWidget-QingSaoChe.xml"
+			url="widgets/GPSTrack/GPSTrackWidget.swf"/>
 	</widgetcontainer>
 </configuration>

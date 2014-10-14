@@ -28,10 +28,10 @@ s|HScrollBar
     skinClass: ClassReference("cn.seisys.TGISViewer.skins.HScrollBarSkin");
 }
 
-/*esri|PopUpRenderer
+esri|PopUpRenderer
 {
-	skinClass: ClassReference("cn.seisys.TGISViewer.skins.MyPopUpRendererSkin");
-}*/
+	skinClass: ClassReference("cn.seisys.TGISViewer.skins.PopUpRenderer.ClassicPopUpRendererSkinWithButtons");
+}
 
 .arrowInfoSymbolStyle
 {
@@ -44,15 +44,12 @@ esri|ContentNavigator
 	headerBackgroundColor:green;
 
 }
+
 esri|InfoWindow  
-        {  
-           border-thickness: 0;  
-		   content-background-alpha : 0;  
-           font-size: 16;  
-           upper-left-radius: 15;  
-           upper-right-radius: 15;
-           info-placement: top;  
-  } 
+{  
+	border-thickness: 0;  
+	content-background-alpha : 0;  
+} 
 
 
 .myTab{

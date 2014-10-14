@@ -75,6 +75,11 @@ public final class PopUpInfoParser
 		{
 			popUpInfo.idFieldName = popUpXML.idfieldname;
 		}
+		
+		if ( popUpXML.showdetaillink[0] )
+		{
+			popUpInfo.showDetailLink = ( popUpXML.showdetaillink == "false" ? false : true );
+		}
 
         return popUpInfo;
     }
