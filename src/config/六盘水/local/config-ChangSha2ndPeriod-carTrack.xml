@@ -60,27 +60,31 @@
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="fix">
 		<widget label="单车轨迹" preload="open"
-				config="widgets/CarTrack/LiuPanShui/CarTrackWidget.xml"
-				url="widgets/CarTrack/CarTrackWidget.swf"/>
+			config="widgets/CarTrack/LiuPanShui/CarTrackWidget.xml"
+			url="widgets/CarTrack/CarTrackWidget.swf"/>
 		
 		<widget label="轨迹线" preload="open"
-				config="widgets/Overlay/LiuPanShui/carTrack/PolylineOverlayWidget-carTrack.xml"
-				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+			config="widgets/Overlay/LiuPanShui/carTrack/PolylineOverlayWidget-carTrack.xml"
+			url="widgets/Overlay/PolylineOverlayWidget.swf" />
 		
 		<widget label="轨迹起点图标" preload="open"
-				config="widgets/Overlay/LiuPanShui/carTrack/PointOverlayWidget-carTrackStart.xml"
-				url="widgets/Overlay/PointOverlayWidget.swf" />
+			config="widgets/Overlay/LiuPanShui/carTrack/PointOverlayWidget-carTrackStart.xml"
+			url="widgets/Overlay/PointOverlayWidget.swf" />
 		
 		<widget label="轨迹终点图标" preload="open"
-				config="widgets/Overlay/LiuPanShui/carTrack/PointOverlayWidget-carTrackEnd.xml"
-				url="widgets/Overlay/PointOverlayWidget.swf" />
+			config="widgets/Overlay/LiuPanShui/carTrack/PointOverlayWidget-carTrackEnd.xml"
+			url="widgets/Overlay/PointOverlayWidget.swf" />
 		
 <!-- 		<widget label="卡口文字"  preload="open" -->
 <!-- 				config="widgets/Overlay/ChangSha/carTrack/TextOverlayWidget-carTrack.xml" -->
 <!-- 				url="widgets/Overlay/TextOverlayWidget.swf" /> -->
+			
+		<widget label="模拟移动" preload="open"
+				config="widgets/SimulationMovePoint/ChangSha/SimulationMovePointWidget-carTrack.xml"
+				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
 				
-<!-- 		<widget label="模拟移动" preload="open" -->
-<!-- 				config="widgets/SimulationMovePoint/ChangSha/SimulationMovePointWidget-carTrack.xml" -->
-<!-- 				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/> -->
+		<widget label="卡口序号" preload="open" 
+			config="widgets/Overlay/LiuPanShui/carTrack/TextOverlayWidget-carTrackOrder.xml"
+			url="widgets/Overlay/TextOverlayWidget.swf"/>
 	</widgetcontainer>
 </configuration>

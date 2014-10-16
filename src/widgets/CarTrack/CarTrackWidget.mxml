@@ -115,6 +115,14 @@
 						points: kaKouTextJsonObjArray 
 					};
 				
+				//初始化卡口序号overlay数据
+				var kaKouOrderTextJsonObjArray:Array = [];
+				var kaKouOrderObj:Object = 
+					{
+						type: "carTrackKaKouOrderText",
+						points: kaKouOrderTextJsonObjArray
+					}
+				
 				var trackPath:Array = [];
 				var index:uint = 1;
 				
@@ -227,6 +235,32 @@
 						);
 					}
 					
+					//添加序号文字
+					hasAdded = false;
+					var orderContent:String;
+					for each ( var orderObj:Object in kaKouOrderTextJsonObjArray )
+					{
+						if ( orderObj.id == deviceId )
+						{
+							orderContent = orderObj.text;
+							orderContent += "," + index;
+							orderObj.text = orderContent;
+							hasAdded = true;
+							break;
+						}
+					}
+					if ( !hasAdded )
+					{
+						orderContent = index.toString();
+						kaKouOrderTextJsonObjArray.push( 
+							{ 
+								text: orderContent, 
+								id: deviceId, 
+								position: trackPoint.toJSON() 
+							} 
+						);
+					}
+					
 					var trackGraphic:Graphic = findGraphicById( deviceId, trackPoint );
 					var trackInfoObj:Object = { index: index, direction: direction };
 					( trackGraphic.attributes.trackInfo as Array ).push( trackInfoObj );
@@ -265,6 +299,10 @@
 				//显示卡口文字
 				var kaKouTextJsonString:String = JSON.stringify( kakouTextObj );
 				AppEvent.dispatch( AppEvent.ADD_TEXTS, kaKouTextJsonString );
+				
+				//显示序号文字
+				var kaKouOrderTextJsonString:String = JSON.stringify( kaKouOrderObj );
+				AppEvent.dispatch( AppEvent.ADD_TEXTS, kaKouOrderTextJsonString );
 				
 				if ( trackPath.length > 1 )
 				{
@@ -322,6 +360,7 @@
 				_trackPointLayer.clear();
 				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "carTrackKaKouSymbol" );
 				AppEvent.dispatch( AppEvent.DELETE_ALL_TEXTS, "carTrackKaKouText" );
+				AppEvent.dispatch( AppEvent.DELETE_ALL_TEXTS, "carTrackKaKouOrderText" );
 				AppEvent.dispatch( AppEvent.DELETE_ALL_LINES, "carTrack" );
 				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "carTrackStart" );
 				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "carTrackEnd" );

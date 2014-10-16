@@ -535,7 +535,7 @@
 						{
 							graphic = new Graphic( new MapPoint( x, y ) );
 							graphic.id = id;
-							graphic.attributes = fields;
+							graphic.attributes = fields || {};
 							graphic.attributes.type = _pointType;
 							_pointOverlayLayer.add( graphic );
 						}

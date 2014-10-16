@@ -109,7 +109,11 @@
 
 		<widget label="警员" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-police.xml"
-			url="widgets/Overlay/PointOverlayWidget.swf"  />
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="警车" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-policeCar.xml"
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="岗点" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeSentry.xml"

@@ -16,14 +16,25 @@
 			<field name="spotType" alias="岗点类型：" visible="true"/>
 			<field name="taskPeriod" alias="当前班次：" visible="true"/>
 			<field name="spotId" />
+			<field name="policeName"/>
+			<field name="policeId"/>
+			<field name="colorState"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<showdetaillink>true</showdetaillink>
 	</popup>
 	
-	<simplerenderer>
-		<picturemarkersymbol url="assets/images/mapIcons/WuHu/GangDian-blue.png" yoffset="18" />
-	</simplerenderer>
+	<uniquevaluerenderer field="colorState">
+		<picturemarkersymbol url="assets/images/mapIcons/WuHu/GangDian-grey.png" yoffset="18"/>
+		
+		<uniquevalueinfo value="1">
+			<picturemarkersymbol url="assets/images/mapIcons/WuHu/GangDian-blue.png" yoffset="18" />
+		</uniquevalueinfo>
+		
+		<uniquevalueinfo value="2">
+			<picturemarkersymbol url="assets/images/mapIcons/WuHu/GangDian-yellow.png" yoffset="18" />
+		</uniquevalueinfo>
+	</uniquevaluerenderer>	
 	
 	<drawsymbol>
 		<picturemarkersymbol url="assets/images/mapIcons/WuHu/GangDian-blue.png" yoffset="18" />

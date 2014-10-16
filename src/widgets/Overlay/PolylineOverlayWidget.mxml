@@ -396,6 +396,15 @@
 							break;
 						}
 					}
+					
+					for each ( graphic in _lineArrowLayer.graphicProvider )
+					{
+						if ( id == graphic.attributes.id )
+						{
+							_lineArrowLayer.remove( graphic );
+							break;
+						}
+					}
 				}
 			}
 			
