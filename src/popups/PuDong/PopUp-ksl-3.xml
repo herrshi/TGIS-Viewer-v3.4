@@ -3,10 +3,10 @@
 	<title>{DES}</title>
 	<fields>
 		<field name="DES" />
-		<field name="BM_CODE" alias="编号" visible="true" />
+		<field name="SECTIONID" alias="编号" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
-	   <button label="人工发布" action="openDevice" type="FBD_KSL" idfield="BM_CODE" />
+	   <button label="人工发布" action="openDevice" type="FBD_KSL" idfield="SECTIONID" />
 	</buttons>
 </configuration>

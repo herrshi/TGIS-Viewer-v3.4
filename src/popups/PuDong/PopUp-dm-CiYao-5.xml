@@ -5,10 +5,10 @@
 		<field name="地面一般道路发布段.路名" />
 		<field name="地面一般道路发布段.起点交叉路" />
 		<field name="地面一般道路发布段.终点交叉路" />
-		<field name="地面一般道路发布段.BM_CODE" alias="编号" visible="true" />
+		<field name="地面一般道路发布段.SECTIONID" alias="编号" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
-	   <button label="人工发布" action="openDevice" type="FBD_DM" idfield="地面一般道路发布段.BM_CODE" />
+	   <button label="人工发布" action="openDevice" type="FBD_DM" idfield="地面一般道路发布段.SECTIONID" />
 	</buttons>
 </configuration>

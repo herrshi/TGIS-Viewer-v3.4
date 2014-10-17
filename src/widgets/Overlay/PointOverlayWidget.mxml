@@ -1098,6 +1098,10 @@
 									popupRenderer.setStyle( "skinClass", Class( AdvancedPopUpRendererSkin ) );
 									break;
 								
+								case "policeSentry":
+									popupRenderer.setStyle( "skinClass", Class( PoliceSentryPopUpRendererSkin ) );
+									break;
+								
 								default:
 								{
 									popupRenderer.setStyle( "skinClass", Class( ClassicPopUpRendererSkinWithButtons ) );
