@@ -83,8 +83,8 @@
 			</fields>
 			<showzoomtobutton>false</showzoomtobutton>
 			<buttons>
-				<button label="添加" action="addDeviceToJob" type="XHJ" idfield="ID" />
-				<button label="删除" action="deleteDeviceFromJob" type="XHJ" idfield="ID" />
+				<button label="添加" action="addDeviceToJob" type="信号机" idfield="ID" />
+				<button label="删除" action="deleteDeviceFromJob" type="信号机" idfield="ID" />
 				<button label="详细信息" action="openDevice" type="XHJ" idfield="ID" />
 			</buttons>
 		</popup>
@@ -113,7 +113,8 @@
 			</fields>
 			<showzoomtobutton>false</showzoomtobutton>
 			<buttons>
-				<button label="详细信息" action="openDevice" type="DZJC" idfield="CROSSINGIN" />
+				<button label="过车信息" action="openDevice" type="DZJC" idfield="CROSSINGIN" />
+				<button label="视频播放" action="openDevice" type="DZJC-SXJ" idfield="CROSSINGIN" />
 			</buttons>
 		</popup>
 		

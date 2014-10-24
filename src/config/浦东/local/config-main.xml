@@ -30,15 +30,35 @@
 					  url="http://{serverip}/arcgis/rest/services/pudong/pd_base_new/MapServer" />
 		</basemaps>
 		<operationallayers>
-			<layer label="发布段" type="dynamic" visible="true" 
-					  url="http://{serverip}/arcgis/rest/services/pudong/pd_fbd/MapServer">
-				<sublayer id="1" popupconfig="popups/PuDong/PopUp-ksl-3.xml"/>
-				<sublayer id="2" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-3.xml"/>
-				<sublayer id="3" popupconfig="popups/PuDong/PopUp-dm-CiYao-3.xml"/>
-				<sublayer id="5" popupconfig="popups/PuDong/PopUp-ksl-5.xml"/>
-				<sublayer id="6" popupconfig="popups/PuDong/PopUp-ksl-zd-5.xml"/>
-				<sublayer id="7" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-5.xml"/>
-				<sublayer id="8" popupconfig="popups/PuDong/PopUp-dm-CiYao-5.xml"/>
+			<layer label="发布段背景" type="dynamic" visible="true" 
+				url="http://{serverip}/arcgis/rest/services/pudong/pd_fbd_background/MapServer"/>
+			
+			<layer label="地面发布段" type="dynamic" visible="true" 
+				url="http://{serverip}/arcgis/rest/services/pudong/pd_fbd_issue_dm/MapServer">
+				<sublayer id="1" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-3.xml"/>
+				<sublayer id="2" popupconfig="popups/PuDong/PopUp-dm-CiYao-3.xml"/>
+				<sublayer id="4" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-5.xml"/>
+				<sublayer id="5" popupconfig="popups/PuDong/PopUp-dm-CiYao-5.xml"/>
+			</layer>
+				
+			<layer label="浦东发布段" type="dynamic" visible="true" 
+				url="http://{serverip}/arcgis/rest/services/pudong/pd_fbd_issue_ksl/MapServer">
+				<sublayer id="1" popupconfig="popups/PuDong/PopUp-ksl-3.xml" />
+				<sublayer id="2" popupconfig="popups/PuDong/PopUp-ksl-zd-3.xml" />
+				<sublayer id="3" popupconfig="popups/PuDong/PopUp-ksl-WaiHuan-3.xml" />
+				<sublayer id="7" popupconfig="popups/PuDong/PopUp-ksl-5.xml" />
+				<sublayer id="8" popupconfig="popups/PuDong/PopUp-ksl-zd-5.xml" />
+				<sublayer id="9" popupconfig="popups/PuDong/PopUp-ksl-WaiHuan-5.xml" />
+			</layer>
+			
+			<layer label="浦东发布浦西发布段" type="dynamic" visible="true" 
+				url="http://{serverip}/arcgis/rest/services/pudong/pd_fbd_issue_ksl_PuXiByPuDong/MapServer">
+				<sublayer id="1" popupconfig="popups/PuDong/PopUp-ksl-3.xml" />
+				<sublayer id="2" popupconfig="popups/PuDong/PopUp-ksl-zd-3.xml" />
+				<sublayer id="3" popupconfig="popups/PuDong/PopUp-ksl-WaiHuan-3.xml" />
+				<sublayer id="7" popupconfig="popups/PuDong/PopUp-ksl-5.xml" />
+				<sublayer id="8" popupconfig="popups/PuDong/PopUp-ksl-zd-5.xml" />
+				<sublayer id="9" popupconfig="popups/PuDong/PopUp-ksl-WaiHuan-5.xml" />
 			</layer>
 			
 			<layer label="全彩板" type="feature" visible="false" 
@@ -194,6 +214,9 @@
 		<widget label="设备图例" right="20" bottom="80" 
 				config="widgets/StaticImage/PuDong/StaticImageWidget-deviceLegend.xml"
 				url="widgets/StaticImage/StaticImageWidget.swf"/>
+		
+		<widget label="图层过滤" preload="open" 
+				url="widgets/LayerSymbolFilter/LayerSymbolFilterWidget.swf"/>
 	</widgetcontainer>
 	
 	<widgetcontainer layout="horizontal">

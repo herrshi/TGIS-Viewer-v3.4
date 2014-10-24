@@ -86,7 +86,8 @@
 			</fields>
 			<showzoomtobutton>false</showzoomtobutton>
 			<buttons>
-				<button label="详细信息" action="openDevice" type="DZJC" idfield="id" />
+				<button label="过车信息" action="openDevice" type="DZJC" idfield="id" />
+				<button label="视频播放" action="openDevice" type="DZJC-SXJ" idfield="id" />
 			</buttons>
 		</popup>
 		

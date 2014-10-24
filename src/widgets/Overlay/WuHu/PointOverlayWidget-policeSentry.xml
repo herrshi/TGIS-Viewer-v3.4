@@ -9,7 +9,7 @@
 	
 	<popupskinclass>policeSentry</popupskinclass>
 	<popup>
-		<title>{spotName}</title>
+		<title>{spotName}({spotStatus})</title>
 		<fields>
 			<field name="spotName" />
 			<field name="deptName" alias="所属单位：" visible="true" />
@@ -19,6 +19,7 @@
 			<field name="policeName"/>
 			<field name="policeId"/>
 			<field name="colorState"/>
+			<field name="spotStatus"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<showdetaillink>true</showdetaillink>

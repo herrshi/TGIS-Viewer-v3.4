@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <configuration>
-	<title>{morph_pd_fbd.DES}</title>
+	<title>{DES}</title>
 	<fields>
-		<field name="morph_pd_fbd.DES" />
-		<field name="morph_pd_fbd.SECTIONID" alias="编号" visible="true" />
+		<field name="DES" />
+		<field name="SECTIONID" alias="编号" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
-	   <button label="人工发布" action="openDevice" type="FBD_DM" idfield="morph_pd_fbd.SECTIONID" />
+	   <button label="人工发布" action="openDevice" type="FBD_DM" idfield="SECTIONID" />
 	</buttons>
 </configuration>

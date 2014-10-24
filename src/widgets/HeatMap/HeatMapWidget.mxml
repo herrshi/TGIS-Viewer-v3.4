@@ -21,8 +21,9 @@
                    xmlns:esri="http://www.esri.com/2008/ags"
 				   xmlns:TGISViewer="cn.seisys.TGISViewer.*"
                    xmlns:samples="com.esri.ags.samples.components.*"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
                    x="600" y="300"
-                   widgetConfigLoaded="init()">
+                   widgetConfigLoaded="init()" >
     <TGISViewer:states>
         <s:State name="mainState"/>
         <s:State name="settingsState"/>
@@ -33,6 +34,7 @@
             <s:Fade targets="{[settingsState,mainState]}"/>
         </s:Transition>
     </TGISViewer:transitions>
+	
     <fx:Script>
         <![CDATA[
 			import com.esri.ags.events.LayerEvent;
@@ -44,6 +46,7 @@
 			import com.esri.ags.samples.utils.UIComponentUtil;
 			
 			import mx.controls.Alert;
+			import mx.events.FlexEvent;
 			
 			import spark.events.IndexChangeEvent;
 
@@ -374,7 +377,28 @@
 				}
                 
             }
-        ]]>
+			
+			protected function dfStart_initializeHandler(event:FlexEvent):void
+			{
+				var today:Date = new Date();
+				dfStart.selectableRange = { rangeEnd: today };
+				dfStart.selectedDate = new Date( today.fullYear, today.month, today.date - 1 );
+			}
+			
+			protected function dfEnd_initializeHandler(event:FlexEvent):void
+			{
+				var today:Date = new Date();
+				dfEnd.selectableRange = { rangeEnd: today };
+				dfEnd.selectedDate = today;
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		]]>
     </fx:Script>
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -396,8 +420,7 @@
                            minimized="widgetMinimizedHandler(event)"
                            open="widgetOpenedHandler(event)"
                            widgetHeight="{wHeight}"
-                           widgetWidth="{wWidth}" 
-						   visible="false" includeInLayout="false">
+                           widgetWidth="{wWidth}">
         <s:Group id="mainState"
                  width="100%" height="100%"
                  visible="false"
@@ -405,7 +428,7 @@
             <s:layout>
                 <s:VerticalLayout gap="6"
                                   horizontalAlign="center"
-                                  paddingLeft="15" paddingTop="15"/>
+                                  paddingLeft="20" paddingTop="20" paddingRight="5" paddingBottom="5"/>
             </s:layout>
             <s:HGroup id="boxGraphical"
                       width="100%"
@@ -420,6 +443,22 @@
                                 minWidth="150"
                                 requireSelection="true"/>
             </s:HGroup>
+			<s:HGroup id="boxTimeScale" 
+					  width="100%" 
+					  gap="5" 
+					  horizontalAlign="left" 
+					  verticalAlign="middle">
+				<s:Label text="起始："/>
+				<mx:DateField id="dfStart" height="25" 
+							  showToday="true" 
+							  initialize="dfStart_initializeHandler(event)"/>
+				<s:Label text="结束："/>
+				<mx:DateField id="dfEnd" height="25"
+							  showToday="true"
+							  initialize="dfEnd_initializeHandler(event)"/>
+				<s:Button label="确定" width="100%" height="25" 
+						  click="button1_clickHandler(event)"/>
+			</s:HGroup>
             <s:VGroup width="100%"
                       left="20" top="300"
                       horizontalAlign="left"

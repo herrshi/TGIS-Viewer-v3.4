@@ -21,7 +21,6 @@
 	<fx:Script>
 		<![CDATA[
 			import com.esri.ags.Graphic;
-			import com.esri.ags.SpatialReference;
 			import com.esri.ags.events.DrawEvent;
 			import com.esri.ags.geometry.Geometry;
 			import com.esri.ags.geometry.MapPoint;
@@ -441,6 +440,7 @@
 				var distance:Number = identifyParamObj.distance;
 				if ( distance )
 				{
+					geometry.spatialReference = map.spatialReference;
 					bufferParam.geometries = [ geometry ];
 					bufferParam.distances = [ distance ];
 					geometryService.buffer( bufferParam, 

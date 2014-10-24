@@ -1175,6 +1175,7 @@
 								 spatialRelationship="{RelationParameters.SPATIAL_REL_WITHIN}"/>
 		
 		<esri:FindTask id="findTask" 
+					   showBusyCursor="true" 
 					   url="{_searchUrl}" 
 					   executeComplete="findTask_executeCompleteHandler(event)" 
 					   fault="faultEventHandler(event)"/>
@@ -1184,6 +1185,7 @@
 							 returnGeometry="true"/>
 		
 		<esri:IdentifyTask id="identifyTask" 
+						   showBusyCursor="true"
 						   url="{_searchUrl}" 
 						   executeComplete="identifyTask_executeCompleteHandler(event)" 
 						   fault="faultEventHandler(event)"/>

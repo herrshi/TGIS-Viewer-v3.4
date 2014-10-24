@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <configuration>
-	<title>{地面主干道路发布段.路名}({地面主干道路发布段.起点交叉路}-{地面主干道路发布段.终点交叉路})</title>
+	<title>{路名}({起点交叉路}-{终点交叉路})</title>
 	<fields>
-		<field name="地面主干道路发布段.路名" />
-		<field name="地面主干道路发布段.起点交叉路" />
-		<field name="地面主干道路发布段.终点交叉路" />
-		<field name="地面主干道路发布段.SECTIONID" alias="编号" visible="true" />
+		<field name="路名" />
+		<field name="起点交叉路" />
+		<field name="终点交叉路" />
+		<field name="SECTIONID" alias="编号" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
-	   <button label="人工发布" action="openDevice" type="FBD_DM" idfield="地面主干道路发布段.SECTIONID" />
+	   <button label="人工发布" action="openDevice" type="FBD_DM" idfield="SECTIONID" />
 	</buttons>
 </configuration>

@@ -14,18 +14,17 @@
 					   layout="absolute" 
 					   creationComplete="this_creationCompleteHandler(event)" 
 					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" >
-		<fx:Style>
+	<fx:Style>
 		@namespace esri "http://www.esri.com/2008/ags";
-			@namespace s "library://ns.adobe.com/flex/spark";
-			@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
 		
-			.myComboBoxDropdown {
-				            dropShadowEnabled: false;
-				            shadowDistance: 3;
-				            shadowDirection: "right";
-				            cornerRadius: 5;
-							
-			       }
+		.myComboBoxDropdown {
+			dropShadowEnabled: false;
+			shadowDistance: 3;
+			shadowDirection: "right";
+			cornerRadius: 5;
+		}
 
 	</fx:Style>
 	<fx:Script>

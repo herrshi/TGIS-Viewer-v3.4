@@ -167,53 +167,56 @@
 					var policeNames:String = formattedAttributes[ "policeName" ];
 					var policeIds:String = formattedAttributes[ "policeId" ];
 					var policeStates:String = formattedAttributes[ "policeState" ];
-					var policeNameArray:Array = policeNames.split( "," );
-					var policeIdArray:Array = policeIds.split( "," );
-					var policeStateArray:Array = policeStates.split( "," );
-					if ( policeNameArray.length > 0 && policeIdArray.length > 0 && policeStateArray.length > 0 
-						&& policeNameArray.length == policeIdArray.length && policeIdArray.length == policeStateArray.length )
+					if ( policeNames != "" && policeIds != "" && policeStates != "" )
 					{
-						_policeInfoAC = new ArrayCollection();
-						for ( i = 0; i < policeNameArray.length; i++ )
+						var policeNameArray:Array = policeNames.split( "," );
+						var policeIdArray:Array = policeIds.split( "," );
+						var policeStateArray:Array = policeStates.split( "," );
+						if ( policeNameArray.length == policeIdArray.length && policeIdArray.length == policeStateArray.length )
 						{
-							var policeName:String = policeNameArray[ i ];
-							var policeId:String = policeIdArray[ i ];
-							var policeState:String = policeStateArray[ i ];
-							
-							switch(policeState)
+							_policeInfoAC = new ArrayCollection();
+							for ( i = 0; i < policeNameArray.length; i++ )
 							{
-								case "在岗":
-									policeState = "<font color='0x6AAE59'>" + policeState + "</font>"
-									break;
+								var policeName:String = policeNameArray[ i ];
+								var policeId:String = policeIdArray[ i ];
+								var policeState:String = policeStateArray[ i ];
+								
+								switch(policeState)
+								{
+									case "在岗":
+										policeState = "<font color='0x6AAE59'>" + policeState + "</font>"
+										break;
 									
-								case "脱岗":
-									policeState = "<font color='0xF99597'>" + policeState + "</font>"
-									break;
-								
-								case "无数据":
-									policeState = "<font color='0x656D80'>" + policeState + "</font>"
-									break;
-								
-								case "未移动":
-									policeState = "<font color='0xE9B036'>" + policeState + "</font>"
-									break;
-								
-								default:
-									policeState = "<font color='0x656D80'>" + policeState + "</font>"
-									break;
+									case "脱岗":
+										policeState = "<font color='0xF99597'>" + policeState + "</font>"
+										break;
+									
+									case "无数据":
+										policeState = "<font color='0x656D80'>" + policeState + "</font>"
+										break;
+									
+									case "未移动":
+										policeState = "<font color='0xE9B036'>" + policeState + "</font>"
+										break;
+									
+									default:
+										policeState = "<font color='0x656D80'>" + policeState + "</font>"
+										break;
+								}
+								_policeInfoAC.addItem( 
+									{ 
+										name: policeName, 
+										id: policeId, 
+										state: policeState 
+									} 
+								);
 							}
-							_policeInfoAC.addItem( 
-								{ 
-									name: policeName, 
-									id: policeId, 
-									state: policeState 
-								} 
-							);
+							
+							
+							footer.addElement( policeContainer );
 						}
-						
-						
-						footer.addElement( policeContainer );
 					}
+					
 				}
 			}
 			

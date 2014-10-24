@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<!-- 宜兴单车轨迹 -->
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip>
+
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"
+			url="widgets/Navigation/NavigationWidget.swf" />
+	<widget left="3" bottom="3"
+			config="widgets/Coordinate/CoordinateWidget.xml" 
+			url="widgets/Coordinate/CoordinateWidget.swf" />
+
+	<map top="0" 
+		 scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/yixing/yx_base_PGIS/MapServer" />
+		</basemaps>
+		<operationallayers>
+<!-- 			<layer label="注记图层" type="dynamic" visible="true"  -->
+<!-- 				   url="http://{serverip}/arcgis/rest/services/yixing/yx_anno_PGIS/MapServer"/> -->
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="horizontal">
+		<widget label="警情热点图" preload="open"
+			icon="widgets/HeatMap/assets/images/i_heatmap_icon.png"
+			config="widgets/HeatMap/YiXing/HeatMapWidget.xml" 
+			url="widgets/HeatMap/HeatMapWidget.swf"/>
+			
+		<widget label="警情搜索" preload="minimized" 
+			icon="assets/images/i_search.png"
+			config="widgets/MultiLayerSearch/YiXing/MultiLayerSearchWidget-policeEvent.xml"
+			url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+	</widgetcontainer>
+	
+	<widgetcontainer layout="float">
+	
+	</widgetcontainer>
+</configuration>
