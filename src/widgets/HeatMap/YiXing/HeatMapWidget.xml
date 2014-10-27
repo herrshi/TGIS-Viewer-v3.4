@@ -22,7 +22,7 @@
     <layers>
         <layer>
             <name>Earthquakes HeatMap</name>
-            <url>http://jiaotong.seisys.cn:8399/arcgis/rest/services/yixing/yixing_jingqing/MapServer/0</url>
+            <url>http://{serverip}/arcgis/rest/services/yixing/yixing_jingqing/MapServer/0</url>
             <outFields>JJBH,JJYXM</outFields>
             <useproxy>false</useproxy>
             <useamf>true</useamf>
@@ -51,14 +51,14 @@
         <query>
             <comp_label>Earthquake Magnitude:</comp_label>
             <heatmapquery_prompt>default selection</heatmapquery_prompt>
-            <featurecount_label> 个投诉</featurecount_label>
+            <featurecount_label> 个警情</featurecount_label>
         </query>
         <timeslider>
             <enabled_by_default>false</enabled_by_default>
             <loop>true</loop>
             <thumbcount>2</thumbcount>
             <thumbmovingrate>1200</thumbmovingrate>
-            <dateformat>MMM, yyyy</dateformat>
+            <dateformat>yyyy-MM-dd</dateformat>
         </timeslider>
         <transparency>
             <comp_label>透明度:</comp_label>

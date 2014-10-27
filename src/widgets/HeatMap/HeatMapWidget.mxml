@@ -178,6 +178,10 @@
                         proxyurl = configData.proxyUrl;
                     }
                     heatmap_QueryURL = configXML.layers.layer.url;
+					if ( configData.arcgisServerIP )
+					{
+						heatmap_QueryURL = heatmap_QueryURL.replace( "{serverip}", configData.arcgisServerIP );
+					}
                     outFields = configXML.layers.layer.outFields || "*";
                     outFieldsArr = outFields.split(",");
 
@@ -392,10 +396,12 @@
 				dfEnd.selectedDate = today;
 			}
 			
-			protected function button1_clickHandler(event:MouseEvent):void
+			protected function btnTimeQuery_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-				
+				var startDate:String = dateTimeFormatter.format( dfStart.selectedDate );
+				var endDate:String = dateTimeFormatter.format( dfEnd.selectedDate );
+				var whereClause:String = "POSITIONTI >= date '" + startDate + "' and POSITIONTI <= date'" + endDate + "'";
+				m_heatMapLayer.where = whereClause;
 			}
 			
 		]]>
@@ -412,7 +418,7 @@
                 alphaTo="{heatmapAlpha}"
                 repeatCount="1"
                 targets="{[m_heatMapLayer]}"/>
-        <s:DateTimeFormatter id="dateTimeFormatter" dateTimePattern="MMMM yyyy"/>
+        <s:DateTimeFormatter id="dateTimeFormatter" dateTimePattern="yyyy-MM-dd"/>
     </fx:Declarations>
 	
     <TGISViewer:WidgetTemplate id="wTemplate"
@@ -449,15 +455,17 @@
 					  horizontalAlign="left" 
 					  verticalAlign="middle">
 				<s:Label text="起始："/>
-				<mx:DateField id="dfStart" height="25" 
+				<mx:DateField id="dfStart" height="25"
+							  formatString="YYYY-MM-DD"
 							  showToday="true" 
 							  initialize="dfStart_initializeHandler(event)"/>
 				<s:Label text="结束："/>
 				<mx:DateField id="dfEnd" height="25"
+							  formatString="YYYY-MM-DD"
 							  showToday="true"
 							  initialize="dfEnd_initializeHandler(event)"/>
-				<s:Button label="确定" width="100%" height="25" 
-						  click="button1_clickHandler(event)"/>
+				<s:Button id="btnTimeQuery" label="确定" width="100%" height="25" 
+						  click="btnTimeQuery_clickHandler(event)"/>
 			</s:HGroup>
             <s:VGroup width="100%"
                       left="20" top="300"

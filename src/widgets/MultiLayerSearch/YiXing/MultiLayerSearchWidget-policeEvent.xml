@@ -2,7 +2,7 @@
 	<showbuffersearch>false</showbuffersearch>
 	<showgraphicsearch>true</showgraphicsearch>
 	<showtextsearch>true</showtextsearch>
-	<sendresult>false</sendresult>
+	<sendresult>true</sendresult>
 	
 	<layerinfo>
 		<find>
@@ -21,8 +21,8 @@
 
 		<popups>
 			<popup layername="宜兴警情">
-				<title>{SFDD}</title>
-				<idfieldname>JJBH</idfieldname>
+				<title>{接警事发地址}</title>
+				<idfieldname>接警编号</idfieldname>
 				<fields>
 					<field name="接警事发地址"/>
 					<field name="接警编号"/>
@@ -32,7 +32,7 @@
 					<field name="二级接警单位名称" alias="二级接警单位：" visible="true"/>
 					<field name="三级接警单位接收人姓名" alias="三级接警姓名：" visible="true"/>
 					<field name="三级接警单位" alias="三级接警单位：" visible="true"/>
-					<field name="POSITIONTI" alias="定位时间：" visible="true"/>
+					<field name="定位时间" alias="定位时间：" visible="true"/>
 				</fields>
 				<showzoomtobutton>false</showzoomtobutton>
 			</popup>

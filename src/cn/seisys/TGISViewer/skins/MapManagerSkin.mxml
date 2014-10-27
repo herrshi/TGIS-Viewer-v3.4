@@ -194,6 +194,14 @@
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":112.9894,"y":28.185,"fields":{"policeSn":"X20433","policeName":"曹积","departmentName":"镜湖大队","dutyName":"民警","pdaCode":"","interphoneCode":"","acquisitionTime":"2014-09-01 00:00:01","gpsState":"在岗","distance":"0","phoneNum":"","m350Sn":""}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeSentry","points":[{"id":37,"x":"118.410437","y":"31.34109","fields":{"spotId":37,"spotName":"16点岗点","spotType":"一级岗","deptName":"镜湖大队","taskPeriod":"晚班上午【09:30~12:00】","colorState":"1","policeName":"","policeId":"","policeState":""}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeCar","points":[{"id":"17","x":118.4132,"y":31.3403,"fields":{"policeCarId":"17","policeCarSn":"贵B 150","deptName":"三山大队","acquisitionTime":"2014-10-14 00:00:00.0"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"ZhongDianCheLiang","points":[{"id":"17","x":118.4132,"y":31.3403,"fields":{"hphm":"皖A112345","cllx":"危化品车","csdw":"上海电科智能系统股份有限公司","gpsno":"wh2032342","clztColor":"<font color=0x6AAE59>异常</font>","clzt":"异常"}}]}' );
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "卡口",
+						layerIds: "",
+						visible: true
+					}
+				);
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
@@ -203,13 +211,13 @@
 //				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"苏BZC831","kkPoints":[{"deviceId":"kk00001","deviceDesc":"卡口00001","x":119.81815,"y":31.34591,"passTime":"2014-10-14 08:04:00","picUrl":"http://xxxxxx/aa.jpg"},{"deviceId":"kk00002","deviceDesc":"卡口00002","x":119.82491,"y":31.3232,"passTime":"2014-10-14 08:29:00","picUrl":"http://xxxx/bb.jpg"}]}' );
 				
 				//浦东测试
-				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 
 						serviceName: "浦东发布浦西发布段",
 						layerIds: "",
 						visible: true
 					} 
-				);
+				);*/
 			}
 			
 			protected function btnTest2_clickHandler(event:MouseEvent):void

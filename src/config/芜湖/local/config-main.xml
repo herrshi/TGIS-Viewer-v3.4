@@ -93,6 +93,15 @@
 					</uniquevalueinfo>
 				</uniquevaluerenderer>
 			</layer>
+			
+			<layer label="卡口" type="feature" visible="false" autorefresh="0"
+				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/2"
+				popupconfig="popups/WuHu/PopUp-KaKou.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13" />
+				</simplerenderer>
+			</layer>
 		</operationallayers>
 	</map>
 
@@ -117,6 +126,18 @@
 		
 		<widget label="岗点" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeSentry.xml"
+			url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="重点车辆" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-ZhongDianCheLiang.xml"
+			url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="应急资源" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiZiYuan.xml"
+			url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="应急单位" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiDanWei.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf" />
 	</widgetcontainer>
 	
