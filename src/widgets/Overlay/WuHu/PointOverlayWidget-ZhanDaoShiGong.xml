@@ -1,0 +1,31 @@
+<!-- 占道施工 -->
+<?xml version="1.0" ?>
+<configuration>
+	<type>ZhanDaoShiGong</type>
+	<!-- 组件打开时通知页面 -->
+	<widgetrunnotify></widgetrunnotify>
+	<!-- 组件关闭时通知页面 -->
+	<widgetclosenotify></widgetclosenotify>
+	
+	<popup>
+		<title>{address}</title>
+		<fields>
+			<field name="address"/>
+			<field name="roadType" alias="道路性质：" visible="true"/>
+			<field name="startTime" alias="开始时间：" visible="true"/>
+			<field name="endTime" alias="结束时间：" visible="true"/>
+		</fields>
+		<showzoomtobutton>false</showzoomtobutton>
+		<buttons>
+			<button label="详细信息" action="openDevice" type="ZhanDaoShiGong"/>
+		</buttons>
+	</popup>
+	
+	<simplerenderer>
+		<picturemarkersymbol url="assets/images/mapIcons/WuHu/ZhanDaoShiGong-blue.png" yoffset="18"/>
+	</simplerenderer>
+	
+	<clickfunction>
+		<action>showInfoWindow</action>
+	</clickfunction>
+</configuration>

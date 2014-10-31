@@ -203,6 +203,7 @@
 						visible: true
 					}
 				);*/
+				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"ShiPinShiJian","points":[{"id":"1234567c","x":118.407665,"y":31.34541,"fields":{"address":"河南北路","roadType":"主干路","startTime":"2014-10-28","endTime":"2014-12-30"}}]}' );
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
@@ -220,14 +221,6 @@
 						visible: true
 					} 
 				);*/
-				
-				AppEvent.dispatch( AppEvent.SET_LAYER_FILTER_DEFINITION, 
-					{ 
-						serviceName: "信访点", 
-						layerIds: "", 
-						whereClause: "所属区县='徐汇区'" 
-					} 
-				);
 			}
 			
 			protected function btnTest2_clickHandler(event:MouseEvent):void
@@ -328,7 +321,7 @@
 				  left.resized="{hostComponent.mapLeft}" right.resized="{hostComponent.mapRight}"
 				  top.resized="{hostComponent.mapTop}" bottom.resized="{hostComponent.mapBottom}"/>
     </s:Group>
-	<s:HGroup visible="false" right="10" bottom="10">
+	<s:HGroup visible="true" right="10" bottom="10">
 		<s:Button id="btnTest1" label="test1" click="btnTest1_clickHandler(event)"/>
 		<s:Button id="btnTest2" label="test2" click="btnTest2_clickHandler(event)"/>
 		<s:Button id="btnTest3" label="test3" click="btnTest3_clickHandler(event)"/>

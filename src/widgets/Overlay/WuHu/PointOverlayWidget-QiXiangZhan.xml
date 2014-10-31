@@ -8,18 +8,19 @@
 	<widgetclosenotify></widgetclosenotify>
 	
 	<popup>
-		<title>{desc}</title>
+		<title>{name}</title>
 		<fields>
-			<field name="desc"/>
-			<field name="age" alias="年龄" visible="true"/>
-			<field name="sex" alias="性别" visible="true"/>
-			<field name="card" alias="证件号" visible="true"/>
-			<field name="addr" alias="地址" visible="true"/>
+			<field name="name"/>
+			<field name="temperature" alias="温度：" visible="true"/>
+			<field name="windSpeed" alias="风速：" visible="true"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
+		<buttons>
+			<button label="详细信息" action="openDevice" type="QiXiangZhan"/>
+		</buttons>
 	</popup>
 	
 	<simplerenderer>
-		<picturemarkersymbol url="assets/images/building/fbsxq.png"/>
+		<picturemarkersymbol url="assets/images/mapIcons/WuHu/QiXiangZhan-blue.png" yoffset="18"/>
 	</simplerenderer>
 </configuration>

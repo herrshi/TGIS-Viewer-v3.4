@@ -28,9 +28,9 @@ package cn.seisys.TGISViewer.managers
 			
 			AppEvent.addListener( AppEvent.EXTERNALINTERFACE_CALL, externalInterfaceCall );
 			
-			var registerTimer:Timer = new Timer( 5000 );
-			registerTimer.addEventListener( TimerEvent.TIMER, timerEvent );
-			registerTimer.start();
+//			var registerTimer:Timer = new Timer( 5000 );
+//			registerTimer.addEventListener( TimerEvent.TIMER, timerEvent );
+//			registerTimer.start();
 		}
 		
 		private function timerEvent( event:TimerEvent ):void

@@ -108,9 +108,25 @@
 	<!-- widgets organized into widget containers that manage close/open etc -->
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="float">
-<!-- 		<widget label="气象站" preload="open" -->
-<!-- 			config="widgets/Overlay/WuHu/PointOverlayWidget-QiXiangZhan.xml"  -->
-<!-- 			url="widgets/Overlay/PointOverlayWidget.swf"/> -->
+		<widget label="气象站" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-QiXiangZhan.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="情报板" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-QingBaoBan.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="电子警察" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-DianZiJingCha.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="占道施工" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-ZhanDaoShiGong.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="视频事件" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-ShiPinShiJian.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
 			
 		<widget label="警情" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeEvent.xml" 
