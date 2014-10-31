@@ -21,7 +21,7 @@
                xmlns:TGISViewer="cn.seisys.TGISViewer.*"
                xmlns:managers="cn.seisys.TGISViewer.managers.*"
                pageTitle="ArcGIS Viewer for Flex" 
-			   rollOut="this_rollOutHandler(event)">
+			   rollOut="this_rollOutHandler(event)" >
 
     <fx:Style source="defaults.css"/>
 
@@ -31,6 +31,7 @@
 
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
 			protected function this_rollOutHandler(event:MouseEvent):void
 			{
 				if ( Capabilities.hasIME )

@@ -14,8 +14,8 @@
 			<field name="ckmc"/>
 			<field name="ckdz" alias="仓库地址：" visible="true"/>
 			<field name="ssdw" alias="所属单位：" visible="true"/>
-			<field name="zrr" alias="责任人" visible="true"/>
-			<field name="lxdh" alias="联系电话" visible="true"/>
+			<field name="zrr" alias="责任人：" visible="true"/>
+			<field name="lxdh" alias="联系电话：" visible="true"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 <!-- 		<buttons> -->

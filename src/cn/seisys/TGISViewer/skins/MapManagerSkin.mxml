@@ -195,13 +195,14 @@
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeSentry","points":[{"id":37,"x":"118.410437","y":"31.34109","fields":{"spotId":37,"spotName":"16点岗点","spotType":"一级岗","deptName":"镜湖大队","taskPeriod":"晚班上午【09:30~12:00】","colorState":"1","policeName":"","policeId":"","policeState":""}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeCar","points":[{"id":"17","x":118.4132,"y":31.3403,"fields":{"policeCarId":"17","policeCarSn":"贵B 150","deptName":"三山大队","acquisitionTime":"2014-10-14 00:00:00.0"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"ZhongDianCheLiang","points":[{"id":"17","x":118.4132,"y":31.3403,"fields":{"hphm":"皖A112345","cllx":"危化品车","csdw":"上海电科智能系统股份有限公司","gpsno":"wh2032342","clztColor":"<font color=0x6AAE59>异常</font>","clzt":"异常"}}]}' );
-				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"YingJiZiYuan","points":[{"id":"2","x":"118.410674890","y":"31.323583666534","fields":{"ckmc":"1","ckdz":"1","ssdw":"上海电科智能系统股份有限公司","zrr":"1","lxdh":"1"}},{"id":"3","x":"118.410674890","y":"31.323383666534","fields":{"ckmc":"112","ckdz":"2","ssdw":"上海电科前端科技有限公司","zrr":"12","lxdh":"212"}},{"id":"4","x":"118.410674890","y":"31.323183666534","fields":{"ckmc":"侧事故","ckdz":"234","ssdw":"上海电科智能系统股份有限公司","zrr":"随风倒高峰","lxdh":"342"}},{"id":"5","x":"118.410674890","y":"31.323684666534","fields":{"ckmc":"代购费","ckdz":"豆腐干","ssdw":"上海电科智能系统股份有限公司","zrr":"粉底霜","lxdh":"25332"}},{"id":"6","x":"118.410674890","y":"31.323483666534","fields":{"ckmc":"aa","ckdz":"aa","ssdw":"上海电科前端科技有限公司","zrr":"aa","lxdh":"aa"}}]}' );
+				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 
 						serviceName: "卡口",
 						layerIds: "",
 						visible: true
 					}
-				);
+				);*/
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
@@ -209,6 +210,7 @@
 				
 				//宜兴测试
 //				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"苏BZC831","kkPoints":[{"deviceId":"kk00001","deviceDesc":"卡口00001","x":119.81815,"y":31.34591,"passTime":"2014-10-14 08:04:00","picUrl":"http://xxxxxx/aa.jpg"},{"deviceId":"kk00002","deviceDesc":"卡口00002","x":119.82491,"y":31.3232,"passTime":"2014-10-14 08:29:00","picUrl":"http://xxxx/bb.jpg"}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_GPS_TRACK, '{"type":"gpsCarTrack","speed":100,"id":"苏B9837警","points":[{"time":"2014-10-28 15:18:27","x":119.842938,"y":31.381497},{"time":"2014-10-28  15:19:27","x":119.844432,"y":31.381498}]}' );
 				
 				//浦东测试
 				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
@@ -218,6 +220,14 @@
 						visible: true
 					} 
 				);*/
+				
+				AppEvent.dispatch( AppEvent.SET_LAYER_FILTER_DEFINITION, 
+					{ 
+						serviceName: "信访点", 
+						layerIds: "", 
+						whereClause: "所属区县='徐汇区'" 
+					} 
+				);
 			}
 			
 			protected function btnTest2_clickHandler(event:MouseEvent):void
@@ -318,7 +328,7 @@
 				  left.resized="{hostComponent.mapLeft}" right.resized="{hostComponent.mapRight}"
 				  top.resized="{hostComponent.mapTop}" bottom.resized="{hostComponent.mapBottom}"/>
     </s:Group>
-	<s:HGroup visible="true" right="10" bottom="10">
+	<s:HGroup visible="false" right="10" bottom="10">
 		<s:Button id="btnTest1" label="test1" click="btnTest1_clickHandler(event)"/>
 		<s:Button id="btnTest2" label="test2" click="btnTest2_clickHandler(event)"/>
 		<s:Button id="btnTest3" label="test3" click="btnTest3_clickHandler(event)"/>

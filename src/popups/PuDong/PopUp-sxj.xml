@@ -7,6 +7,6 @@
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
-	   <button label="详细信息" action="openDevice" type="QBB" idfield="DEVICEID" />
+	   <button label="详细信息" action="openDevice" type="SXJ" idfield="DEVICEID" />
 	</buttons>
 </configuration>

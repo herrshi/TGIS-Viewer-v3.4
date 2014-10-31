@@ -1,0 +1,96 @@
+<?xml version="1.0" ?>
+
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+	
+	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip>
+	
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="1" top="1" 
+		config="widgets/Navigation/NavigationWidget.xml"
+		url="widgets/Navigation/NavigationWidget.swf" />
+	
+	<widget right="3" bottom="3"
+		config="widgets/Coordinate/CoordinateWidget.xml" 
+		url="widgets/Coordinate/CoordinateWidget.swf" />
+		
+	<map center="-303.8117 -544.835" scale="125000"
+		scalebarvisible="false" esrilogovisible="false"
+		doubleclickzoomenabled="true">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true" 
+				url="http://{serverip}/arcgis/rest/services/shanghai/base/MapServer" />
+		</basemaps>
+		
+		<operationallayers>
+			<layer label="功能区" type="feature" visible="false"
+				url="http://{serverip}/arcgis/rest/services/shanghai/sh_points/MapServer/1"
+				popupconfig="popups/huanbao/PopUp-GongNengQu.xml">
+				
+				<simplerenderer>
+					<simplefillsymbol style="solid" color="0x0000FF" alpha="0.6">
+						<outline style="solid" color="0x0000FF" width="1" alpha="1"/>
+					</simplefillsymbol>
+				</simplerenderer>
+			</layer>
+			
+			<layer label="环境设施" type="feature" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/shanghai/sh_points/MapServer/0"
+				popupconfig="popups/huanbao/PopUp-TouSu.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/JingCha-blue.png" yoffset="13"/>
+				</simplerenderer>
+			</layer>
+			
+		    <layer label="信访点" type="feature" visible="true" 
+				url="http://{serverip}/arcgis/rest/services/shanghai/sh_points/MapServer/2"
+				popupconfig="popups/huanbao/PopUp-TouSu.xml">
+				
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/i_pin.png" xoffset="20" yoffset="20"/>
+				</simplerenderer>
+			</layer>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	
+	<widgetcontainer layout="fix">
+		<widget label="ControlPanel" preload="open" right="20" bottom="20"
+			config="widgets/ControlPanel/ShangHai/IconControlPanelWidget-HuanBao.xml"
+			url="widgets/ControlPanel/IconControlPanelWidget.swf" />
+				
+		<widget label="环保信访" preload="open"
+			config="widgets/Overlay/WuHu/PointVisteWidget-policeEvent.xml" 
+			url="widgets/Overlay/PointVisteWidget.swf" />
+			
+		<widget label="图层过滤" preload="open" 
+			url="widgets/LayerSymbolFilter/LayerSymbolFilterWidget.swf"/>
+		
+<!-- 		<widget  left="0" top="0" -->
+<!-- 			preload="open" -->
+<!-- 			icon="assets/images/i_search.png"  -->
+<!-- 			config="widgets/Overlay/LeftSearchWidget.xml"  -->
+<!-- 			url="widgets/Overlay/LeftSearchWidget.swf"/>  -->
+			
+<!-- 		<widget label="热点图" preload="open" -->
+<!-- 			config="widgets/Overlay/HeatMapWidget.xml"  -->
+<!-- 			url="widgets/Overlay/HeatMapWidget.swf"/> -->
+
+
+		<widget label="周边搜索" preload="open"
+			icon="assets/images/i_search.png"
+			config="widgets/MultiLayerSearch/ChangSha/BackgroundMultiLayerSearchWidget-police.xml"
+			url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+	</widgetcontainer>
+</configuration>

@@ -5,10 +5,11 @@ package cn.seisys.TGISViewer.managers
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
+	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
+	import flash.utils.Timer;
 	
 	import mx.collections.ArrayCollection;
-	import mx.controls.Alert;
 	
 	import cn.seisys.TGISViewer.AppEvent;
 	import cn.seisys.TGISViewer.ViewerContainer;
@@ -22,6 +23,22 @@ package cn.seisys.TGISViewer.managers
 		}
 		
 		private function init( event:Event ):void
+		{
+			registerCallback();
+			
+			AppEvent.addListener( AppEvent.EXTERNALINTERFACE_CALL, externalInterfaceCall );
+			
+			var registerTimer:Timer = new Timer( 5000 );
+			registerTimer.addEventListener( TimerEvent.TIMER, timerEvent );
+			registerTimer.start();
+		}
+		
+		private function timerEvent( event:TimerEvent ):void
+		{
+			registerCallback();
+		}
+		
+		private function registerCallback():void
 		{
 			ExternalInterface.addCallback( "addPoints", dispatchAddPointsEvent );
 			ExternalInterface.addCallback( "addPointsByPage", dispatchAddPointsByPageEvent );
@@ -98,8 +115,6 @@ package cn.seisys.TGISViewer.managers
 			//设置搜索条件
 			ExternalInterface.addCallback( "setSearchGeometry", dispatchSetSearchGeometryEvent );
 			ExternalInterface.addCallback( "clearSearchResult", dispatchClearSearchResult );
-			
-			AppEvent.addListener( AppEvent.EXTERNALINTERFACE_CALL, externalInterfaceCall );
 		}
 		
 		private function dispatchClearSearchResult():void

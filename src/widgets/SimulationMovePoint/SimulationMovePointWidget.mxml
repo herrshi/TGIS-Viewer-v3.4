@@ -100,7 +100,7 @@
 					'{"type":"' + _polylineType + '","lines":[{"id":"' + id + '","line":' + route + '}]}' );
 				
 				var polyline:Polyline = Polyline.fromJSON( JSONUtil.decode( route ) );
-//				map.extent = polyline.extent.expand( 1.5 );
+				map.extent = polyline.extent.expand( 1.5 );
 				
 				if ( _moveSpeed > 0 )
 				{

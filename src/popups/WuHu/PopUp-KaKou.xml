@@ -7,6 +7,6 @@
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
-		<button label="详细信息" action="openDevice" type="KaKou" idfield="devId" />
+		<button label="详细信息" action="openDevice" type="KK" idfield="devId" />
 	</buttons>
 </configuration>

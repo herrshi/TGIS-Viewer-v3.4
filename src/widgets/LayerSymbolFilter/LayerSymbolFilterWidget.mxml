@@ -4,7 +4,8 @@
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   xmlns:mx="library://ns.adobe.com/flex/mx" 
 					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
-					   layout="absolute" creationComplete="this_creationCompleteHandler(event)">
+					   layout="absolute" 
+					   creationComplete="this_creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import com.esri.ags.layers.ArcGISDynamicMapServiceLayer;
