@@ -208,15 +208,19 @@
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="fix">
 		<widget label="ControlPanel" preload="open" right="20" bottom="20"
-					 config="widgets/ControlPanel/PuDong/IconControlPanelWidget-main.xml"
-					 url="widgets/ControlPanel/IconControlPanelWidget.swf" />
+			config="widgets/ControlPanel/PuDong/IconControlPanelWidget-main.xml"
+			url="widgets/ControlPanel/IconControlPanelWidget.swf" />
 		
 		<widget label="设备图例" right="20" bottom="80" 
-				config="widgets/StaticImage/PuDong/StaticImageWidget-deviceLegend.xml"
-				url="widgets/StaticImage/StaticImageWidget.swf"/>
+			config="widgets/StaticImage/PuDong/StaticImageWidget-deviceLegend.xml"
+			url="widgets/StaticImage/StaticImageWidget.swf"/>
 		
 		<widget label="图层过滤" preload="open" 
-				url="widgets/LayerSymbolFilter/LayerSymbolFilterWidget.swf"/>
+			url="widgets/LayerSymbolFilter/LayerSymbolFilterWidget.swf"/>
+		
+		<widget label="发布段事件"
+			url="widgets/Overlay/PointOverlayWidget.swf" 
+			config="widgets/Overlay/PuDong/PointOverlayWidget-IssuesectEvent.xml"/>
 	</widgetcontainer>
 	
 	<widgetcontainer layout="horizontal">

@@ -17,7 +17,6 @@ package cn.seisys.TGISViewer.utils
 {
 
 import com.esri.ags.Graphic;
-import com.esri.ags.SpatialReference;
 import com.esri.ags.geometry.Geometry;
 import com.esri.ags.geometry.MapPoint;
 import com.esri.ags.geometry.Multipoint;

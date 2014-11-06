@@ -171,6 +171,21 @@
 				var dataObj:Object = { type: "信号机", points: pointArray };
 				var dataString:String = JSON.stringify( dataObj );
 				AppEvent.dispatch( AppEvent.ADD_POINTS_BY_PAGE, dataString );*/
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "路口",
+						layerIds: "",
+						visible: true
+					}
+				);
+				/*AppEvent.dispatch( AppEvent.SET_LAYER_FILTER_DEFINITION, 
+					{ 
+						serviceName: "监控", 
+						layerIds: "", 
+						whereClause: "DEVICEID in ( 'MODE201409091622065004146', 'MODE201409091622071241923' )" 
+					} 
+				);*/
+				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "" } );
 				
 				//六盘水测试
 //				AppEvent.dispatch( AppEvent.GET_DEVICE_COORDINATE, '{"type":"摄像机","DeviceList":["52020114001322020006"]}' );
@@ -203,7 +218,7 @@
 						visible: true
 					}
 				);*/
-				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"ShiPinShiJian","points":[{"id":"1234567c","x":118.407665,"y":31.34541,"fields":{"address":"河南北路","roadType":"主干路","startTime":"2014-10-28","endTime":"2014-12-30"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"1234567c","x":"118.417656","y":"31.335133","fields":{"name":"摄像机1 "}}]}' );
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
@@ -221,6 +236,7 @@
 						visible: true
 					} 
 				);*/
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"IssuesectEvent","points":[{"id":"aaa","relateType":"issuesect","relateId":"NHPJX-WO->NHPYGZ-WO","fields":{"name":"单车道"}},{"id":"bbb","relateType":"issuesect","relateId":"NHPJX-NO->NHPJX-NI","fields":{"name":"双车道"}}]}' );
 			}
 			
 			protected function btnTest2_clickHandler(event:MouseEvent):void
@@ -280,11 +296,20 @@
 //				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "police", id: "712" } );
 				
 				//浦东测试
-				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 
 						serviceName: "浦东发布浦西发布段",
 						layerIds: "",
 						visible: false
+					} 
+				);*/
+				
+				//无锡测试
+				AppEvent.dispatch( AppEvent.SET_LAYER_FILTER_DEFINITION, 
+					{ 
+						serviceName: "监控", 
+						layerIds: "", 
+						whereClause: "1=1" 
 					} 
 				);
 			}

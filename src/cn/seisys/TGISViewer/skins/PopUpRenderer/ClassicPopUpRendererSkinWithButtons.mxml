@@ -56,6 +56,7 @@
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.WidgetStates;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
+			import cn.seisys.TGISViewer.skins.btSkin;
 			import cn.seisys.TGISViewer.utils.MapServiceUtil;
 			
 			import flashx.textLayout.conversion.TextConverter;
@@ -299,6 +300,7 @@
 							button.minWidth = 50;
 							button.label = label;
 							button.id = id;
+//							button.setStyle( "skinClass", Class( btSkin ) );
 							switch( action.toLowerCase() )
 							{
 								//显示设备详细信息，调用js函数

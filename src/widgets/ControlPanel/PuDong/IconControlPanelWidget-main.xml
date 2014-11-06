@@ -6,7 +6,22 @@
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
-							<param name="ServiceName" value="发布段" />
+							<param name="ServiceName" value="发布段背景" />
+						</params>
+					</clickfunction>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="地面发布段" />
+						</params>
+					</clickfunction>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="浦东发布段" />
+						</params>
+					</clickfunction>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="浦东发布浦西发布段" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
@@ -97,6 +112,16 @@
 					<clickfunction name="ChangeLayer">
 						<params>
 							<param name="ServiceName" value="车道控制" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item id="IssuesectEvent" name="发布段事件" image="assets/images/buttons/JingQing.png">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="发布段事件" />
 						</params>
 					</clickfunction>
 				</clickfunctions>

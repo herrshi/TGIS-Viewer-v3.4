@@ -13,6 +13,9 @@
 			<field name="name"/>
 			<field name="temperature" alias="温度：" visible="true"/>
 			<field name="windSpeed" alias="风速：" visible="true"/>
+			<field name="fintRainintensity" alias="雨水强度：" visible="true"/>
+			<field name="fintRelativehumidity" alias="湿度：" visible="true"/>
+			<field name="fintVisibility" alias="能见度：" visible="true"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<buttons>

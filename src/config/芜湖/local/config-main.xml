@@ -120,6 +120,14 @@
 			config="widgets/Overlay/WuHu/PointOverlayWidget-DianZiJingCha.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
+		<widget label="摄像机" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-SheXiangJi.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="信号机" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-XinHaoJi.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
 		<widget label="占道施工" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-ZhanDaoShiGong.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>

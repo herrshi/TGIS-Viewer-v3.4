@@ -7,7 +7,6 @@ package cn.seisys.TGISViewer.managers
 	import flash.events.IEventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
-	import flash.utils.Timer;
 	
 	import mx.collections.ArrayCollection;
 	

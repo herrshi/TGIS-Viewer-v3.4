@@ -65,11 +65,33 @@
 				map.addEventListener( MouseEvent.CLICK, map_clickHandler );
 				
 				AppEvent.addListener( AppEvent.GET_DEVICE_COORDINATE, appevent_GetDeviceCoordinateHandler );
+				AppEvent.addListener( AppEvent.FIND_DEVICE, appevent_findDeviceHandler );
 			}
 			
 			private function map_clickHandler( event:MouseEvent ):void
 			{
 				_resultLayer.clear();
+			}
+			
+			private function appevent_findDeviceHandler( event:AppEvent ):void
+			{
+				var type:String = event.data.type;
+				var id:String = event.data.id;
+				
+				var layerObj:Object = _layerTable.find( type );
+				if ( !layerObj )
+				{
+					return;
+				}
+				
+				var idField:String = layerObj.idField;
+				var url:String = layerObj.url;
+				var where:String = idField + "='" + id + "'";
+				
+				query.where = where;
+				queryTask.url = url;
+				queryTask.execute( query, 
+					new AsyncResponder( queryTask_findDevice_executeCompleteHandler, queryTask_faultHandler, type ) );
 			}
 			
 			private function appevent_GetDeviceCoordinateHandler( event:AppEvent ):void
@@ -105,10 +127,10 @@
 				query.outFields = [idField];
 				queryTask.url = url;
 				queryTask.execute( query, 
-					new AsyncResponder( queryTask_executeCompleteHandler, queryTask_faultHandler, type ) );
+					new AsyncResponder( queryTask_getDeviceCoordinate_executeCompleteHandler, queryTask_faultHandler, type ) );
 			}
 			
-			protected function queryTask_executeCompleteHandler( item:Object, token:Object = null ):void
+			protected function queryTask_getDeviceCoordinate_executeCompleteHandler( item:Object, token:Object = null ):void
 			{
 				var featureSet:FeatureSet = item as FeatureSet;
 				var type:String = token as String;
@@ -146,6 +168,17 @@
 						params: [dataString]
 					} 
 				);
+			}
+			
+			protected function queryTask_findDevice_executeCompleteHandler( item:Object, token:Object = null ):void
+			{
+				var featureSet:FeatureSet = item as FeatureSet;
+				var type:String = token as String;
+				
+				for each ( var graphic:Graphic in featureSet.features )
+				{
+					
+				}
 			}
 			
 			protected function queryTask_faultHandler( fault:Fault, token:Object ):void

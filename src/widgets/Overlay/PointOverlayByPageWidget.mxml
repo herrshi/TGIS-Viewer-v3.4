@@ -375,14 +375,13 @@
 				var params:String = event.data as String;
 				var paramObj:Object = JSON.parse( params );
 				var type:String = paramObj.type;
-				var pointArray:Array = paramObj.points;
+				var idArray:Array = paramObj.ids;
 				
-				for each ( var pointObj:Object in pointArray )
+				for each ( var id:String in idArray )
 				{
-					var id:String = pointObj.id;
 					for each ( var graphic:Graphic in _pointOverlayLayer.graphicProvider )
 					{
-						if ( graphic.attributes.type == type && graphic.id == id )
+						if ( id == graphic.id )
 						{
 							_pointOverlayLayer.remove( graphic );
 							break;

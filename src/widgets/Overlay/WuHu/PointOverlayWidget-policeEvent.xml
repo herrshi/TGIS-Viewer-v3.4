@@ -7,14 +7,15 @@
 	<!-- 组件关闭时通知页面 -->
 	<widgetclosenotify></widgetclosenotify>
 	
-	<clickfunction>
-	    <action>getPoliceEventData</action>
-	    <type>   </type>
-	    <idField> </idField>
-	</clickfunction>
+	<popupskinclass>policeEvent</popupskinclass>
+	
     <simplerenderer>
 		<picturemarkersymbol url="assets/images/mapIcons/JingQing-blue.png" yoffset="13"/>
 	</simplerenderer>
+	
+	<clickfunction>
+	    <action>getPoliceEventData</action>
+	</clickfunction>
 	
 	
 	<layerinfo>

@@ -29,6 +29,7 @@
 	</fx:Style>
 	<fx:Script>
 		<![CDATA[
+			import com.esri.ags.FeatureSet;
 			import com.esri.ags.Graphic;
 			import com.esri.ags.events.DrawEvent;
 			import com.esri.ags.events.EditEvent;
@@ -38,20 +39,26 @@
 			import com.esri.ags.portal.PopUpRenderer;
 			import com.esri.ags.renderers.IRenderer;
 			import com.esri.ags.symbols.Symbol;
+			import com.esri.ags.tasks.QueryTask;
+			import com.esri.ags.tasks.supportClasses.Query;
 			import com.esri.ags.tools.DrawTool;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
+			import mx.utils.StringUtil;
 			import mx.utils.UIDUtil;
 			
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
-			import cn.seisys.TGISViewer.skins.PopUpRenderer.PoliceSentryPopUpRendererSkin;
 			import cn.seisys.TGISViewer.skins.PopUpRenderer.AdvancedPopUpRendererSkin;
 			import cn.seisys.TGISViewer.skins.PopUpRenderer.ClassicPopUpRendererSkinWithButtons;
+			import cn.seisys.TGISViewer.skins.PopUpRenderer.PoliceEventPopUpRendererSkin;
+			import cn.seisys.TGISViewer.skins.PopUpRenderer.PoliceSentryPopUpRendererSkin;
 			import cn.seisys.TGISViewer.utils.Hashtable;
+			import cn.seisys.TGISViewer.utils.MapServiceUtil;
 			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
 			import cn.seisys.TGISViewer.utils.RendererParser;
 			import cn.seisys.TGISViewer.utils.SymbolParser;
@@ -115,6 +122,13 @@
 			private const MODE_NORMAL:String = "normal";
 			private const DRAW_MODE:String = DrawTool.MAPPOINT;
 			
+			private var _featureArray:Array = [];
+			/**
+			 * 保存所有要查询的图层
+			 * 查询完成的设为true
+			 * 全部为true则通知页面组件创建完成
+			 * */
+			private var _layerArray:Array = [];
 			/**
 			 * 点击图标直接触发事件，不显示弹出框
 			 * */
@@ -286,16 +300,96 @@
 					{
 						_currentMode = MODE_NORMAL;
 					}
+					
 					_widgetRunNotifyFunctionName = configXML.widgetrunnotify;
 					_widgetCloseNotifyFunctionName = configXML.widgetclosenotify;
-					if ( _widgetRunNotifyFunctionName != "" )
+					
+					//查询设备点位，页面可以通过设备编号加点
+					//查询完成之后再通知页面组件创建完成
+					if ( configXML.querylayers )
 					{
-						//通知页面组件创建完成
+						//多个图层的数据合并到一个array中
+						var queryLayerList:XMLList = configXML.querylayers..querylayer;
+						for each ( var queryLayerXML:XML in queryLayerList )
+						{
+							var url:String = queryLayerXML.url;
+							url = url.replace( "{serverip}", configData.arcgisServerIP );
+							_layerArray.push( 
+								{ 
+									url: url, 
+									queryFinish: false 
+								} 
+							);
+							var idField:String = queryLayerXML.idfield;
+							if ( url != "" && idField != "" )
+							{
+								queryFeature( url, idField );
+							}
+						}
+						
+					}
+					//不需要查询，通知页面组件创建完成
+					else
+					{
+						if ( _widgetRunNotifyFunctionName != "" )
+						{
+							AppEvent.dispatch( 
+								AppEvent.EXTERNALINTERFACE_CALL, 
+								{ functionName: _widgetRunNotifyFunctionName } 
+							);
+						}
+					}
+				}
+			}
+			
+			
+			private function queryFeature( url:String, idField:String ):void
+			{
+				var queryTask:QueryTask = new QueryTask( url );
+				var query:Query = new Query();
+				query.where = "1=1";
+				query.returnGeometry = true;
+				query.outFields = [ idField ];
+				queryTask.execute(query, new AsyncResponder(onResult, onFault));
+				
+				function onResult(featureSet:FeatureSet, token:Object = null):void
+				{
+					for each ( var graphic:Graphic in featureSet.features )
+					{
+						var id:String = graphic.attributes[ idField ];
+						if ( StringUtil.trim( id ) != "" )
+						{
+							var point:MapPoint = MapServiceUtil.getGeomCenter( graphic );
+							_featureArray.push( 
+								{ 
+									id: id, 
+									point: point 
+								} 
+							);
+						}
+					}
+					//检查是否全部查询完成
+					var allFinish:Boolean = true;
+					for each ( var layerObj:Object in _layerArray )
+					{
+						if ( layerObj.url == url )
+						{
+							layerObj.queryFinish = true;
+						}
+						allFinish = allFinish && layerObj.queryFinish;
+					}
+					if ( allFinish && _widgetRunNotifyFunctionName != "" )
+					{
 						AppEvent.dispatch( 
 							AppEvent.EXTERNALINTERFACE_CALL, 
 							{ functionName: _widgetRunNotifyFunctionName } 
 						);
 					}
+				}
+				
+				function onFault(info:Object, token:Object = null):void
+				{
+					showError( info.toString(), widgetTitle );
 				}
 			}
 			
@@ -506,6 +600,21 @@
 					if ( !id || id == "" )
 						continue;
 					
+					if ( _featureArray.length > 0 )
+					{
+						var relateId:String = pointObj.relateId;
+						for each ( var featureObj:Object in _featureArray )
+						{
+							if ( featureObj.id == relateId )
+							{
+								var pt:MapPoint = featureObj.point;
+								x = pt.x;
+								y = pt.y;
+								break;
+							}
+						}
+					}
+					
 					var graphic:Graphic = getGraphicById( id );
 					//已存在的点
 					if ( graphic )
@@ -606,12 +715,14 @@
 					case "policeSentry":
 						popupRenderer.setStyle( "skinClass", Class( PoliceSentryPopUpRendererSkin ) );
 						break;
+					
+					case "policeEvent":
+						popupRenderer.setStyle( "skinClass", Class( PoliceEventPopUpRendererSkin ) );
+						break;
 						
 					default:
-					{
 						popupRenderer.setStyle( "skinClass", Class( ClassicPopUpRendererSkinWithButtons ) );
 						break;
-					}
 				}
 				map.infoWindow.content = popupRenderer;
 				map.infoWindow.contentOwner = popupRenderer.graphic;
@@ -663,6 +774,11 @@
 						params: [ type, id ]
 					} 
 				);
+			}
+			
+			private function appevent_addRelatePointsHandler( event:AppEvent ):void
+			{
+				
 			}
 			
 			private function appevent_deleteAllPointsHandler( event:AppEvent ):void

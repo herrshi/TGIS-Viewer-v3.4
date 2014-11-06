@@ -680,23 +680,6 @@ public class AppEvent extends Event
 	 * */
 	public static const CLEAR_SEARCH_RESULT:String = "clearSearchResult";
 	
-	
-	/**
-	 *test
-	 * */
-	public static const GET_POLICE_WIDGET_FROM_POINT_OVERLAY:String= "getPoliceWidgetFromOverlay";
-	public static const RETURN_POLICE_WIDGET_FROM_POINT_OVERLAY:String = "returnPoliceWidgetFromOverlay";
-	
-	
-	/**
-	 *警情,通过警情编号向，请求获取警情数据
-	 * */
-     public static const  GET_POLICE_EVENT_DATA:String = "getPoliceEventData";
-	
-	 /**
-	  *警情,发送警情数据
-	  * */
-	 public static const  SEND_POLICE_EVENT_DATA:String = "sendPoliceEventData";
 	 
 	 /**
 	  *警情
