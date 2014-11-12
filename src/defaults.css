@@ -68,4 +68,25 @@ esri|InfoWindow
 	
 }
 
+.infoStyle
+{
+	borderThickness: 1;
+	infoPlacement: upperRight;
+	backgroundColor: #E9F2B9;
+	paddingLeft: 2;
+	paddingRight: 2;
+	paddingTop: 2;
+	paddingBottom: 2;
+}
+.infoStyleC
+{
+	borderThickness: 1;
+	infoPlacement: upperRight;
+	backgroundColor: #ff0000;
+	paddingLeft: 2;
+	paddingRight: 2;
+	paddingTop: 2;
+	paddingBottom: 2;
+}
+
 

@@ -66,6 +66,11 @@
 		<widget label="ControlPanel" preload="open" right="20" bottom="20"
 				config="widgets/ControlPanel/WLMQ/IconControlPanelWidget-event-main.xml"
 				url="widgets/ControlPanel/IconControlPanelWidget.swf" />
+				
+		<widget label="交通流量" preload="open"
+			config="widgets/ODTrafficFlow/TrafficFlowWidget.xml" 
+			url="widgets/ODTrafficFlow/TrafficFlowWidget.swf" />
 	</widgetcontainer>
+	
 
 </configuration>

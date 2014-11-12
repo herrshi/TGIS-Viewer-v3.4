@@ -1,0 +1,1119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+	xmlns:esri="http://www.esri.com/2008/ags"
+	xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+	creationComplete="init(event)" widgetConfigLoaded="widgetConfigLoadedHandler(event)">
+
+
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.FeatureSet;
+			import com.esri.ags.Graphic;
+			import com.esri.ags.SpatialReference;
+			import com.esri.ags.events.GeometryServiceEvent;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.Polygon;
+			import com.esri.ags.geometry.Polyline;
+			import com.esri.ags.layers.FeatureLayer;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.portal.PopUpRenderer;
+			import com.esri.ags.renderers.IRenderer;
+			import com.esri.ags.symbols.CompositeSymbol;
+			import com.esri.ags.symbols.SimpleLineSymbol;
+			import com.esri.ags.symbols.Symbol;
+			import com.esri.ags.symbols.TextSymbol;
+			import com.esri.ags.tasks.GeometryService;
+			import com.esri.ags.tasks.GeometryServiceSingleton;
+			import com.esri.ags.tasks.QueryTask;
+			import com.esri.ags.tasks.supportClasses.BufferParameters;
+			import com.esri.ags.tasks.supportClasses.Query;
+			import com.esri.ags.tools.DrawTool;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
+			
+			import spark.filters.GlowFilter;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
+			import cn.seisys.TGISViewer.utils.RendererParser;
+			import cn.seisys.TGISViewer.utils.SymbolParser;
+			import cn.seisys.TGISViewer.utils.myLabel;
+			
+			private var _widgetRunNotifyFunctionName:String;
+			private var _widgetCloseNotifyFunctionName:String;
+			private var _buferPointArray:Array;
+			private var bufferPoint:String;
+			private var graLayerInCircle:GraphicsLayer;
+			private var kkLayer:GraphicsLayer;
+			private var _lineArrowLayer:GraphicsLayer;
+			private var _kkQueryLayer:GraphicsLayer;//卡口地图服务图层
+			private var _overCrowdLayer:GraphicsLayer;//画圆，显示拥挤区域
+			private var _lineSymbol:SimpleLineSymbol;
+			private var _symbolGlowFilter:GlowFilter;
+			;
+			private var _glowFilter:GlowFilter;
+			/**
+			 * 弹出窗样式。 
+			 * */
+			private var popUpRenderer:ClassFactory;
+			private var renderer:IRenderer
+			/**
+			 * 是否要在线上增加箭头
+			 * */
+			private var _needArrow:Boolean;
+			/**
+			 * 箭头配置，包括位置、大小、颜色等
+			 * */
+			private var _arrowInfo:Object;
+			private var _kkQueryLayerUrl:String;
+			private var _textType:String;
+			private var circlePointNum:Number;
+			private var draw:DrawTool;
+			private var startPoint:MapPoint;
+			private var begGraphic:Graphic;
+			private var ring:Array;
+			private var graphicsLayer:GraphicsLayer;
+			private var graphicsL:GraphicsLayer
+			
+			private var graphicsLayers:GraphicsLayer;
+			private var drawGraphic:Graphic;
+			private var sbbh:String;
+			private var graphicsLayerId:String ="graphicsLayerId";
+			private var lineId:String= "lineId"
+			private var lineArrowId:String ="lineArrowId";
+			private var kkLayerId:String ="kkLayerId";
+			private var overCrowdId:String ="overCrowdId";
+			private var graLayerInCircleId:String = "graLayerInCircleId";
+			private var _nanCrowdLayerTable:Hashtable = new Hashtable();
+			private var _overCrowdLayerTable:Hashtable = new Hashtable();
+			private var _overCrowdTable:Hashtable = new Hashtable();
+			
+			private var grphic:Graphic;
+			private var myGraphic:Graphic = new Graphic();
+			private var ptArray:Array= new Array();
+			private var kkArray:Array =[];
+			private var jsLayer:FeatureLayer = new FeatureLayer();
+			
+			protected function init(event:FlexEvent):void
+			{
+				_lineArrowLayer = new GraphicsLayer();
+				_lineArrowLayer.id = lineArrowId; 
+				map.addLayer( _lineArrowLayer );
+				
+				 graphicsLayers = new GraphicsLayer();
+				 map.addLayer(graphicsLayers);
+				 
+				 graphicsL = new GraphicsLayer();
+				 map.addLayer(graphicsL);
+				 
+				//画圆显示拥挤区域
+				_overCrowdLayer = new GraphicsLayer();
+				_overCrowdLayer.id =overCrowdId
+				map.addLayer( _overCrowdLayer );
+				
+				//显示地图服务集散点
+				graphicsLayer=new GraphicsLayer();
+				graphicsLayer.id = graphicsLayerId;
+				map.addLayer(graphicsLayer);
+					
+				/*卡口layer*/
+				kkLayer=new GraphicsLayer();
+				kkLayer.id =kkLayerId;
+				map.addLayer(kkLayer);
+				
+				/*在拥挤区域的集散点*/
+				graLayerInCircle = new GraphicsLayer();
+				graLayerInCircle.id = graLayerInCircleId;
+				map.addLayer(graLayerInCircle);
+			
+				geoService.url = GeometryServiceSingleton.instance.url;
+				geoService.token = GeometryServiceSingleton.instance.token;
+				geoService.proxyURL = GeometryServiceSingleton.instance.proxyURL;
+				
+				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
+				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_WidgetCloseHandler );
+				
+				AppEvent.addListener( AppEvent.GET_TRAFFIC_FLOW_DATA,appevent_getTrafficDataHandler);
+				AppEvent.addListener( AppEvent.GET_TRAFFIC_FLOW_NOTICE,appevent_getTrafficFlowNoticeHandler);
+				AppEvent.addListener( AppEvent.DELETE_TRAFFIC_FLOW_DATA, appevent_deleteAlltrafficFlowHandler );
+			}
+	
+			
+			private  var pointArray:Array = new Array();;
+			private  var overDistaceArray:Array  = new Array();;
+			
+			protected function widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_textType = configXML.type;
+					//卡口url参数
+					_kkQueryLayerUrl = configXML.kkQueryLayer.url;
+					var iField:String = configXML.kkQueryLayer.ifield;
+					if ( _kkQueryLayerUrl != "" )
+					{
+						/*if ( configData.arcgisServerIP )
+						{
+						_kkQueryLayerUrl = _kkQueryLayerUrl.replace( "{serverip}", configData.arcgisServerIP );
+						//根据卡口地图服务查询相关信息
+						//queryKaKou(_kkQueryLayerUrl);
+						}*/
+						queryKaKou(_kkQueryLayerUrl,iField);
+					}
+					
+				
+					/*拥挤区域*/
+					var symbolParser:SymbolParser = new SymbolParser();
+					var overCrowdxmlList:XMLList = configXML.overCrowdLayers.overCrowdLayer;
+					for (var m:int = 0; m < overCrowdxmlList.length(); m++)
+					{
+					    var overDistace:Number =overCrowdxmlList[m].distace;
+						overDistaceArray.push(overDistace);
+						
+						var bufferPoint:String = overCrowdxmlList[m].buferPoint;
+						_buferPointArray = bufferPoint.split( "，" );
+						pointArray.push(bufferPoint);
+						
+						var overList:XMLList = overCrowdxmlList[m].layers.layer;
+						for(var l:int=0; l<overList.length();l++)
+						{
+							var overType:String  = overList[l].type;
+							var overCrowdIdfield:String = overList[l].idfield;
+							var SBBH:String =overList[l].SBBH;
+							var overCrowdsymbol:Symbol = symbolParser.parseSymbol(overList[l]);
+
+							var overObj:Object = new Object();
+							overObj.overType =overType;
+							overObj.overCrowdIdfield =overCrowdIdfield;
+							overObj.SBBH =SBBH;
+							overObj.overCrowdsymbol =overCrowdsymbol;
+							
+							var kkGraphic:Graphic = new Graphic() ;
+							kkGraphic.attributes = overObj;
+							kkLayer.add(kkGraphic);//没有坐标信息
+						}
+					}
+					
+					
+					//popup
+					if ( configXML.popup[0] )
+					{
+						var popupXML:XML = configXML.popup[0];
+						var fields:XMLList =	popupXML.fields
+						for(var j:int=0 ; j< fields.length();j++)
+						{
+							var flowRate:String = fields[j].field.@name;
+						}
+						var popUpInfo:PopUpInfoWithButtons = PopUpInfoParser.parsePopUpInfo( popupXML );
+						popUpRenderer = new ClassFactory( PopUpRenderer );
+						popUpRenderer.properties = 
+							{ 
+								popUpInfo: popUpInfo
+							};
+						//_lineLayer.infoWindowRenderer = popUpRenderer;
+					}
+					
+					//箭头
+					_needArrow = configXML.arrow.@enable == "true" ? true : false;
+					if ( _needArrow )
+					{
+						var arrowPosition:String = configXML.arrow.position;
+						var arrowLength:Number = configXML.arrow.length;
+						var arrowUniqueValueRenderer:Object;
+						var arrowSimpleRenderer:Object;
+						
+						if ( configXML.arrow.uniquevaluerenderer[ 0 ] )
+						{
+							var arrowUniqueValueRendererTable:Hashtable = new Hashtable();
+							var arrowRendererFieldName:String = configXML.arrow.uniquevaluerenderer.@field;
+							var arrowUniqueValueInfosXMLList:XMLList = configXML.arrow.uniquevaluerenderer.uniquevalueinfo;
+							for each ( var arrowUniqueValueInfoXML:XML in arrowUniqueValueInfosXMLList )
+							{
+								var arrowRendererFieldValue:String = arrowUniqueValueInfoXML.@value;
+								var arrowSymbolObj:Object = parseArrowGradientFillSymbol( arrowUniqueValueInfoXML.gradientfill[ 0 ] );
+								arrowUniqueValueRendererTable.add( arrowRendererFieldValue, arrowSymbolObj );
+							}
+							arrowUniqueValueRenderer = 
+								{ 
+									fieldName: arrowRendererFieldName, 
+									rendererTable: arrowUniqueValueRendererTable 
+								};
+						}
+						else if ( configXML.arrow.simplerenderer[ 0 ] )
+						{
+							arrowSimpleRenderer = parseArrowGradientFillSymbol( configXML.arrow.simplerenderer.gradientfill[ 0 ] );
+						}
+						_arrowInfo = 
+							{ 
+								position: arrowPosition, 
+								length: arrowLength,
+								uniqueValueRenderer: arrowUniqueValueRenderer,
+								simpleRenderer: arrowSimpleRenderer
+							};
+					}
+					
+					//renderer
+					var rendererParser:RendererParser = new RendererParser;
+					//renderer = rendererParser.parseRenderer( configXML );
+					//_lineLayer.renderer = renderer;
+					
+					_widgetRunNotifyFunctionName = configXML.widgetrunnotify;
+					_widgetCloseNotifyFunctionName = configXML.widgetclosenotify;
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetRunNotifyFunctionName } 
+						);
+					}
+					
+					drawCircle();
+				}
+			}
+			
+			/*接受页面通知画拥挤区域*/
+			private var overDis:Number;
+			private var bufferPointX:Number ;
+			private var bufferPointY:Number ;
+			private function appevent_getTrafficFlowNoticeHandler(event:AppEvent):void
+			{
+				
+				
+			}
+			
+			private function drawCircle():void
+			{
+				//做缓冲区,进行画圆
+				for(var i:int =0;i<pointArray.length;i++)
+				{
+					/*缓冲的点坐标*/
+					var bufferPt:String = pointArray[i];
+					var tArray:Array = bufferPt.split( "，" );
+					bufferPointX = tArray[0];
+					bufferPointY = tArray[1];
+			
+					/*缓冲的点距离*/
+					overDis = overDistaceArray[i];
+					var myCenterPoint:MapPoint;
+					myCenterPoint = new MapPoint(bufferPointX,bufferPointY,map.spatialReference);
+				
+					var buferParameter:BufferParameters = new BufferParameters();
+					buferParameter.geometries = [myCenterPoint];//几何体数组
+					buferParameter.distances = [overDis];
+					buferParameter.unit = GeometryService.UNIT_METER;
+					buferParameter.bufferSpatialReference= new  SpatialReference(4326);
+					buferParameter.bufferSpatialReference = map.spatialReference;
+					buferParameter.outSpatialReference = map.spatialReference;
+					//geoService.addEventListener(GeometryServiceEvent.BUFFER_COMPLETE,bufferComplete);
+					geoService.buffer(buferParameter ,new AsyncResponder(bufferResult,faultFunc));
+					function bufferResult(result:Object,token:Object =null):void
+					{
+						for each(var geom:Polygon in result)
+						{
+							var sfs:SimpleFillSymbol =  new SimpleFillSymbol("solid" , 0xff0000,0.5
+								,new SimpleLineSymbol("solid",0x000000, 1,3));
+							var grp:Graphic = new Graphic();
+							grp.geometry= geom;
+							grp.symbol=sfs;
+							_overCrowdLayer.add(grp);
+							map.reorderLayer(_overCrowdLayer.id,1);
+						}
+						showKkLayerInMap()
+					
+					}
+					function faultFunc(falut:Object,token:Object =null):void
+					{
+						Alert.show(falut.toString());
+					}
+				}
+			}
+			
+			
+			private function bufferComplete(event:GeometryServiceEvent):void
+			{
+				geoService.removeEventListener(GeometryServiceEvent.BUFFER_COMPLETE,bufferComplete);
+				for each(var geom:Polygon in event.result)
+				{
+					var sfs:SimpleFillSymbol =  new SimpleFillSymbol("solid" , 0xff0000,0.5
+						,new SimpleLineSymbol("solid",0x000000, 1,3));
+					var grp:Graphic = new Graphic();
+					grp.geometry= geom;
+					grp.symbol=sfs;
+					_overCrowdLayer.add(grp);
+					map.reorderLayer(_overCrowdLayer.id,1);
+				}
+				showKkLayerInMap();
+			}
+			
+			
+			/*从卡口图层中查询相关地图服务信息*/
+			private function queryKaKou(url:String,iField:String):void
+			{
+				var queryTask:QueryTask = new QueryTask( url );
+				var query:Query = new Query();
+				query.where = "1=1";
+				query.returnGeometry = true;
+				query.outFields = ["*"];
+				queryTask.execute(query, new AsyncResponder(onResult, onFault));
+				function onResult(featureSet:FeatureSet, token:Object = null):void
+				{   
+					var index:uint = 0
+					for each ( var graphic:Graphic in featureSet.features )
+					{
+						var SBBH:String = graphic.attributes[iField];
+						var point:MapPoint = graphic.geometry as MapPoint;
+						var x:Number = point.x;
+						var y:Number = point.y;
+						kkArray.push( 
+							{ 
+								id: index ,
+								SBBH: SBBH, 
+								x: x,
+								y: y
+							} 
+						);
+						index++;
+						//相应的卡口显示在地图上
+						graphic.symbol = iRed;
+						graphicsLayer.add(graphic);
+						//graphic.addEventListener(MouseEvent.CLICK,open_clickHandler);
+					}
+				}
+				function onFault(info:Object, token:Object = null):void
+				{
+					showError( info.toString(), widgetTitle );
+				}
+			}
+			
+			
+			//小区的卡口编号与地图服务中的卡口编号
+			private function showKkLayerInMap():void
+			{
+				/*临时集散点图层*/
+		        var pLayer:GraphicsLayer=new GraphicsLayer();
+				for each(var graphic:Graphic in kkLayer.graphicProvider)
+				{
+					for(var i:int=0; i<kkArray.length;i++)
+					{   
+						if(graphic.attributes.overType =="集点")
+						{   
+							if(kkArray[i].SBBH == graphic.attributes.SBBH )
+							{
+								var x:Number= kkArray[i].x;
+								var y:Number= kkArray[i].y;
+								var grp:Graphic = new Graphic(new MapPoint(x,y));
+								
+								var obj:Object = new Object();
+								obj.SBBH= graphic.attributes.SBBH;
+								obj.type = "集点"
+								grp.symbol =iBlack;
+								grp.attributes = obj;
+								pLayer.add(grp)
+							}
+						}
+						else if(graphic.attributes.overType =="散点")
+						{
+							if(kkArray[i].SBBH == graphic.attributes.SBBH )
+							{
+								var obj1:Object = new Object();
+								obj1.SBBH= graphic.attributes.SBBH;
+								obj1.type = "散点";
+								var x1:Number = kkArray[i].x;
+								var y1:Number = kkArray[i].y;
+								
+								var grps:Graphic = new Graphic(new MapPoint(x1,y1));
+								grps.symbol =iBlack;
+								grps.attributes = obj1;
+								pLayer.add(grps);
+							}
+						}
+					}
+				}
+				
+				/*显示在所画拥挤区域内的集散点*/
+				for each(var gr:Graphic in pLayer.graphicProvider)
+				{
+					for each(var s:Graphic in _overCrowdLayer.graphicProvider )
+					{
+						var pt:MapPoint= gr.geometry as MapPoint;
+						var gType:String = gr.attributes.type;
+						var SBBH:String = gr.attributes.SBBH;
+						var x2:Number = pt.x;
+						var y2:Number = pt.y;
+						
+						var ply:Polygon = s.geometry as Polygon;
+						if(ply.contains(pt))
+						{
+							ptArray.push(
+								{
+									SBBH:SBBH ,
+									type:gType,
+									x:x2,
+									y:y2
+								}
+							);
+						}
+					}
+				}
+				
+				for(var k:int=0; k<ptArray.length; k++)
+				{
+				     grphic = new Graphic(new MapPoint(ptArray[k].x ,ptArray[k].y));
+					 
+					 /*鼠标移入移出*/
+					// grphic.addEventListener(MouseEvent.ROLL_OVER,rollOverHandler);
+					// grphic.addEventListener(MouseEvent.ROLL_OUT,rollOutHandler);
+					 
+					 if(ptArray[k].type == "集点")
+					 {
+						 var tm:String="集点";
+						 var textSymbol:TextSymbol = new TextSymbol(); 
+						 textSymbol.htmlText =tm;
+						 textSymbol.color = 0x0000ff;
+						 textSymbol.yoffset = 13;
+						 
+						 var textF:TextFormat = new TextFormat();
+						 textF.font ="宋体";
+						 textF.size = "14"
+						 textSymbol.textFormat = textF;
+					
+						 var cm:CompositeSymbol = new CompositeSymbol();
+						 cm.symbols =[iBlack,textSymbol];
+						 grphic.symbol = cm;
+							 
+					 }
+					 else if(ptArray[k].type =="散点")
+					 {
+						 var tm1:String="散点";
+						 var textSymbol1:TextSymbol = new TextSymbol(); 
+						 textSymbol1.htmlText =tm1;
+						 textSymbol1.color = 0x0000ff;
+						 textSymbol1.yoffset = 13;
+						 var textF1:TextFormat = new TextFormat();
+						 textF1.font ="宋体";
+						 textF1.size = "14"
+						 textSymbol1.textFormat = textF1;
+						 var cm1:CompositeSymbol = new CompositeSymbol();
+						 cm1.symbols =[iBlack,textSymbol1];
+						 grphic.symbol = cm1;
+					 }
+					 
+					 
+					 //在园内的设备编号相同集散点,并且显示在地图上
+					 var gObj:Object = new Object();
+					 gObj.type = ptArray[k].type;
+					 gObj.SBBH = ptArray[k].SBBH;
+					 grphic.attributes = gObj;
+					 
+					 /*小区集散点点击事件*/
+					 grphic.addEventListener(MouseEvent.CLICK,open_clickHandler);
+					 graLayerInCircle.add(grphic);
+				}
+			}
+			
+			
+			/*private function rollOverHandler(event:MouseEvent):void
+			{
+				const graphic:Graphic = event.target as Graphic;
+				if (graphic)
+				{
+					var tm:String=graphic.attributes.type;
+					var pt:MapPoint = MapPoint(graphic.geometry as MapPoint);
+					var infoSymbol:InfoSymbol = new InfoSymbol(); 
+					var infoSymbolFactory:ClassFactory = new ClassFactory(infoLabel);
+					infoSymbolFactory.properties={htmlText: tm };
+					infoSymbol.infoRenderer=infoSymbolFactory;
+					infoSymbol.containerStyleName="infoStyle";
+					myGraphic = new Graphic(pt, infoSymbol);
+					graphicsL.add(myGraphic);
+				}				
+			}	*/
+			
+			private function rollOutHandler(event:MouseEvent):void
+			{
+				graphicsL.remove(myGraphic);
+			}
+			
+			
+			//鼠标点击集点或者散点,传递相关参数到页面
+			private var clickPtArray:Array= new  Array();
+			private function open_clickHandler(event:MouseEvent):void
+			{
+				if(event.currentTarget != null)
+				{
+					_lineArrowLayer.clear();
+					_lineLayer.clear();
+					graphicsLayers.clear();
+				    grphic = event.currentTarget as Graphic;
+					var pointA:MapPoint = grphic.geometry as  MapPoint;
+					var type:String = grphic.attributes.type;
+					var SBBH:String = grphic.attributes.SBBH;
+					clickPtArray.push(
+						{
+						  SBBH:SBBH,
+					      type:type,
+						  x:pointA.x,
+						  y:pointA.y
+						}
+					);
+					
+					var bh:String = ( SBBH == "" ? grphic.id: grphic.attributes.SBBH );
+					var sbType:String = grphic.attributes.type;
+					var xPoint:Number =pointA.x;
+					var yPoint:Number =pointA.y;
+					var dataObj:Object = { type:sbType, SBBH:bh ,x:xPoint ,y:yPoint};				
+					var dataString:String = JSON.stringify( dataObj );
+					AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+						{
+							functionName: "getTrafficFlowData",
+							params: [dataString]
+						} 
+					);
+				}
+			}
+			
+			/* 监听页面传递流量等信息，在地图上进行画线展示*/
+			private var pointPath:Array = new Array();
+			private var point:MapPoint = new MapPoint();
+			private var pointLayer:GraphicsLayer = new GraphicsLayer();
+			private var infoSymbol:InfoSymbol
+			private function appevent_getTrafficDataHandler(event:AppEvent):void
+			{
+				_lineLayer.clear();
+				_lineArrowLayer.clear();
+				graphicsL.clear();
+				graphicsLayers.clear();
+				
+				var param:String = event.data as String;
+				var paramObj:Object = JSON.parse( param );
+				var points:Array = paramObj.kkPoints;
+				for ( var i:uint = 0; i < points.length; i++ )
+				{
+					var pointObj:Object = points[ i ];
+					var x:Number = pointObj.x;
+					var y:Number = pointObj.y;
+					var flowRate:String = pointObj.flowRate;//交通流量
+					var sbbh:String = pointObj.sbbh;//卡口设备编号
+					
+					var ttPoint:MapPoint;
+					var obj:Object= new Object();
+					obj.flowRate = flowRate;
+				
+					if ( !isNaN( x ) && !isNaN( y ) )
+					{
+						ttPoint = new MapPoint( x, y );
+					}
+					else
+					{
+						for each ( var object:Object in kkArray )
+						{
+							if ( object.id == sbbh )
+							{
+								ttPoint = object.point;
+								break;
+							}
+						}
+					}
+					
+					//保存点
+					pointPath.push( ttPoint );
+					
+					/*用于画线使用的图层*/
+					var gr:Graphic =  new Graphic(ttPoint,iRed);
+					gr.attributes = obj;
+					pointLayer.add(gr);
+					
+					
+					/*弹出每个点流量信息框*/
+					infoSymbol = new InfoSymbol(); 
+					var infoSymbolFactory:ClassFactory = new ClassFactory(myLabel);
+					infoSymbolFactory.properties={htmlText:"卡口编号:"+sbbh+"   "+ "流量:"+flowRate};
+					infoSymbol.infoRenderer=infoSymbolFactory;
+					infoSymbol.containerStyleName="infoStyle";
+					
+					var myGraphic:Graphic = new Graphic(ttPoint, infoSymbol);
+					graphicsLayers.add(myGraphic);
+					
+					for(var n:int=0;n<ptArray.length;n++)
+					{
+						if(ptArray[n].x ==ttPoint.x &&  ptArray[n].y == ttPoint.y)
+						{
+							infoSymbolFactory.properties ={};
+							infoSymbol.containerStyleName ="";
+							var tType:String = ptArray[n].type;
+							if(tType =="集点")
+							{
+								infoSymbol.containerStyleName = "infoStyleC";
+							}
+							else if(tType=="散点")
+							{
+								infoSymbol.containerStyleName="infoStyle";
+							}
+							infoSymbolFactory.properties={htmlText:"卡口编号:"+sbbh+"  "+ "流量:"+flowRate};
+							infoSymbol.infoRenderer=infoSymbolFactory;
+							var myGraphic1:Graphic = new Graphic(ttPoint, infoSymbol);
+							graphicsLayers.add(myGraphic1);
+						}
+					}
+
+					/*用于点图层，展示点*/
+					var tGraphic:Graphic = findGraphicById( sbbh ,ttPoint );
+					tGraphic.symbol = iRed;
+					tGraphic.attributes = obj;
+					graphicsLayer.add(tGraphic);
+					map.reorderLayer(graphicsLayer.id,2);
+					
+				}
+				
+				/*进行所点击的graphic与其它graphic进行画线连接*/
+				if (pointPath.length > 1 )
+				{
+					var KKType:String;
+					for(var j:int = 0;j<clickPtArray.length;j++)
+					{
+						var tPoint:MapPoint = new MapPoint(clickPtArray[j].x,clickPtArray[j].y);
+						KKType=clickPtArray[j].type;
+					}
+					
+					for each ( var grp:Graphic in pointLayer.graphicProvider )
+					{
+						var fRate:String =grp.attributes.flowRate;
+						var pt:MapPoint = grp.geometry as MapPoint;
+						if(tPoint == null||pt == null )
+						{
+							
+						}
+						if(tPoint.x== pt.x && pt.y == tPoint.y )
+						{
+							
+						}
+						
+						if(tPoint.x!= pt.x && pt.y != tPoint.y)
+						{
+							if(KKType =="集点")
+							{
+								//map.extent = map.extent.centerAt(tPoint);
+								var currentPath:Array = [ tPoint, pt ];
+								var polyline:Polyline = new Polyline( [currentPath] );
+								var attributes:Object = {"flowRate" :fRate };
+								var gap:Graphic = new Graphic(pt,null,attributes);
+								gap.geometry = polyline;
+								if ( _needArrow )
+								{
+									drawLeftArrow( gap );
+								}
+								
+								/*处理集散点连线问题，让同一个小区内集散点不连接*/
+								for(var m:int=0;m<ptArray.length;m++)
+								{ 
+									
+									if(ptArray[m].x ==pt.x &&  ptArray[m].y == pt.y)
+									{
+										gap.geometry = null;
+										_lineArrowLayer.remove(arrowGraphic1);
+									}
+								}
+								_lineLayer.add( gap );
+							}
+							
+							else if(KKType =="散点")
+							{
+								var currentPath4:Array = [ tPoint, pt ];
+								var polyline4:Polyline = new Polyline( [currentPath4] );
+								var attributes4:Object = {"flowRate" :fRate };
+								var gap4:Graphic = new Graphic(pt,null,attributes4);
+								gap4.geometry = polyline4;
+								if ( _needArrow )
+								{
+									drawRightArrow( gap4 );
+								}
+								for(var k:int=0;k<ptArray.length;k++)
+								{ 
+									/*处理集散点连线问题*/
+									if(ptArray[k].x ==pt.x &&  ptArray[k].y == pt.y)
+									{
+										gap4.geometry = null;
+										_lineArrowLayer.remove(arrowGraphic);
+									}
+								}
+								_lineLayer.add( gap4 );
+							}
+						}
+						
+						//_lineLayer.renderer = renderer;
+						map.addLayer(_lineLayer);
+						map.reorderLayer(_lineLayer.id,4);
+					}
+				}
+			}
+			
+		  
+			private function findGraphicById( sbbh:String, point:MapPoint ):Graphic
+			{
+				for each ( var graphic:Graphic in _overCrowdLayer.graphicProvider )
+				{
+					if ( graphic.id == sbbh )
+					{
+						graphic.symbol = iRed;//红色graphic；
+						return graphic;
+					}
+				}
+				graphic = new Graphic( point );
+				graphic.id = sbbh;
+				graphic.symbol = iRed
+				return graphic;
+			}
+			
+			
+			private function appevent_WidgetRunHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetRunNotifyFunctionName } );
+					}
+				}
+			}
+			
+			private function appevent_WidgetCloseHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetCloseNotifyFunctionName } 
+						);
+					}
+				}
+			}
+		
+			private function DeleteGraphic(name:String):void
+			{
+				var gra:DisplayObject;
+				var i:int = 0;
+				var gr:Graphic;
+				for(i=_overCrowdLayer.numChildren-1;i>-1;i--)
+				{
+					gra = _overCrowdLayer.getChildAt(i);
+					gr = Graphic(gra);
+					if(gr.name.indexOf(name)>-1) 
+					{
+						_overCrowdLayer.remove(gr);
+					} 
+				}
+			}
+			
+			private function getGraphicById( id:String ):Graphic
+			{
+				for each ( var graphic:Graphic in _lineLayer.graphicProvider )
+				{
+					if ( id == graphic.id )
+					{
+						return graphic;
+					}
+				}
+				return null;
+			}
+			
+			//画右箭头
+			private var arrowGraphic:Graphic =  new Graphic();
+			private function drawRightArrow( graphic:Graphic ):void
+			{
+				var polyline:Polyline = graphic.geometry as Polyline;
+				
+				for each ( var path:Array in polyline.paths )
+				{
+					for ( var i:uint = 0; i < path.length - 1; i++)
+					{
+						var startPoint:MapPoint = path[ i ];
+						var endPoint:MapPoint = path[ i + 1 ];
+						
+						//确定图标位置
+						switch( _arrowInfo.position )
+						{
+							case "start":
+								arrowGraphic = new Graphic( startPoint );
+								break;
+							
+							case "end":
+								arrowGraphic = new Graphic( endPoint );
+								break;
+							
+							case "middle":
+								arrowGraphic = new Graphic( new MapPoint( ( startPoint.x + endPoint.x ) / 2, ( startPoint.y + endPoint.y ) / 2 ) );
+								break;
+						}
+						
+						//计算角度
+						var startScreenPoint:Point = map.toScreen( startPoint );
+						var endScreenPoint:Point = map.toScreen( endPoint );
+						var angle:Number = ( Math.atan2( endScreenPoint.y - startScreenPoint.y, endScreenPoint.x - startScreenPoint.x ) ) / Math.PI * 180.0;
+						
+						//获取箭头样式
+						var rendererInfo:Object;
+						if ( _arrowInfo.uniqueValueRenderer )
+						{
+							var rendererTable:Hashtable = _arrowInfo.uniqueValueRenderer.rendererTable;
+							
+							if ( graphic.attributes )
+							{
+								var rendererFieldName:String = _arrowInfo.uniqueValueRenderer.fieldName;
+								var rendererFieldValue:String = graphic.attributes[ rendererFieldName ];
+								
+								rendererInfo = rendererTable.find( rendererFieldValue ) ? 
+									rendererTable.find( rendererFieldValue ) : rendererTable.find( "default" );
+							}
+							else
+							{
+								rendererInfo = rendererTable.find( "default" );
+							}
+						}
+					   else if ( _arrowInfo.simpleRenderer )
+						{
+							rendererInfo = _arrowInfo.simpleRenderer;
+						}
+						arrowGraphic.symbol = arrowSymbol;
+						arrowGraphic.attributes = 
+							{ 
+								arrowLength: _arrowInfo.length, 
+									arrowAngle: angle,
+									rendererInfo: rendererInfo
+							};
+						_lineArrowLayer.add( arrowGraphic );
+						map.reorderLayer(_lineArrowLayer.id,5);
+						
+					}
+				}
+			}
+			
+			//画左箭头
+			private var arrowGraphic1:Graphic=  new Graphic();
+			private function drawLeftArrow( graphic:Graphic ):void
+			{
+				var polyline:Polyline = graphic.geometry as Polyline;
+				for each ( var path:Array in polyline.paths )
+				{
+					for ( var i:uint = 0; i < path.length - 1; i++)
+					{
+						var startPoint:MapPoint = path[ i ];
+						var endPoint:MapPoint = path[ i + 1 ];
+						
+						//确定图标位置
+						switch( _arrowInfo.position )
+						{
+							case "start":
+								arrowGraphic1 = new Graphic( startPoint );
+								break;
+							
+							case "end":
+								arrowGraphic1 = new Graphic( endPoint );
+								break;
+							
+							case "middle":
+								arrowGraphic1 = new Graphic( new MapPoint( ( startPoint.x + endPoint.x ) / 2, ( startPoint.y + endPoint.y ) / 2 ) );
+								break;
+						}
+						
+						//计算角度
+						var startScreenPoint:Point = map.toScreen( startPoint );
+						var endScreenPoint:Point = map.toScreen( endPoint );
+						var angle:Number = ( Math.atan2( endScreenPoint.y - startScreenPoint.y, endScreenPoint.x - startScreenPoint.x ) ) / Math.PI * 180.0;
+						
+						//获取箭头样式
+						var rendererInfo:Object;
+						if ( _arrowInfo.uniqueValueRenderer )
+						{
+							var rendererTable:Hashtable = _arrowInfo.uniqueValueRenderer.rendererTable;
+							
+							if ( graphic.attributes )
+							{
+								var rendererFieldName:String = _arrowInfo.uniqueValueRenderer.fieldName;
+								var rendererFieldValue:String = graphic.attributes[ rendererFieldName ];
+								
+								rendererInfo = rendererTable.find( rendererFieldValue ) ? 
+									rendererTable.find( rendererFieldValue ) : rendererTable.find( "default" );
+							}
+							else
+							{
+								rendererInfo = rendererTable.find( "default" );
+							}
+						}
+						else if ( _arrowInfo.simpleRenderer )
+						{
+							rendererInfo = _arrowInfo.simpleRenderer;
+						}
+						
+						arrowGraphic1.symbol = arrLeftSymbol;
+						arrowGraphic1.attributes = 
+							{ 
+								arrowLength: _arrowInfo.length, 
+									arrowAngle: angle,
+									rendererInfo: rendererInfo
+							};
+						_lineArrowLayer.add( arrowGraphic1 );
+						map.reorderLayer(_lineArrowLayer.id,5);
+					}
+				}
+			}
+			
+			private function parseArrowGradientFillSymbol( symbolXML:XML ):Object
+			{
+				var lineColor:Number = symbolXML.@linecolor;
+				var lineWidth:Number = symbolXML.@linewidth;
+				
+				var gradientEntryArray:Array = [];
+				var gradientEntryXMLList:XMLList = symbolXML.gradiententry;
+				for each ( var gradientEntryXML:XML in gradientEntryXMLList )
+				{
+					var gradientColor:Number = gradientEntryXML.@color;
+					var gradientAlpha:Number = gradientEntryXML.@alpha;
+					gradientEntryArray.push( 
+						{ 
+							color: gradientColor, 
+							alpha: gradientAlpha 
+						} 
+					);
+				}
+				var symbolObj:Object = { 
+					lineColor: lineColor, 
+					lineWidth: lineWidth,
+					gradientEntryArray: gradientEntryArray
+				} 
+				return symbolObj;
+			}
+			
+	
+			//清除图层
+			private function appevent_deleteAlltrafficFlowHandler(event:AppEvent):void
+			{
+				for (var i:int = _overCrowdLayer.numGraphics-1; i>-1; i--)
+				{
+					var graphic:Graphic = _overCrowdLayer.getChildAt(i) as Graphic; 
+					_overCrowdLayer.remove(graphic);
+				}
+				
+				for (var l:int = graphicsLayer.numGraphics-1; l>-1; l--)
+				{
+					var graphic2:Graphic = graphicsLayer.getChildAt(l) as Graphic; 
+					graphicsLayer.remove(graphic2);
+				}
+				
+				for (var k:int = kkLayer.numGraphics-1; k>-1; k--)
+				{
+					var graphic3:Graphic = kkLayer.getChildAt(k) as Graphic; 
+					kkLayer.remove(graphic3);
+				}
+				for (var m:int = graLayerInCircle.numGraphics-1; m>-1; m--)
+				{
+					var graphic4:Graphic = graLayerInCircle.getChildAt(m) as Graphic; 
+					graLayerInCircle.remove(graphic4);
+				}
+				_lineLayer.clear();
+				_lineArrowLayer.clear();
+				graphicsLayers.clear();
+			}
+			
+			private function clearPointLayer():void
+			{
+				/*for (var m:int = pointLayer.numGraphics-1; m>-1; m--)
+				{
+					var graphic:Graphic = pointLayer.getChildAt(m) as Graphic; 
+					pointLayer.remove(graphic);
+				}*/
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<esri:SimpleMarkerSymbol id="iRed" color="0xFF0000" alpha="1" size="15">
+			<esri:SimpleLineSymbol style="solid" color="0x3e3e3e" alpha="1" width="2"/>
+		</esri:SimpleMarkerSymbol>
+		
+		<esri:SimpleMarkerSymbol id="iBlack" color="0x000000" alpha="1" size="15">
+			<esri:SimpleLineSymbol style="solid" color="0x3e3e3e" alpha="1" width="2"/>
+		</esri:SimpleMarkerSymbol>
+		
+		<esri:SimpleMarkerSymbol id="iBlue" color="0x0000FF" alpha="1" size="15">
+			<esri:SimpleLineSymbol style="solid" color="0x3e3e3e" alpha="1" width="2"/>
+		</esri:SimpleMarkerSymbol>
+		
+		<esri:SimpleFillSymbol id="bufferSymbol" style="solid" color="0xffff00" alpha="1">
+			<esri:SimpleLineSymbol width="2" color="0x00ffff"/>
+		</esri:SimpleFillSymbol>
+		<esri:PictureMarkerSymbol id="glow" source="assets/images/Red_glow.swf" width="36" height="36" xoffset="-8" yoffset="10"/>
+		<esri:SimpleLineSymbol id="blue" style="solid" color="0x0000FF" alpha="1" width="2"/>
+		<esri:SimpleLineSymbol id="green" style="solid" color="0x00FF00" alpha="1" width="2"/>
+		
+		
+		<esri:InfoSymbol id="arrowSymbol" containerStyleName="arrowInfoSymbolStyle"
+						 infoPlacement="center"
+						 infoRenderer="cn.seisys.TGISViewer.components.ArrowSymbol"/>
+		<esri:InfoSymbol id="arrLeftSymbol" containerStyleName="arrowInfoSymbolStyle"
+						 infoPlacement="center"
+						 infoRenderer="cn.seisys.TGISViewer.components.ArrowLeftSymbol"/>
+		
+		<esri:GeometryService id="geoService"  />
+	
+		<esri:GraphicsLayer id="_lineLayer">
+		    <esri:renderer >
+				<esri:ClassBreaksRenderer field="flowRate">
+					<esri:ClassBreakInfo minValue="0" maxValue="10">
+						<esri:SimpleLineSymbol style="solid" color="0x84a183"
+											   alpha="1" width="1" />
+					</esri:ClassBreakInfo>
+					
+					<esri:ClassBreakInfo  minValue="10.000001" maxValue="20">
+						<esri:SimpleLineSymbol style="solid" color="0x234920"
+											   alpha="1" width="2" />
+					</esri:ClassBreakInfo>
+					
+					<esri:ClassBreakInfo  minValue="20.000001" maxValue="40">
+						<esri:SimpleLineSymbol style="solid" color="0xf8aa3d"
+											   alpha="1" width="3" />
+					</esri:ClassBreakInfo>
+					
+					<esri:ClassBreakInfo  minValue="40.000001" maxValue="80">
+						<esri:SimpleLineSymbol style="solid" color="0xf8810d"
+											   alpha="1" width="4" />
+					</esri:ClassBreakInfo>
+					
+					<esri:ClassBreakInfo  minValue="80.000001" maxValue="160">
+						<esri:SimpleLineSymbol style="solid" color="0xf6830e"
+											   alpha="1" width="5" />
+					</esri:ClassBreakInfo>
+					
+					<esri:ClassBreakInfo  minValue="160.000001" maxValue="320">
+						<esri:SimpleLineSymbol style="solid" color="0xfe0501"
+											   alpha="1" width="6" />
+					</esri:ClassBreakInfo>
+					
+					<esri:ClassBreakInfo  minValue="320.000001" maxValue="640">
+						<esri:SimpleLineSymbol style="solid" color="0xff0101"
+											   alpha="1" width="7" />
+					</esri:ClassBreakInfo>
+					
+					<esri:ClassBreakInfo  minValue="640.000001" maxValue="100000">
+						<esri:SimpleLineSymbol style="solid" color="0xfe0000"
+											   alpha="1" width="8" />
+					</esri:ClassBreakInfo>
+				</esri:ClassBreaksRenderer>
+			</esri:renderer>
+		</esri:GraphicsLayer>
+	</fx:Declarations>
+</TGISViewer:BaseWidget>

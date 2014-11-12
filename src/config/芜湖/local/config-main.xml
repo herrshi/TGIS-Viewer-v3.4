@@ -166,9 +166,7 @@
 	</widgetcontainer>
 	
 <!-- 	<widgetcontainer layout="fix"> -->
-<!-- 		<widget label="ControlPanel" preload="open" right="20" bottom="20" -->
-<!-- 			config="widgets/ControlPanel/WuHu/IconControlPanelWidget-main.xml" -->
-<!-- 			url="widgets/ControlPanel/IconControlPanelWidget.swf"/> -->
+		
 <!-- 	</widgetcontainer> -->
 	
 	<widgetcontainer layout="horizontal">
@@ -182,5 +180,9 @@
 		<widget label="底图切换" preload="open"
 			config="widgets\MapSwitcher\MapSwitcherWidget.xml"
 			url="widgets\MapSwitcher\MapSwitcherWidget.swf"/>
+		
+		<widget label="ControlPanel" preload="open" right="20" bottom="20"
+			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-main.xml"
+			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 	</widgetcontainer>
 </configuration>

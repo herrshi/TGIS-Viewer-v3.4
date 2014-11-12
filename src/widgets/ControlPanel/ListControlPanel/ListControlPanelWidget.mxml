@@ -4,8 +4,9 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
 		 xmlns:ControlPanel="widgets.ControlPanel.*"
+		 xmlns:ListControlPanel="widgets.ControlPanel.ListControlPanel.*"
 		 creationComplete="this_creationCompleteHandler(event)" 
-		 widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" xmlns:ListControlPanel="widgets.ControlPanel.ListControlPanel.*" >
+		 widgetConfigLoaded="this_widgetConfigLoadedHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
@@ -119,8 +120,11 @@
 					for each ( var menuObj:Object in menuItem.groupMenuItems )
 					{
 						var groupMenuItem:MenuItem = new MenuItem();
+						groupMenuItem.label = menuObj.menuItem.label;
 						
+						_menuListItemAC.addItem( groupMenuItem );
 					}
+					menuListContainer.visible = true;
 				}
 				else
 				{
@@ -138,11 +142,11 @@
 			
 			protected function menuItemDG_listMenuItemMouseOverHandler(event:Event):void
 			{
-				/*var pointGlobal:Point = ItemRenderer( event.target) .localToGlobal( new Point( 0, 0 ) );
+				var pointGlobal:Point = ItemRenderer( event.target) .localToGlobal( new Point( 0, 0 ) );
 				var pointLocal:Point = menuGroup.globalToLocal( pointGlobal ); // get the local coordinates where the menuItem will be shown
 				xOver = pointLocal.x;
 				
-				menuListContainer.visible = false;*/
+				menuListContainer.visible = false;
 			}
 			
 		]]>

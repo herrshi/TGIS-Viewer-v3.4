@@ -6,28 +6,28 @@
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
-							<param name="ServiceName" value="发布段背景" />
+							<param name="ServiceName" value="发布段" />
 						</params>
 					</clickfunction>
-					<clickfunction name="ChangeLayer">
-						<params>
-							<param name="ServiceName" value="地面发布段" />
-						</params>
-					</clickfunction>
-					<clickfunction name="ChangeLayer">
-						<params>
-							<param name="ServiceName" value="浦东发布段" />
-						</params>
-					</clickfunction>
-					<clickfunction name="ChangeLayer">
-						<params>
-							<param name="ServiceName" value="浦东发布浦西发布段" />
-						</params>
-					</clickfunction>
+<!-- 					<clickfunction name="ChangeLayer"> -->
+<!-- 						<params> -->
+<!-- 							<param name="ServiceName" value="地面发布段" /> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
+<!-- 					<clickfunction name="ChangeLayer"> -->
+<!-- 						<params> -->
+<!-- 							<param name="ServiceName" value="浦东发布段" /> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
+<!-- 					<clickfunction name="ChangeLayer"> -->
+<!-- 						<params> -->
+<!-- 							<param name="ServiceName" value="浦东发布浦西发布段" /> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
 				</clickfunctions>
 			</item>
 
-			<item id="qbbc" name="全彩板" image="assets/images/buttons/QingBaoBanC.png">
+			<item id="qbbc" name="全彩板" image="assets/images/buttons/QingBaoBanC.png" initstate="enable">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -36,8 +36,18 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
+			
+			<item id="qbba" name="A板" image="assets/images/buttons/QingBaoBanA.png" initstate="enable">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="A板" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
 
-			<item id="qbbl" name="L板" image="assets/images/buttons/QingBaoBanL.png">
+			<item id="qbbl" name="L板" image="assets/images/buttons/QingBaoBanL.png" initstate="enable">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -47,7 +57,7 @@
 				</clickfunctions>
 			</item>
 
-			<item id="qbbm" name="M板" image="assets/images/buttons/QingBaoBanM.png">
+			<item id="qbbm" name="M板" image="assets/images/buttons/QingBaoBanM.png" initstate="enable">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -57,7 +67,7 @@
 				</clickfunctions>
 			</item>
 
-			<item id="qbbs" name="S板" image="assets/images/buttons/QingBaoBanS.png">
+			<item id="qbbs" name="S板" image="assets/images/buttons/QingBaoBanS.png" initstate="enable">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -77,11 +87,21 @@
 				</clickfunctions>
 			</item>
 			
-			<item id="zdd" name="匝道灯" image="assets/images/buttons/ZaDao.png">
+			<item id="zdd" name="匝道灯" image="assets/images/buttons/ZaDao.png" initstate="enable">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
 							<param name="ServiceName" value="匝道灯" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item id="cljc" name="车辆检测器" image="assets/images/buttons/FaBuDuan.png">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="车辆检测器" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
@@ -97,15 +117,15 @@
 				</clickfunctions>
 			</item>
 			
-			<item id="XHJ" name="信号机" image="assets/images/buttons/XinHaoJi.png">
-				<clickfunctions>
-					<clickfunction name="ChangeLayer">
-						<params>
-							<param name="ServiceName" value="信号机" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
+<!-- 			<item id="XHJ" name="信号机" image="assets/images/buttons/XinHaoJi.png"> -->
+<!-- 				<clickfunctions> -->
+<!-- 					<clickfunction name="ChangeLayer"> -->
+<!-- 						<params> -->
+<!-- 							<param name="ServiceName" value="信号机" /> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
+<!-- 				</clickfunctions> -->
+<!-- 			</item> -->
 			
 			<item id="cdkz" name="车道控制" image="assets/images/buttons/DuanMian.png">
 				<clickfunctions>

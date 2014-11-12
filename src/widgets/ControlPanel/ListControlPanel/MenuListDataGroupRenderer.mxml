@@ -85,9 +85,9 @@
 			topRightRadiusY="{upperRad}">
 		<s:fill>
 			<s:SolidColor alpha="0.3"
-						  alpha.hovered="0.8"
+						  alpha.hovered="1"
 						  color.hovered="{getStyle('rollOverColor')}"
-						  color.normal="{getStyle('contentBackgroundColor')}"/>
+						  color.normal="0x5f6267"/>
 		</s:fill>
 	</s:Rect>
 	

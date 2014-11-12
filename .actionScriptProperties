@@ -71,6 +71,7 @@
     <module application="src/index.mxml" destPath="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf" optimize="true" sourcePath="src/widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.mxml"/>
     <module application="src/index.mxml" destPath="widgets/Overlay/PointOverlayByPageWidget.swf" optimize="true" sourcePath="src/widgets/Overlay/PointOverlayByPageWidget.mxml"/>
     <module application="src/index.mxml" destPath="widgets/Edit/EditWidget.swf" optimize="true" sourcePath="src/widgets/Edit/EditWidget.mxml"/>
+    <module application="src/index.mxml" destPath="widgets/ODTrafficFlow/TrafficFlowWidget.swf" optimize="true" sourcePath="src/widgets/ODTrafficFlow/TrafficFlowWidget.mxml"/>
   </modules>
   <workers managerFilePath="src/Workers.as">
     <worker embed="true" path="src/workers/SocketWorker.as"/>

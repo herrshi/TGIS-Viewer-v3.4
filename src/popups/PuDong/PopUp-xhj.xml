@@ -6,7 +6,7 @@
 		<field name="DEVICEID" alias="编号" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
-	<buttons>
-	   <button label="详细信息" action="openDevice" type="XHJ" idfield="DEVICEID" />
-	</buttons>
+<!-- 	<buttons> -->
+<!-- 	   <button label="详细信息" action="openDevice" type="XHJ" idfield="DEVICEID" /> -->
+<!-- 	</buttons> -->
 </configuration>

@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <configuration>
-	<title>{sb_zdd.DEVDESC}</title>
+	<title>{SDE.sb_zdd.DEVDESC}</title>
 	<fields>
-		<field name="sb_zdd.DEVDESC" />
-		<field name="sb_zdd.DEVICEID" alias="编号" visible="true" />
+		<field name="SDE.sb_zdd.DEVDESC" />
+		<field name="SDE.sb_zdd.DEVICEID" alias="编号" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
-	   <button label="详细信息" action="openDevice" type="ZDD" idfield="sb_zdd.DEVICEID" />
+	   <button label="详细信息" action="openDevice" type="ZDD" idfield="SDE.sb_zdd.DEVICEID" />
 	</buttons>
 </configuration>

@@ -7,12 +7,18 @@
 	<!-- 组件关闭时通知页面 -->
 	<widgetclosenotify></widgetclosenotify>
 	
+	<popupskinclass>advanced</popupskinclass>
 	<popup>
-		<title>{name}</title>
-		<fields/>
+		<title>{cameraDesc}</title>
+		<fields>
+			<field name="cameraDesc"/>
+			<field name="cameraIp" alias="IP：" visible="true"/>
+			<field name="cameraState" alias="状态：" visible="true"/>
+		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<buttons>
-			<button label="详细信息" action="openDevice" type="SheXiangJi"/>
+			<button label="播放" action="openDevice" type="SXJ"/>
+			<button label="预置位管理" action="openDevice" type="SXJ_Preset"/>
 		</buttons>
 	</popup>
 	

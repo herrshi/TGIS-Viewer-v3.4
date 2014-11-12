@@ -689,6 +689,15 @@ public class AppEvent extends Event
 	 /* 警情弹出窗口关闭*/
 	 public static const CLOSE:String =  "close";
 	 
+	 /**
+	  *交通流量
+	  * */
+	 public static const GET_TRAFFIC_FLOW_DATA:String =  "getTrafficFlowData";
+	 
+	 public static const GET_TRAFFIC_FLOW_NOTICE:String =  "getTrafficFlowNotice";
+	 
+	 public static const DELETE_TRAFFIC_FLOW_DATA:String =  "deleteTrafficFlowData";
+	 
 	 
     //--------------------------------------------------------------------------
     //

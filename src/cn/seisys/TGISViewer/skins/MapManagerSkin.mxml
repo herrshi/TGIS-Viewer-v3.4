@@ -135,6 +135,7 @@
 //				AppEvent.dispatch( AppEvent.ADD_TEXTS, '{"type":"odStart","texts":[{"id":"1","text":"99","position":{"x":87.639046,"y":43.831502}}] }' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"odStart","points":[{"id":"1","x":87.5856,"y":43.823612}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"odEnd","points":[{"id":"1","x":87.595879,"y":43.824297}]}' );
+				AppEvent.dispatch( AppEvent.GET_TRAFFIC_FLOW_DATA, '{"event":"Event","kkPoints":[{ "sbbh":"650100100169","x":87.65572518112413 ,"y":43.83442363292115,"flowRate":540},{ "sbbh":"650100100246","x":87.63766894160005,"y":43.83232062128304,"flowRate":240},{ "sbbh":"650100100234","x":87.58903322310831,"y":43.79334115272798,"flowRate":540},{"sbbh":"650100100051","x":87.6314352086428,"y":43.79948093769086,"flowRate":70},{"sbbh":"KK6118301","x":87.614572518112413,"y":43.7903363292115,"flowRate":7 },{ "sbbh":"65010010015","x":87.63524386015919,"y":43.78512170176689,"flowRate":240},{"sbbh":"650100100050 ","x":87.5674352086428,"y":43.84948093769086,"flowRate":700 },{"sbbh":"650100100239 ","x":87.60603322310831,"y":43.87434115272798,"flowRate":1000}]}');
 				
 				//无锡测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeEvent","points":[{"x":120.2657,"y":31.61856,"id":"J3202140506102191952","fields":{"fdtTime":"2014-05-06 10:21:58","caseLocation":"","caseContent":"两车相撞","caseLevel":"","caseType":""}}]}' );
@@ -171,13 +172,13 @@
 				var dataObj:Object = { type: "信号机", points: pointArray };
 				var dataString:String = JSON.stringify( dataObj );
 				AppEvent.dispatch( AppEvent.ADD_POINTS_BY_PAGE, dataString );*/
-				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 
 						serviceName: "路口",
 						layerIds: "",
 						visible: true
 					}
-				);
+				);*/
 				/*AppEvent.dispatch( AppEvent.SET_LAYER_FILTER_DEFINITION, 
 					{ 
 						serviceName: "监控", 
@@ -185,7 +186,8 @@
 						whereClause: "DEVICEID in ( 'MODE201409091622065004146', 'MODE201409091622071241923' )" 
 					} 
 				);*/
-				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "" } );
+//				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "" } );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS_BY_PAGE, '{"type":"地面监控","points":[{"id":"INFRASTUR20140702190910000008","x":120.239098877484,"y":31.5157157371182,"title":"Cam283 山水东路鼋渚路口","fields":{"名称":"地面监控","编号":"INFRASTUR20140702190910000002","监控ID":"283","设备类型":"标清","设备状态":"1","设备描述":"Cam283 山水东路鼋渚路口","系统类型":"视频监控系统","路口编号":"32020329","路口名称":"山水东路鼋渚路口","IP":"192.168.7.171","品牌":"派尔高","提供商":"大为","安装单位":"大为科技","安装日期":"2009-12-31 0:00:00","质保期":"2011-12-31 0:00:00","图片":"wutu.jpg","原设备编号":"52010283","完成人员":"周公","方向":"","道路编号":"32024085/32025446","序列号":"","维护单位":"不限"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
 				
 				//六盘水测试
 //				AppEvent.dispatch( AppEvent.GET_DEVICE_COORDINATE, '{"type":"摄像机","DeviceList":["52020114001322020006"]}' );
@@ -218,7 +220,7 @@
 						visible: true
 					}
 				);*/
-//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"1234567c","x":"118.417656","y":"31.335133","fields":{"name":"摄像机1 "}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"2272","x":"118.4040699","y":"31.387664","fields":{"cameraDesc":"麒麟路北口东侧车道","cameraIp":"52.123.34.43","cameraState":"连接"}}]}' );
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
@@ -305,13 +307,14 @@
 				);*/
 				
 				//无锡测试
-				AppEvent.dispatch( AppEvent.SET_LAYER_FILTER_DEFINITION, 
+				/*AppEvent.dispatch( AppEvent.SET_LAYER_FILTER_DEFINITION, 
 					{ 
 						serviceName: "监控", 
 						layerIds: "", 
 						whereClause: "1=1" 
 					} 
-				);
+				);*/
+				AppEvent.dispatch( AppEvent.DELETE_POINTS, '{"type":"地面监控","ids":["INFRASTUR20140702190910000008"]}' );
 			}
 			
 			protected function btnTest3_clickHandler(event:MouseEvent):void
@@ -320,7 +323,9 @@
 				//AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "信号机" );
 				
 				/*芜湖测试*/
-				AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, "police" );
+//				AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, "police" );
+				
+				AppEvent.dispatch( AppEvent.GET_TRAFFIC_FLOW_NOTICE);
 			
 		    }
 		]]>

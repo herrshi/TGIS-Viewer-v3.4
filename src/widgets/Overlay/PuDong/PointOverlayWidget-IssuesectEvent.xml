@@ -25,23 +25,11 @@
 	
 	<querylayers>
 		<querylayer>
-			<url>http://{serverip}/arcgis/rest/services/pudong/pd_fbd_issue_ksl/MapServer/1</url>
+			<url>http://{serverip}/arcgis/rest/services/pd_fbd_real/MapServer/1</url>
 			<idfield>SECTIONID</idfield>
 		</querylayer>
 		<querylayer>
-			<url>http://{serverip}/arcgis/rest/services/pudong/pd_fbd_issue_ksl/MapServer/2</url>
-			<idfield>SECTIONID</idfield>
-		</querylayer>
-		<querylayer>
-			<url>http://{serverip}/arcgis/rest/services/pudong/pd_fbd_issue_ksl/MapServer/3</url>
-			<idfield>SECTIONID</idfield>
-		</querylayer>
-		<querylayer>
-			<url>http://{serverip}/arcgis/rest/services/pudong/pd_fbd_issue_dm/MapServer/1</url>
-			<idfield>SECTIONID</idfield>
-		</querylayer>
-		<querylayer>
-			<url>http://{serverip}/arcgis/rest/services/pudong/pd_fbd_issue_dm/MapServer/2</url>
+			<url>http://{serverip}/arcgis/rest/services/pd_fbd_real/MapServer/2</url>
 			<idfield>SECTIONID</idfield>
 		</querylayer>
 	</querylayers>
