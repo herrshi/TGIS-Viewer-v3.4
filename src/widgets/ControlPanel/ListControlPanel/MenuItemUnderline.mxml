@@ -13,8 +13,7 @@
 			}
 		]]>
 	</fx:Script>
-	<s:Line width="20"
-			includeInLayout="{_itemOpen}"
+	<s:Line includeInLayout="{_itemOpen}"
 			visible="{_itemOpen}">
 		<s:stroke>
 			<s:SolidColorStroke caps="square"

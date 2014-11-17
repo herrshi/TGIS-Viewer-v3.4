@@ -2,13 +2,15 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:ControlPanel="widgets.ControlPanel.*" 
+				xmlns:ListControlPanel="widgets.ControlPanel.ListControlPanel.*"
 				implements="mx.managers.IFocusManagerComponent"
 				autoDrawBackground="false"
 				buttonMode="true"
 				useHandCursor="true"
 				focusEnabled="true" 
 				click="this_clickHandler(event)" 
-				dataChange="this_dataChangeHandler(event)" xmlns:ControlPanel="widgets.ControlPanel.*" xmlns:ListControlPanel="widgets.ControlPanel.ListControlPanel.*">
+				dataChange="this_dataChangeHandler(event)" >
 	
 	<fx:Declarations>
 		<s:Move3D id="moveEffect"
@@ -37,7 +39,7 @@
 			{
 				_menuItem = data as MenuItem;
 				itemLabel.text = _menuItem.label;
-				underline.itemOpen = _menuItem.open;
+				openLine.visible = openLine.includeInLayout = _menuItem.open;
 			}
 			
 			protected function this_clickHandler(event:MouseEvent):void
@@ -109,11 +111,18 @@
 	</fx:Script>
 	
 	
-	<s:VGroup height="25" gap="2" horizontalAlign="center">
+	<s:VGroup height="20" gap="2" horizontalAlign="center" verticalAlign="middle">
 		<s:Label id="itemLabel"
 				 color="0xffffff" fontWeight="bold"
 				 rollOver="itemLabel_rollOverHandler(event)" 
 				 rollOut="itemLabel_rollOutHandler(event)"/>
-		<ListControlPanel:MenuItemUnderline id="underline"/>
+		<s:Line id="openLine" width="20" 
+				includeInLayout="false" visible="false">
+			<s:stroke>
+				<s:SolidColorStroke caps="square"
+									color="0xffffff"
+									weight="2"/>
+			</s:stroke>
+		</s:Line>
 	</s:VGroup>
 </s:ItemRenderer>

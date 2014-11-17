@@ -4,7 +4,7 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
 		 xmlns:ControlPanel="widgets.ControlPanel.*"
-		 xmlns:ListControlPanel="widgets.ControlPanel.ListControlPanel.*"
+		 xmlns:ListControlPanel="widgets.ControlPanel.ListControlPanel.*" 
 		 creationComplete="this_creationCompleteHandler(event)" 
 		 widgetConfigLoaded="this_widgetConfigLoadedHandler(event)">
 	
@@ -65,7 +65,7 @@
 								groupMenuItemArray.push( 
 									{ 
 										menuItem: configListMenuItems[ i + j ], 
-										open: false 
+										open: configListMenuItems[ i + j ].open 
 									} 
 								);
 							}
@@ -98,12 +98,14 @@
 						for each ( var itemXML:XML in itemList )
 						{
 							var label:String = itemXML.@label;
+							var open:Boolean = ( itemXML.@initenable == "true" ? true : false );
 							var configItemObj:Object = 
 								{ 
 									grouped: grouped,
 									groupLength: groupLength,
 									groupLabel: groupLabel,
-									label: label
+									label: label,
+									open: open
 								};
 							configListMenuItems.push( configItemObj );
 						}
@@ -121,6 +123,7 @@
 					{
 						var groupMenuItem:MenuItem = new MenuItem();
 						groupMenuItem.label = menuObj.menuItem.label;
+						groupMenuItem.open = menuObj.menuItem.open;
 						
 						_menuListItemAC.addItem( groupMenuItem );
 					}
@@ -142,56 +145,63 @@
 			
 			protected function menuItemDG_listMenuItemMouseOverHandler(event:Event):void
 			{
-				var pointGlobal:Point = ItemRenderer( event.target) .localToGlobal( new Point( 0, 0 ) );
-				var pointLocal:Point = menuGroup.globalToLocal( pointGlobal ); // get the local coordinates where the menuItem will be shown
+				var pointGlobal:Point = ItemRenderer( event.target).localToGlobal( new Point( 0, 0 ) );
+				// get the local coordinates where the menuItem will be shown
+				var pointLocal:Point = menuGroup.globalToLocal( pointGlobal );
 				xOver = pointLocal.x;
 				
-				menuListContainer.visible = false;
+				menuListContainer.visible = menuListContainer.includeInLayout = false;
+			}
+			
+			protected function menuListDG_menuListItemClickHandler(event:Event):void
+			{
+				var menuItem:MenuItem = ItemRenderer( event.target ).data as MenuItem;
+				menuItem.open = !menuItem.open;
 			}
 			
 		]]>
 	</fx:Script>
-	<s:Group id="menuGroup">
-		<s:Rect width="100%" height="100%"
-				alpha="1">
-			<s:fill>
-				<s:SolidColor color="0x5f6267"/>
-			</s:fill>
-		</s:Rect>
+	<s:Group>
+		<s:Group id="menuGroup">
+			<s:Rect width="100%" height="100%"
+					alpha="1">
+				<s:fill>
+					<s:SolidColor color="0x5f6267"/>
+				</s:fill>
+			</s:Rect>
+			
+			<ListControlPanel:MenuItemDataGroup id="menuItemDG" 
+												width="100%" 
+												horizontalCenter="0"
+												dataProvider="{_menuItemAC}" 
+												menuItemClick="menuItemDG_listMenuItemClickHandler(event)" 
+												menuItemMouseOver="menuItemDG_listMenuItemMouseOverHandler(event)"
+												menuItemMouseOut="menuItemDG_listMenuItemMouseOutHandler(event)" >
+				<ListControlPanel:layout>
+					<s:HorizontalLayout gap="0"
+										useVirtualLayout="true"
+										verticalAlign="middle" paddingTop="5" paddingBottom="5"/>
+				</ListControlPanel:layout>
+			</ListControlPanel:MenuItemDataGroup>
+		</s:Group>
 		
-		<ListControlPanel:MenuItemDataGroup id="menuItemDG" 
-											width="100%" 
-											horizontalCenter="0"
-											dataProvider="{_menuItemAC}" 
-											menuItemClick="menuItemDG_listMenuItemClickHandler(event)" 
-											menuItemMouseOver="menuItemDG_listMenuItemMouseOverHandler(event)"
-											menuItemMouseOut="menuItemDG_listMenuItemMouseOutHandler(event)" >
-			<ListControlPanel:layout>
-				<s:HorizontalLayout gap="12"
-									horizontalAlign="center"
-									useVirtualLayout="true"
-									verticalAlign="middle" 
-									paddingLeft="10" paddingRight="10" 
-									paddingTop="10" paddingBottom="5"/>
-			</ListControlPanel:layout>
-		</ListControlPanel:MenuItemDataGroup>
 		
 		<s:BorderContainer id="menuListContainer" 
-						   x="{xOver + 4 - menuListDG.width/2}" y="{menuItemDG.height}"
+						   x="{xOver}" y="{menuItemDG.height}"
 						   width="{menuListDG.width+4}" height="{menuListDG.height+2}"
-						   backgroundColor="{getStyle('contentBackgroundColor')}"
-						   borderColor="{getStyle('color')}"
-						   borderVisible="true"
-						   cornerRadius="3" 
-						   visible="false">
+						   backgroundColor="0x5f6267"
+						   borderVisible="false"
+						   visible="false" includeInLayout="false">
 			<ListControlPanel:MenuListDataGroup id="menuListDG" 
+												width="80"
 												dataProvider="{_menuListItemAC}"
-												width="150" 
-												focusEnabled="false" tabChildren="true">
+												focusEnabled="false" tabChildren="true" 
+												menuListItemClick="menuListDG_menuListItemClickHandler(event)">
 				<ListControlPanel:layout>
-					<s:VerticalLayout paddingTop="6"
+					<s:VerticalLayout paddingTop="5"
+									  gap="0"
 									  useVirtualLayout="true"
-									  verticalAlign="middle"/>
+									  horizontalAlign="center"/>
 				</ListControlPanel:layout>
 			</ListControlPanel:MenuListDataGroup>
 		</s:BorderContainer>

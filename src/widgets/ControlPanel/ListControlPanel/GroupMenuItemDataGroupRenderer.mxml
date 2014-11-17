@@ -6,7 +6,7 @@
 				autoDrawBackground="false"
 				buttonMode="true"
 				useHandCursor="true"
-				focusEnabled="true" 
+				focusEnabled="true"
 				click="this_clickHandler(event)" 
 				dataChange="this_dataChangeHandler(event)">
 	
@@ -90,8 +90,8 @@
 	</fx:Script>
 	
 	
-	<s:VGroup height="25" gap="2" horizontalAlign="center">
-		<s:Label id="itemLabel" 
+	<s:HGroup width="80" height="20" gap="5" verticalAlign="middle" horizontalAlign="center">
+		<s:Label id="itemLabel"
 				 fontWeight="bold" color="0xffffff"
 				 rollOver="itemLabel_rollOverHandler(event)" 
 				 rollOut="itemLabel_rollOutHandler(event)"/>
@@ -105,5 +105,5 @@
 				</s:Path>
 			</s:Group>
 		</s:Graphic>
-	</s:VGroup>
+	</s:HGroup>
 </s:ItemRenderer>

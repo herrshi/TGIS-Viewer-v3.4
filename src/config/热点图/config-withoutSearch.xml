@@ -70,9 +70,9 @@
 			config="widgets/ControlPanel/ShangHai/IconControlPanelWidget-HuanBao.xml"
 			url="widgets/ControlPanel/IconControlPanelWidget.swf" />
 				
-		<widget label="环保信访" preload="open"
-			config="widgets/Overlay/WuHu/PointVisteWidget-policeEvent.xml" 
-			url="widgets/Overlay/PointVisteWidget.swf" />
+<!-- 		<widget label="环保信访" preload="open" -->
+<!-- 			config="widgets/Overlay/WuHu/PointVisteWidget-policeEvent.xml"  -->
+<!-- 			url="widgets/Overlay/PointVisteWidget.swf" /> -->
 			
 		<widget label="图层过滤" preload="open" 
 			url="widgets/LayerSymbolFilter/LayerSymbolFilterWidget.swf"/>

@@ -165,9 +165,11 @@
 			url="widgets/Overlay/PointOverlayWidget.swf" />
 	</widgetcontainer>
 	
-<!-- 	<widgetcontainer layout="fix"> -->
-		
-<!-- 	</widgetcontainer> -->
+	<widgetcontainer layout="fix">
+		<widget label="mainPanel" preload="open" right="50" top="50"
+			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-main.xml"
+			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+	</widgetcontainer>
 	
 	<widgetcontainer layout="horizontal">
 		<widget label="搜索" preload="minimized" 
@@ -180,9 +182,5 @@
 		<widget label="底图切换" preload="open"
 			config="widgets\MapSwitcher\MapSwitcherWidget.xml"
 			url="widgets\MapSwitcher\MapSwitcherWidget.swf"/>
-		
-		<widget label="ControlPanel" preload="open" right="20" bottom="20"
-			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-main.xml"
-			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 	</widgetcontainer>
 </configuration>
