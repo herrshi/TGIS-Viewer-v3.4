@@ -111,9 +111,7 @@
 				
 
 //				AppEvent.dispatch( AppEvent.WIDGET_RUN, "房屋查询" );
-
 //				AppEvent.dispatch( AppEvent.WIDGET_RUN, "添加岗点" );
-
 //				AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, "policeSentry" );
 				
 				//天津测试
@@ -135,7 +133,7 @@
 //				AppEvent.dispatch( AppEvent.ADD_TEXTS, '{"type":"odStart","texts":[{"id":"1","text":"99","position":{"x":87.639046,"y":43.831502}}] }' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"odStart","points":[{"id":"1","x":87.5856,"y":43.823612}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"odEnd","points":[{"id":"1","x":87.595879,"y":43.824297}]}' );
-				AppEvent.dispatch( AppEvent.GET_TRAFFIC_FLOW_DATA, '{"event":"Event","kkPoints":[{ "sbbh":"650100100169","x":87.65572518112413 ,"y":43.83442363292115,"flowRate":540},{ "sbbh":"650100100246","x":87.63766894160005,"y":43.83232062128304,"flowRate":240},{ "sbbh":"650100100234","x":87.58903322310831,"y":43.79334115272798,"flowRate":540},{"sbbh":"650100100051","x":87.6314352086428,"y":43.79948093769086,"flowRate":70},{"sbbh":"KK6118301","x":87.614572518112413,"y":43.7903363292115,"flowRate":7 },{ "sbbh":"65010010015","x":87.63524386015919,"y":43.78512170176689,"flowRate":240},{"sbbh":"650100100050 ","x":87.5674352086428,"y":43.84948093769086,"flowRate":700 },{"sbbh":"650100100239 ","x":87.60603322310831,"y":43.87434115272798,"flowRate":1000}]}');
+//				AppEvent.dispatch( AppEvent.GET_TRAFFIC_FLOW_DATA, '{"event":"Event","kkPoints":[{ "sbbh":"650100100169","x":87.65572518112413 ,"y":43.83442363292115,"flowRate":540},{ "sbbh":"650100100246","x":87.63766894160005,"y":43.83232062128304,"flowRate":240},{ "sbbh":"650100100234","x":87.58903322310831,"y":43.79334115272798,"flowRate":540},{"sbbh":"650100100051","x":87.6314352086428,"y":43.79948093769086,"flowRate":70},{"sbbh":"KK6118301","x":87.614572518112413,"y":43.7903363292115,"flowRate":7 },{ "sbbh":"65010010015","x":87.63524386015919,"y":43.78512170176689,"flowRate":240},{"sbbh":"650100100050 ","x":87.5674352086428,"y":43.84948093769086,"flowRate":700 },{"sbbh":"650100100239 ","x":87.60603322310831,"y":43.87434115272798,"flowRate":1000}]}');
 				
 				//无锡测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeEvent","points":[{"x":120.2657,"y":31.61856,"id":"J3202140506102191952","fields":{"fdtTime":"2014-05-06 10:21:58","caseLocation":"","caseContent":"两车相撞","caseLevel":"","caseType":""}}]}' );
@@ -221,7 +219,8 @@
 					}
 				);*/
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"2272","x":"118.4040699","y":"31.387664","fields":{"cameraDesc":"麒麟路北口东侧车道","cameraIp":"52.123.34.43","cameraState":"连接"}}]}' );
-				
+				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "首页菜单" );
+				AppEvent.dispatch( AppEvent.WIDGET_RUN, "勤务菜单" );
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_GPS_TRACK, '{"type":"QingSaoCheGpsTrack","id":"123","speed":"0","points":[{"time":"2013-10-29 09:33:00","x":121.30102,"y":30.98638},{"time":"2013-10-29 09:34:21","x":121.31102,"y":30.985757},{"time":"2013-10-29 09:35:21","x":121.302624,"y":30.986414}]}' );
@@ -296,6 +295,8 @@
 //				AppEvent.dispatch( AppEvent.SET_POLICE_EVENT_DATA ,'[ {"id": "event001","title": "交通警情-道路交通警情-机动车与非机动车","image": " ", "level": 1,"time": "2014-07-22 15:35","interaction119":"联动119", "interaction110":"联动110", "interaction120":"联动120", "interactionContent":"有危险品", "source": "122电话报警","content": "小汽车驶入非机动车道撞上电动车，发生擦挂事件","location": "锦江区锦华路100号万特欢乐世界正门口","deatCount": 0,"injuredCount": 3,"trappedCount": 5,"fields": {"报警人": "李四 男 138 8888 8888","涉案人": "张三 男 137 7777 7777"},"actions": "上报,回退,派警,结案,回访","logs": "2014-07-22 15: 35一分局刘某进行三快处理并结案；2014-07-22 15: 35一分局刘某电话核实；2014-07-22 15: 35交管局下发至一分局；"}]');
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":118.419,"y":31.334,"fields":{"gpsState":"离岗"}}]}' );
 //				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "police", id: "712" } );
+				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "勤务菜单" );
+				AppEvent.dispatch( AppEvent.WIDGET_RUN, "首页菜单" );
 				
 				//浦东测试
 				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 

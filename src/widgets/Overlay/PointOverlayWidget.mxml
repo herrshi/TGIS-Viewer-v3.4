@@ -130,10 +130,9 @@
 			 * */
 			private var _layerArray:Array = [];
 			/**
-			 * 点击图标直接触发事件，不显示弹出框
+			 * 点击图标直接触发事件
 			 * */
 			private var _clickFunctionInfo:Object;
-			private var _workerToMain:MessageChannel;
 			[Bindable] 
 			public var pid:String = null;
 			[Bindable] 
@@ -306,7 +305,7 @@
 					
 					//查询设备点位，页面可以通过设备编号加点
 					//查询完成之后再通知页面组件创建完成
-					if ( configXML.querylayers )
+					if ( configXML.querylayers[0] )
 					{
 						//多个图层的数据合并到一个array中
 						var queryLayerList:XMLList = configXML.querylayers..querylayer;
@@ -333,11 +332,20 @@
 					{
 						if ( _widgetRunNotifyFunctionName != "" )
 						{
+							//老版函数
 							AppEvent.dispatch( 
 								AppEvent.EXTERNALINTERFACE_CALL, 
 								{ functionName: _widgetRunNotifyFunctionName } 
 							);
 						}
+						//新版函数
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ 
+								functionName: "mapWidgetStateChanged",
+								params: [ _pointType, "open" ]
+							} 
+						);
 					}
 				}
 			}
@@ -380,9 +388,18 @@
 					}
 					if ( allFinish && _widgetRunNotifyFunctionName != "" )
 					{
+						//老版函数
 						AppEvent.dispatch( 
 							AppEvent.EXTERNALINTERFACE_CALL, 
 							{ functionName: _widgetRunNotifyFunctionName } 
+						);
+						//新版函数
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ 
+								functionName: "mapWidgetStateChanged",
+								params: [ _pointType, "open" ]
+							} 
 						);
 					}
 				}
@@ -400,11 +417,20 @@
 					map.addLayer( _pointOverlayLayer );
 					if ( _widgetRunNotifyFunctionName != "" )
 					{
-						//通知页面组件创建完成
+						//老版函数
 						AppEvent.dispatch( 
 							AppEvent.EXTERNALINTERFACE_CALL, 
-							{ functionName: _widgetRunNotifyFunctionName } );
+							{ functionName: _widgetRunNotifyFunctionName } 
+						);
 					}
+					//新版函数
+					AppEvent.dispatch( 
+						AppEvent.EXTERNALINTERFACE_CALL, 
+						{ 
+							functionName: "mapWidgetStateChanged",
+							params: [ _pointType, "open" ]
+						} 
+					);
 				}
 			}
 			
@@ -421,6 +447,14 @@
 							{ functionName: _widgetCloseNotifyFunctionName } 
 						);
 					}
+					//新版函数
+					AppEvent.dispatch( 
+						AppEvent.EXTERNALINTERFACE_CALL, 
+						{ 
+							functionName: "mapWidgetStateChanged",
+							params: [ _pointType, "close" ]
+						} 
+					);
 				}
 			}
 			

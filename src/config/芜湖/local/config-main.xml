@@ -50,105 +50,97 @@
 				<sublayer id="0" popupconfig="popups/WuHu/PopUp-FBD.xml"/>	
 			</layer>
 			
-			<layer label="信号机" type="feature" visible="false" autorefresh="0"
-				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/0"
-				popupconfig="popups/WuHu/PopUp-XHJ.xml">
+<!-- 			<layer label="信号机" type="feature" visible="false" autorefresh="0" -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/0" -->
+<!-- 				popupconfig="popups/WuHu/PopUp-XHJ.xml"> -->
 
-				<uniquevaluerenderer field="STATE">
-					<defaultlabel>未知</defaultlabel>
-					<picturemarkersymbol url="assets/images/mapIcons/WuHu/XinHaoJi-grey.png" yoffset="18" />
+<!-- 				<uniquevaluerenderer field="STATE"> -->
+<!-- 					<defaultlabel>未知</defaultlabel> -->
+<!-- 					<picturemarkersymbol url="assets/images/mapIcons/WuHu/XinHaoJi-grey.png" yoffset="18" /> -->
 
-					<uniquevalueinfo value="connect" label="连接">
-						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-blue.png" yoffset="18" />
-					</uniquevalueinfo>
+<!-- 					<uniquevalueinfo value="connect" label="连接"> -->
+<!-- 						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-blue.png" yoffset="18" /> -->
+<!-- 					</uniquevalueinfo> -->
+<!-- 				</uniquevaluerenderer> -->
+<!-- 			</layer> -->
+			
+<!-- 			<layer label="摄像机" type="feature" visible="false" autorefresh="0" -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/1" -->
+<!-- 				popupconfig="popups/WuHu/PopUp-XHJ.xml"> -->
+
+<!-- 				<uniquevaluerenderer field="STATE"> -->
+<!-- 					<defaultlabel>未知</defaultlabel> -->
+<!-- 					<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" /> -->
+
+<!-- 					<uniquevalueinfo value="connect" label="连接"> -->
+<!-- 						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" /> -->
+<!-- 					</uniquevalueinfo> -->
 
 <!-- 					<uniquevalueinfo value="disconnect" label="中断"> -->
-<!-- 						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-red.png" yoffset="18" /> -->
+<!-- 						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-red.png" yoffset="13" /> -->
 <!-- 					</uniquevalueinfo> -->
 
 <!-- 					<uniquevalueinfo value="malfunction" label="异常"> -->
-<!-- 						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-yellow.png" yoffset="13" /> -->
+<!-- 						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-yellow.png" yoffset="13" /> -->
 <!-- 					</uniquevalueinfo> -->
-				</uniquevaluerenderer>
-			</layer>
+<!-- 				</uniquevaluerenderer> -->
+<!-- 			</layer> -->
 			
-			<layer label="摄像机" type="feature" visible="false" autorefresh="0"
-				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/1"
-				popupconfig="popups/WuHu/PopUp-XHJ.xml">
-
-				<uniquevaluerenderer field="STATE">
-					<defaultlabel>未知</defaultlabel>
-					<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" />
-
-					<uniquevalueinfo value="connect" label="连接">
-						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" />
-					</uniquevalueinfo>
-
-					<uniquevalueinfo value="disconnect" label="中断">
-						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-red.png" yoffset="13" />
-					</uniquevalueinfo>
-
-					<uniquevalueinfo value="malfunction" label="异常">
-						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-yellow.png" yoffset="13" />
-					</uniquevalueinfo>
-				</uniquevaluerenderer>
-			</layer>
-			
-			<layer label="卡口" type="feature" visible="false" autorefresh="0"
-				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/2"
-				popupconfig="popups/WuHu/PopUp-KaKou.xml">
+<!-- 			<layer label="卡口" type="feature" visible="false" autorefresh="0" -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/2" -->
+<!-- 				popupconfig="popups/WuHu/PopUp-KaKou.xml"> -->
 				
-				<simplerenderer>
-					<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13" />
-				</simplerenderer>
-			</layer>
+<!-- 				<simplerenderer> -->
+<!-- 					<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13" /> -->
+<!-- 				</simplerenderer> -->
+<!-- 			</layer> -->
 		</operationallayers>
 	</map>
 
 	<!-- widgets organized into widget containers that manage close/open etc -->
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="float">
-		<widget label="气象站" preload="open"
+		<widget label="气象站"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-QiXiangZhan.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="情报板" preload="open"
+		<widget label="诱导板"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-QingBaoBan.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="电子警察" preload="open"
+		<widget label="电子警察"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-DianZiJingCha.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="摄像机" preload="open"
+		<widget label="摄像机"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-SheXiangJi.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="信号机" preload="open"
+		<widget label="信号机"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-XinHaoJi.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="占道施工" preload="open"
+		<widget label="占道施工"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-ZhanDaoShiGong.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="视频事件" preload="open"
+		<widget label="视频事件"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-ShiPinShiJian.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 			
-		<widget label="警情" preload="open"
+		<widget label="警情"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeEvent.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 
-		<widget label="警员" preload="open"
+		<widget label="警员"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-police.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="警车" preload="open"
+		<widget label="警车"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeCar.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="岗点" preload="open"
+		<widget label="岗点"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeSentry.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf" />
 		
@@ -166,8 +158,12 @@
 	</widgetcontainer>
 	
 	<widgetcontainer layout="fix">
-		<widget label="mainPanel" preload="open" right="50" top="50"
+		<widget label="首页菜单" preload="open" right="20" top="50"
 			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-main.xml"
+			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="勤务菜单" right="20" top="50"
+			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-QinWu.xml"
 			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 	</widgetcontainer>
 	
@@ -182,5 +178,9 @@
 		<widget label="底图切换" preload="open"
 			config="widgets\MapSwitcher\MapSwitcherWidget.xml"
 			url="widgets\MapSwitcher\MapSwitcherWidget.swf"/>
+		
+<!-- 		<widget label="mainPanel" preload="open" right="50" top="50" -->
+<!-- 			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-main.xml" -->
+<!-- 			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/> -->
 	</widgetcontainer>
 </configuration>

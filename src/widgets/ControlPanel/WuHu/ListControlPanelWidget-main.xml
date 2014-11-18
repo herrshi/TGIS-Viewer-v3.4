@@ -1,42 +1,78 @@
 <?xml version="1.0" ?>
 <configuration>
 	<menu>
-		<itemgroup label="图层">
-			<item label="警员" initenable="true">
-				<clickfunctions>
-					<clickfunction name="ChangeWidget">
-						<params>
-							<param name="WidgetName" value="PoliceOverlay" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-			<item label="警车">
-				<clickfunctions>
-					<clickfunction name="ChangeWidget">
-						<params>
-							<param name="WidgetName" value="PoliceCarOverlay" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-			<item label="诱导板">
+		<itemgroup label="设施设备">
+			<item label="发布段" initenable="true">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
-							<param name="ServiceName" value="诱导板" />
+							<param name="ServiceName" value="发布段" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="气象站">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="气象站" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="电子警察">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="电子警察" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="摄像机">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="摄像机" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="占道施工">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="占道施工" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="视频事件">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="视频事件" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
 			</item>
 		</itemgroup>
 		
-		<itemgroup label="图层">
-			<item label="警员">
+		<itemgroup label="指挥调度">
+			<item label="岗点">
 				<clickfunctions>
 					<clickfunction name="ChangeWidget">
 						<params>
-							<param name="WidgetName" value="PoliceOverlay" />
+							<param name="WidgetName" value="岗点" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="警情">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="警情" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
@@ -45,23 +81,53 @@
 				<clickfunctions>
 					<clickfunction name="ChangeWidget">
 						<params>
-							<param name="WidgetName" value="PoliceCarOverlay" />
+							<param name="WidgetName" value="警车" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item label="诱导板">
+			<item label="警员">
 				<clickfunctions>
-					<clickfunction name="ChangeLayer">
+					<clickfunction name="ChangeWidget">
 						<params>
-							<param name="ServiceName" value="诱导板" />
+							<param name="WidgetName" value="警员" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+		</itemgroup>
+		
+		<itemgroup label="重点车辆">
+			<item label="重点车辆" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="重点车辆" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="应急资源" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="应急资源" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="应急单位" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="应急单位" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
 			</item>
 		</itemgroup>
 
-		<item label="打印">
+		<item label="测距">
 
 		</item>
 	</menu>

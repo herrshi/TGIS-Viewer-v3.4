@@ -15,6 +15,10 @@
 			
 			import spark.components.supportClasses.ItemRenderer;
 			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.WidgetStates;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			
 			[Bindable]
 			private var _menuItemAC:ArrayCollection;
 			
@@ -99,13 +103,36 @@
 						{
 							var label:String = itemXML.@label;
 							var open:Boolean = ( itemXML.@initenable == "true" ? true : false );
+							
+							var functionList:XMLList = itemXML..clickfunction;
+							var functionArray:Array = [];
+							for each ( var functionXML:XML in functionList )
+							{
+								var functionName:String = functionXML.@name;
+								var paramList:XMLList = functionXML..param;
+								var paramTable:Hashtable = new Hashtable();
+								for each ( var paramXML:XML in paramList )
+								{
+									var paramName:String = paramXML.@name;
+									var paramValue:String = paramXML.@value;
+									paramTable.add( paramName, paramValue );
+								}
+								var clickFunctionObj:Object = 
+									{
+										name: functionName,
+										paramTable: paramTable
+									}
+								functionArray.push( clickFunctionObj );
+							}
+							
 							var configItemObj:Object = 
 								{ 
 									grouped: grouped,
 									groupLength: groupLength,
 									groupLabel: groupLabel,
 									label: label,
-									open: open
+									open: open,
+									functionArray: functionArray
 								};
 							configListMenuItems.push( configItemObj );
 						}
@@ -124,10 +151,11 @@
 						var groupMenuItem:MenuItem = new MenuItem();
 						groupMenuItem.label = menuObj.menuItem.label;
 						groupMenuItem.open = menuObj.menuItem.open;
+						groupMenuItem.functionArray = menuObj.menuItem.functionArray;
 						
 						_menuListItemAC.addItem( groupMenuItem );
 					}
-					menuListContainer.visible = true;
+					menuListContainer.visible = menuListContainer.includeInLayout = true;
 				}
 				else
 				{
@@ -157,6 +185,109 @@
 			{
 				var menuItem:MenuItem = ItemRenderer( event.target ).data as MenuItem;
 				menuItem.open = !menuItem.open;
+				
+				for each ( var fatherMenuItem:MenuItem in _menuItemAC )
+				{
+					if ( fatherMenuItem.isGroup )
+					{
+						for each ( var menuObj:Object in fatherMenuItem.groupMenuItems )
+						{
+							if ( menuObj.menuItem.label == menuItem.label )
+							{
+								menuObj.menuItem.open = menuItem.open;
+								break;
+							}
+						}
+					}
+				}
+				
+				var functionArray:Array = menuItem.functionArray;
+				for each ( var clickFunctionObj:Object in functionArray ) 
+				{
+					var functionName:String = clickFunctionObj.name;
+					var paramTable:Hashtable = clickFunctionObj.paramTable;
+					var widgetName:String;
+					var widgetState:String;
+					switch( functionName.toLowerCase() )
+					{
+						//按钮enable时显示图层，按钮disable时隐藏图层
+						case "changelayer":
+							var serviceName:String = paramTable.find( "ServiceName" );
+							var idString:String = paramTable.find( "LayerId" );
+							AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+								{ 
+									serviceName: serviceName,
+									layerIds: idString,
+									visible: menuItem.open
+								} 
+							);
+							break;
+						
+						//按钮enable时打开组件，按钮disable时关闭组件
+						case "changewidget":
+							widgetName = paramTable.find( "WidgetName" );
+							widgetState = paramTable.find( "WidgetState" );
+							if ( menuItem.open )
+							{
+								AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
+								if ( widgetState && widgetState != "" )
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_CHANGE_STATE, 
+										{ 
+											label: widgetName,
+											state: widgetState
+										} );
+								}
+							}
+							else
+							{
+								AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+							}
+							break;
+						
+						//按钮enable时打开组件，按钮disable时不关闭组件
+						case "openwidget":
+							widgetName = paramTable.find( "WidgetName" );
+							widgetState = paramTable.find( "WidgetState" );
+							if ( menuItem.open )
+							{
+								AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
+								if ( widgetState && widgetState != "" )
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_CHANGE_STATE, 
+										{ 
+											label: widgetName,
+											state: widgetState
+										} );
+								}
+							}
+							break;
+						
+						//按钮enable时不打开组件，按钮disable时关闭组件
+						case "closewidget":
+							widgetName = paramTable.find( "WidgetName" );
+							if ( !menuItem.open )
+							{
+								AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+							}
+							break;
+						
+						//点击按钮时通知页面
+						case "informstatechanged":
+							var type:String = paramTable.find( "type" );
+							AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+								{ 
+									functionName: "mapButtonStateChanged", 
+									params: [ type, menuItem.open ] 
+								} 
+							);
+					}
+				}
+			}
+			
+			protected function menuListContainer_rollOutHandler(event:MouseEvent):void
+			{
+				menuListContainer.visible = menuListContainer.includeInLayout = false;
 			}
 			
 		]]>
@@ -166,7 +297,7 @@
 			<s:Rect width="100%" height="100%"
 					alpha="1">
 				<s:fill>
-					<s:SolidColor color="0x5f6267"/>
+					<s:SolidColor color="0x606268"/>
 				</s:fill>
 			</s:Rect>
 			
@@ -189,16 +320,17 @@
 		<s:BorderContainer id="menuListContainer" 
 						   x="{xOver}" y="{menuItemDG.height}"
 						   width="{menuListDG.width+4}" height="{menuListDG.height+2}"
-						   backgroundColor="0x5f6267"
+						   backgroundColor="0x606268"
 						   borderVisible="false"
-						   visible="false" includeInLayout="false">
+						   visible="false" includeInLayout="false" 
+						   rollOut="menuListContainer_rollOutHandler(event)">
 			<ListControlPanel:MenuListDataGroup id="menuListDG" 
-												width="80"
+												width="100"
 												dataProvider="{_menuListItemAC}"
 												focusEnabled="false" tabChildren="true" 
 												menuListItemClick="menuListDG_menuListItemClickHandler(event)">
 				<ListControlPanel:layout>
-					<s:VerticalLayout paddingTop="5"
+					<s:VerticalLayout paddingTop="0"
 									  gap="0"
 									  useVirtualLayout="true"
 									  horizontalAlign="center"/>
