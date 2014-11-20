@@ -22,7 +22,7 @@
 <!-- 				  config="widgets/Coordinate/CoordinateWidget.xml"  -->
 <!-- 				  url="widgets/Coordinate/CoordinateWidget.swf" /> -->
 
-	<map top="0" scale="64000" center="8645.7109 -2189.2693"
+	<map top="0" initialextent="-16464 -15776 16962 16075"
 		scalebarvisible="false" esrilogovisible="false"
 		doubleclickzoomenabled="true">
 		<basemaps>
@@ -32,8 +32,10 @@
 		<operationallayers>
 			<layer label="发布段" type="dynamic" visible="true" autorefresh="30"
 				url="http://{serverip}/arcgis/rest/services/pd_fbd_real/MapServer">
-				<sublayer id="1" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-3.xml"/>
-				<sublayer id="2" popupconfig="popups/PuDong/PopUp-ksl-3.xml"/>
+				<sublayer id="1" popupconfig="popups/PuDong/PopUp-ksl-3.xml"/>
+				<sublayer id="3" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-3.xml"/>
+				<sublayer id="4" popupconfig="popups/PuDong/PopUp-ksl-ZhuXian-5.xml"/>
+				<sublayer id="5" popupconfig="popups/PuDong/PopUp-ksl-ZaDao-5.xml"/>
 			</layer>
 			
 <!-- 			<layer label="发布段背景" type="dynamic" visible="true"  -->

@@ -3,7 +3,7 @@
 	<title>{sb_lc.FSTR_DESC}</title>
 	<fields>
 		<field name="sb_lc.FSTR_DESC" />
-		<field name="sb_lc.DEVICEID" alias="编号" visible="true" />
+		<field name="sb_lc.DEVICEID" alias="设备编号：" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>

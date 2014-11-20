@@ -219,8 +219,9 @@
 					}
 				);*/
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"2272","x":"118.4040699","y":"31.387664","fields":{"cameraDesc":"麒麟路北口东侧车道","cameraIp":"52.123.34.43","cameraState":"连接"}}]}' );
-				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "首页菜单" );
-				AppEvent.dispatch( AppEvent.WIDGET_RUN, "勤务菜单" );
+//				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "首页菜单" );
+//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "勤务菜单" );
+				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_GPS_TRACK, '{"type":"QingSaoCheGpsTrack","id":"123","speed":"0","points":[{"time":"2013-10-29 09:33:00","x":121.30102,"y":30.98638},{"time":"2013-10-29 09:34:21","x":121.31102,"y":30.985757},{"time":"2013-10-29 09:35:21","x":121.302624,"y":30.986414}]}' );
@@ -238,6 +239,13 @@
 					} 
 				);*/
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"IssuesectEvent","points":[{"id":"aaa","relateType":"issuesect","relateId":"NHPJX-WO->NHPYGZ-WO","fields":{"name":"单车道"}},{"id":"bbb","relateType":"issuesect","relateId":"NHPJX-NO->NHPJX-NI","fields":{"name":"双车道"}}]}' );
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName:"浦东发布浦西发布段",
+						layerIds:"",
+						visible:true
+					} 
+				);
 			}
 			
 			protected function btnTest2_clickHandler(event:MouseEvent):void

@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<configuration>
+	<title>{匝道发布段_5级.DES}</title>
+	<fields>
+		<field name="匝道发布段_5级.DES" />
+		<field name="匝道发布段_5级.SECTIONID" alias="设备编号：" visible="true" />
+	</fields>
+	<showzoomtobutton>false</showzoomtobutton>
+	<buttons>
+	   <button label="人工发布" action="openDevice" type="FBD_KSL" idfield="匝道发布段_5级.SECTIONID" />
+	   <button label="关联事件" action="openDevice" type="RelateEvent" idfield="匝道发布段_5级.SECTIONID"/>
+	</buttons>
+</configuration>

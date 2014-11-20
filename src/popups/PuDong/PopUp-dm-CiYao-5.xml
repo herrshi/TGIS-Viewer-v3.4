@@ -5,7 +5,7 @@
 		<field name="路名" />
 		<field name="起点交叉路" />
 		<field name="终点交叉路" />
-		<field name="SECTIONID" alias="编号" visible="true" />
+		<field name="SECTIONID" alias="设备编号：" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>

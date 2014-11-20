@@ -172,6 +172,11 @@
 			icon="assets/images/i_search.png"
 			config="widgets/MultiLayerSearch/WuHu/MultiLayerSearchWidget-roadAndPoi.xml"
 			url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+			
+		<widget label="测距" 
+			icon="assets/images/i_draw2.png" 
+			config="widgets/Draw/DrawWidget.xml"
+			url="widgets/Draw/DrawWidget.swf" />
 	</widgetcontainer>
 	
 	<widgetcontainer layout="vertical">

@@ -128,7 +128,13 @@
 		</itemgroup>
 
 		<item label="测距">
-
+			<clickfunctions>
+				<clickfunction name="ChangeWidget">
+					<params>
+						<param name="WidgetName" value="测距" />
+					</params>
+				</clickfunction>
+			</clickfunctions>
 		</item>
 	</menu>
 

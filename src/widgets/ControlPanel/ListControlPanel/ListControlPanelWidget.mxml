@@ -16,7 +16,6 @@
 			import spark.components.supportClasses.ItemRenderer;
 			
 			import cn.seisys.TGISViewer.AppEvent;
-			import cn.seisys.TGISViewer.WidgetStates;
 			import cn.seisys.TGISViewer.utils.Hashtable;
 			
 			[Bindable]
@@ -89,7 +88,8 @@
 							menuItem = new MenuItem();
 							menuItem.isGroup = false;
 							menuItem.label = configListMenuItems[ i ].label;
-							menuItem.open = false;
+							menuItem.open = configListMenuItems[ i ].open;
+							menuItem.functionArray = configListMenuItems[ i ].functionArray;
 							
 							_menuItemAC.addItem( menuItem );
 							
@@ -160,6 +160,7 @@
 				else
 				{
 					menuItem.open = !menuItem.open;
+					addMenuListItemClickHandler( menuItem );
 				}
 			}
 			
@@ -201,6 +202,11 @@
 					}
 				}
 				
+				addMenuListItemClickHandler( menuItem );
+			}
+			
+			private function addMenuListItemClickHandler( menuItem:MenuItem ):void
+			{
 				var functionArray:Array = menuItem.functionArray;
 				for each ( var clickFunctionObj:Object in functionArray ) 
 				{

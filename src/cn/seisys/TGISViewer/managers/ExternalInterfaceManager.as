@@ -370,7 +370,8 @@ package cn.seisys.TGISViewer.managers
 					serviceName:serviceName,
 					layerIds:layerIds,
 					visible:true
-				} );
+				} 
+			);
 		}
 		
 		private function dispatchHideLayerEvent( serviceName:String, layerIds:String ):void
@@ -380,7 +381,8 @@ package cn.seisys.TGISViewer.managers
 					serviceName:serviceName,
 					layerIds:layerIds,
 					visible:false
-				} );
+				} 
+			);
 		}
 		
 		private function dispatchSetMapCenterEvent( x:Number, y:Number ):void

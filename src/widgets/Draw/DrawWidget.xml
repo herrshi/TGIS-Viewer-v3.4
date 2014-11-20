@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <configuration label="Draw and measure (default)">
+	<measure>true</measure>
 	<distanceunits>
 		<distanceunit id="km" />
 		<distanceunit id="mi" />

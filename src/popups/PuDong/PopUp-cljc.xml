@@ -3,7 +3,7 @@
 	<title>{SDE.sb_cljcq.FSTR_DESC}</title>
 	<fields>
 		<field name="SDE.sb_cljcq.FSTR_DESC" />
-		<field name="SDE.sb_cljcq.DEVICEID" alias="编号" visible="true" />
+		<field name="SDE.sb_cljcq.DEVICEID" alias="设备编号：" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>

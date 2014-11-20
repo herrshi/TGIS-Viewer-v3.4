@@ -22,7 +22,7 @@
 <!-- 				  config="widgets/Coordinate/CoordinateWidget.xml"  -->
 <!-- 				  url="widgets/Coordinate/CoordinateWidget.swf" /> -->
 
-	<map top="0" scale="64000" center="8645.7109 -2189.2693"
+	<map top="0" initialextent="-8009 -12628 18184 8902"
 		scalebarvisible="false" esrilogovisible="false"
 		doubleclickzoomenabled="true">
 		<basemaps>
@@ -32,42 +32,18 @@
 		<operationallayers>
 			<layer label="发布段" type="dynamic" visible="true" autorefresh="30"
 				url="http://{serverip}/arcgis/rest/services/pd_fbd_morph/MapServer">
-				<sublayer id="0" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-3.xml"/>
-				<sublayer id="2" popupconfig="popups/PuDong/PopUp-ksl-3.xml"/>
+				<sublayer id="1" popupconfig="popups/PuDong/PopUp-ksl-3.xml"/>
+				<sublayer id="3" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-3.xml"/>
+				<sublayer id="4" popupconfig="popups/PuDong/PopUp-ksl-ZhuXian-5.xml"/>
+				<sublayer id="5" popupconfig="popups/PuDong/PopUp-ksl-ZaDao-5.xml"/>
 			</layer>
 			
-<!-- 			<layer label="发布段背景" type="dynamic" visible="true"  -->
-<!-- 				url="http://{serverip}/arcgis/rest/services/pd_fbd_background/MapServer"/> -->
+			<layer label="浦东发布浦西发布段" type="dynamic" visible="false" 
+				url="http://{serverip}/arcgis/rest/services/pd_fbd_issue_ksl_PuXiByPuDong/MapServer">
+				<sublayer id="0" popupconfig="popups/PuDong/PopUp-ksl-3.xml" />
+			</layer>
 			
-<!-- 			<layer label="地面发布段" type="dynamic" visible="true"  -->
-<!-- 				url="http://{serverip}/arcgis/rest/services/pd_fbd_issue_dm/MapServer"> -->
-<!-- 				<sublayer id="1" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-3.xml"/> -->
-<!-- 				<sublayer id="2" popupconfig="popups/PuDong/PopUp-dm-CiYao-3.xml"/> -->
-<!-- 				<sublayer id="4" popupconfig="popups/PuDong/PopUp-dm-ZhuYao-5.xml"/> -->
-<!-- 				<sublayer id="5" popupconfig="popups/PuDong/PopUp-dm-CiYao-5.xml"/> -->
-<!-- 			</layer> -->
-				
-<!-- 			<layer label="浦东发布段" type="dynamic" visible="true"  -->
-<!-- 				url="http://{serverip}/arcgis/rest/services/pd_fbd_issue_ksl/MapServer"> -->
-<!-- 				<sublayer id="1" popupconfig="popups/PuDong/PopUp-ksl-3.xml" /> -->
-<!-- 				<sublayer id="2" popupconfig="popups/PuDong/PopUp-ksl-zd-3.xml" /> -->
-<!-- 				<sublayer id="3" popupconfig="popups/PuDong/PopUp-ksl-WaiHuan-3.xml" /> -->
-<!-- 				<sublayer id="5" popupconfig="popups/PuDong/PopUp-ksl-5.xml" /> -->
-<!-- 				<sublayer id="6" popupconfig="popups/PuDong/PopUp-ksl-zd-5.xml" /> -->
-<!-- 				<sublayer id="7" popupconfig="popups/PuDong/PopUp-ksl-WaiHuan-5.xml" /> -->
-<!-- 			</layer> -->
-			
-<!-- 			<layer label="浦东发布浦西发布段" type="dynamic" visible="false"  -->
-<!-- 				url="http://{serverip}/arcgis/rest/services/pd_fbd_issue_ksl_PuXiByPuDong/MapServer"> -->
-<!-- 				<sublayer id="1" popupconfig="popups/PuDong/PopUp-ksl-3.xml" /> -->
-<!-- 				<sublayer id="2" popupconfig="popups/PuDong/PopUp-ksl-zd-3.xml" /> -->
-<!-- 				<sublayer id="3" popupconfig="popups/PuDong/PopUp-ksl-WaiHuan-3.xml" /> -->
-<!-- 				<sublayer id="5" popupconfig="popups/PuDong/PopUp-ksl-5.xml" /> -->
-<!-- 				<sublayer id="6" popupconfig="popups/PuDong/PopUp-ksl-zd-5.xml" /> -->
-<!-- 				<sublayer id="7" popupconfig="popups/PuDong/PopUp-ksl-WaiHuan-5.xml" /> -->
-<!-- 			</layer> -->
-			
-			<layer label="全彩板" type="feature" visible="true" autorefresh="30"
+			<layer label="全彩板" type="feature" visible="false" autorefresh="30"
 					  url="http://{serverip}/arcgis/rest/services/pd_device_sde/MapServer/0" 
 					  definitionexpression="SDE.sb_qbb.DEVTYPE='CB'"
 					  popupconfig="popups/PuDong/PopUp-qbb.xml">
@@ -89,7 +65,7 @@
 				</uniquevaluerenderer>
 			</layer>
 			
-			<layer label="A板" type="feature" visible="true" autorefresh="30"
+			<layer label="A板" type="feature" visible="false" autorefresh="30"
 					  url="http://{serverip}/arcgis/rest/services/pd_device_sde/MapServer/0" 
 					  definitionexpression="SDE.sb_qbb.DEVTYPE='AB'"
 					  popupconfig="popups/PuDong/PopUp-qbb.xml">
@@ -111,7 +87,7 @@
 				</uniquevaluerenderer>
 			</layer>
 			
-			<layer label="L板" type="feature" visible="true" autorefresh="30"
+			<layer label="L板" type="feature" visible="false" autorefresh="30"
 					  url="http://{serverip}/arcgis/rest/services/pd_device_sde/MapServer/0" 
 					  definitionexpression="SDE.sb_qbb.DEVTYPE='MB_L'"
 					  popupconfig="popups/PuDong/PopUp-qbb.xml">
@@ -133,7 +109,7 @@
 				</uniquevaluerenderer>
 			</layer>
 			
-			<layer label="M板" type="feature" visible="true" autorefresh="30"
+			<layer label="M板" type="feature" visible="false" autorefresh="30"
 					  url="http://{serverip}/arcgis/rest/services/pd_device_sde/MapServer/0" 
 					  definitionexpression="SDE.sb_qbb.DEVTYPE='MB'"
 					  popupconfig="popups/PuDong/PopUp-qbb.xml">
@@ -155,7 +131,7 @@
 				</uniquevaluerenderer>
 			</layer>
 			
-			<layer label="S板" type="feature" visible="true" autorefresh="30"
+			<layer label="S板" type="feature" visible="false" autorefresh="30"
 					  url="http://{serverip}/arcgis/rest/services/pd_device_sde/MapServer/0" 
 					  definitionexpression="SDE.sb_qbb.DEVTYPE='SB'"
 					  popupconfig="popups/PuDong/PopUp-qbb.xml">
@@ -286,7 +262,7 @@
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="fix">
 		<widget label="ControlPanel" preload="open" right="20" bottom="20"
-				config="widgets/ControlPanel/PuDong/IconControlPanelWidget-real.xml"
+				config="widgets/ControlPanel/PuDong/IconControlPanelWidget-morph.xml"
 				url="widgets/ControlPanel/IconControlPanelWidget.swf" />
 		
 		<widget label="设备图例" right="20" bottom="80" 

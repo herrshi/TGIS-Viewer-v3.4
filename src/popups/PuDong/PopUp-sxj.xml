@@ -3,7 +3,8 @@
 	<title>{FSTR_DESC}</title>
 	<fields>
 		<field name="FSTR_DESC" />
-		<field name="DEVICEID" alias="编号" visible="true" />
+		<field name="PORT" alias="设备编号：" visible="true" />
+		<field name="DEVICEID" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>

@@ -1,11 +1,9 @@
 <?xml version="1.0" ?>
 <configuration>
-	<title>{路名}({起点交叉路}-{终点交叉路})</title>
+	<title>{NAME}</title>
 	<fields>
-		<field name="路名" />
-		<field name="起点交叉路" />
-		<field name="终点交叉路" />
-		<field name="SECTIONID" alias="编号" visible="true" />
+		<field name="NAME" />
+		<field name="SECTIONID" alias="设备编号：" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
