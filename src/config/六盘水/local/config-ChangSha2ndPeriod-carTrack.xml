@@ -80,7 +80,7 @@
 <!-- 				url="widgets/Overlay/TextOverlayWidget.swf" /> -->
 			
 		<widget label="模拟移动" preload="open"
-				config="widgets/SimulationMovePoint/ChangSha/SimulationMovePointWidget-carTrack.xml"
+				config="widgets/SimulationMovePoint/LiuPanShui/SimulationMovePointWidget-carTrack.xml"
 				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
 				
 		<widget label="卡口序号" preload="open" 

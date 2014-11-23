@@ -120,6 +120,10 @@
 			config="widgets/Overlay/WuHu/PointOverlayWidget-XinHaoJi.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
+		<widget label="卡口" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-KaKou.xml" 
+			url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
 		<widget label="占道施工"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-ZhanDaoShiGong.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
@@ -128,19 +132,19 @@
 			config="widgets/Overlay/WuHu/PointOverlayWidget-ShiPinShiJian.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 			
-		<widget label="警情"
+		<widget label="警情" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeEvent.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 
-		<widget label="警员"
+		<widget label="警员" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-police.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="警车"
+		<widget label="警车" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeCar.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="岗点"
+		<widget label="岗点" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeSentry.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf" />
 		

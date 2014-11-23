@@ -20,7 +20,8 @@
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
-				AppEvent.addListener( AppEvent.SET_LAYER_FILTER_DEFINITION, appevent_setLayerFilterDifinitionHandler );
+				AppEvent.addListener( AppEvent.SET_LAYER_FILTER_DEFINITION, 
+					appevent_setLayerFilterDifinitionHandler );
 			}
 			
 			private function appevent_setLayerFilterDifinitionHandler( event:AppEvent ):void

@@ -234,6 +234,8 @@
 				//AppEvent.addListener( AppEvent.GET_POLICE_EVENT_DATA,appevent_getPoliceEventDataHandler);
 				AppEvent.addListener( AppEvent.SET_POLICE_EVENT_DATA,appevent_setPoliceEventDataHandler);
 				AppEvent.addListener( AppEvent.CLOSE,closeGroupHandler);
+				
+				AppEvent.addListener( AppEvent.CHANGE_OVERLAY_VISIBLE, appevent_ChangeOverlayVisibleHandler );
 			}
 			
 			//关闭警情弹出的group窗口
@@ -248,6 +250,10 @@
 				{
 					//type
 					_pointType = configXML.type;
+					
+					//visible
+					var layerVisible:Boolean = ( configXML.initvisible == "false" ? false : true );
+					_pointOverlayLayer.visible = layerVisible;
 					
 					//popup
 					if ( configXML.popup[0] )
@@ -1270,8 +1276,15 @@
 				}
 			}
 			
-			
-
+			private function appevent_ChangeOverlayVisibleHandler( event:AppEvent ):void
+			{
+				var overlayType:String = event.data.type;
+				var overlayVisible:Boolean = event.data.visible;
+				if ( _pointType == overlayType )
+				{
+					_pointOverlayLayer.visible = overlayVisible;
+				}
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>

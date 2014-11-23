@@ -97,6 +97,7 @@
 			<fields>
 				<field name="desc" />
 				<field name="id" alias="编号" visible="true" />
+				<field name="policeList" alias="执勤警员" visible="true"/>
 			</fields>
 			<showzoomtobutton>false</showzoomtobutton>
 		</popup>

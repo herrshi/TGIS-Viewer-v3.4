@@ -251,6 +251,16 @@
 							}
 							break;
 						
+						case "changeoverlayvisible":
+							var overlayType:String = paramTable.find( "OverlayType" );
+							AppEvent.dispatch( AppEvent.CHANGE_OVERLAY_VISIBLE, 
+								{ 
+									type: overlayType, 
+									visible: menuItem.open 
+								} 
+							);
+							break;
+						
 						//按钮enable时打开组件，按钮disable时不关闭组件
 						case "openwidget":
 							widgetName = paramTable.find( "WidgetName" );

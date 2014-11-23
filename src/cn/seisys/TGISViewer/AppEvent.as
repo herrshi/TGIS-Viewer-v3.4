@@ -698,6 +698,8 @@ public class AppEvent extends Event
 	 
 	 public static const DELETE_TRAFFIC_FLOW_DATA:String =  "deleteTrafficFlowData";
 	 
+	 public static const CHANGE_OVERLAY_VISIBLE:String = "changeOverlayVisible";
+	 
 	 
     //--------------------------------------------------------------------------
     //

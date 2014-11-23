@@ -609,6 +609,7 @@
 						var index:int = deviceObj.index;
 						var id:String = deviceObj.id;
 						var desc:String = deviceObj.desc;
+						var policeList:String = deviceObj.policeList;
 						var x:Number = deviceObj.x;
 						var y:Number = deviceObj.y;
 						if ( !isNaN( x ) && !isNaN( y ) )
@@ -621,7 +622,8 @@
 									layerName: type, 
 									desc: desc, 
 									jobId: jobId, 
-									id: id 
+									id: id,
+									policeList: policeList
 								};
 							
 							var popUpRenderer:ClassFactory = _showDevicePopUpRendererTable.find( type );
