@@ -195,14 +195,27 @@
 					textSymbol.textFormat = textFormat;
 					
 //					var mapPoint:MapPoint = new MapPoint( x, y );
-					var graphic:Graphic = new Graphic( mapPoint, textSymbol );
+					var graphic:Graphic = new Graphic( mapPoint, textSymbol, {text: text} );
 					graphic.id = id;
 					if ( _glowFilter )
 					{
 						graphic.filters = [_glowFilter]
 					}
+					graphic.addEventListener( MouseEvent.CLICK, graphicClickHandler );
 					_textOverlayLayer.add( graphic );
 				}
+			}
+			
+			private function graphicClickHandler( event:MouseEvent ):void
+			{
+				var graphic:Graphic = event.currentTarget as Graphic;
+				var text:String = graphic.attributes.text;
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{ 
+						functionName: "openDevice", 
+						params: [ "CarTrackIndex", text ] 
+					} 
+				);
 			}
 			
 			private function appevent_DeleteAllTextsHandler( event:AppEvent ):void
