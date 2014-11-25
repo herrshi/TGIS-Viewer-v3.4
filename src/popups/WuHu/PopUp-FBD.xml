@@ -1,11 +1,12 @@
 <?xml version="1.0" ?>
 <configuration>
-	<title>{Name}</title>
+	<title>{NAME}</title>
 	<fields>
-		<field name="Name" />
+		<field name="NAME"/>
+		<field name="BM_CODE"/>
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
-<!-- 		<button label="详细信息" action="openDevice" type="XHJ" idfield="devId" /> -->
+		<button label="人工发布" action="openDevice" type="FBD" idfield="BM_CODE" />
 	</buttons>
 </configuration>

@@ -18,17 +18,15 @@
 			
 			import spark.components.DataGroup;
 			
-			[Bindable]
-			private var _menuItem:MenuItem;
 			
 			private var isLastItem:Boolean;
 			
 			protected function this_dataChangeHandler(event:FlexEvent):void
 			{
-				_menuItem = data as MenuItem;
+				var menuItem:MenuItem = data as MenuItem;
 				
-				itemLabel.label = _menuItem.label;
-				itemLabel.selected = _menuItem.open;
+				itemLabel.label = menuItem.label;
+				itemLabel.selected = menuItem.open;
 				
 				if ( itemIndex == 0 )
 				{
