@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			 xmlns:s="library://ns.adobe.com/flex/spark" 
-			 xmlns:mx="library://ns.adobe.com/flex/mx" 
-			 width="320" maxHeight="300"
-			 preinitialize="this_preinitializeHandler(event)">
-	
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		width="550" maxHeight="500"
+		preinitialize="this_preinitializeHandler(event)">
+	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("com.esri.ags.portal.PopUpRenderer")]
 	</fx:Metadata>
@@ -17,16 +17,16 @@
 			import com.esri.ags.geometry.Geometry;
 			import com.esri.ags.geometry.MapPoint;
 			import com.esri.ags.geometry.Multipoint;
-			import com.esri.ags.portal.PopUpRenderer;
 			import com.esri.ags.portal.supportClasses.PopUpFieldInfo;
 			import com.esri.ags.utils.StringUtil;
 			
 			import mx.containers.utilityClasses.ConstraintRow;
 			import mx.events.FlexEvent;
 			
+			import spark.components.RichEditableText;
+			
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
-			import cn.seisys.TGISViewer.skins.btSkin;
 			
 			import flashx.textLayout.conversion.TextConverter;
 			import flashx.textLayout.elements.Configuration;
@@ -38,11 +38,6 @@
 			import flashx.textLayout.formats.WhiteSpaceCollapse;
 			
 			private var _textLayoutConfiguration:Configuration;
-			
-			[Embed(source="assets/images/star.png")]  
-			[Bindable] private var starIcon:Class;
-			
-			private var _buttonArray:Array;
 			
 			protected function this_preinitializeHandler(event:FlexEvent):void
 			{
@@ -65,8 +60,9 @@
 				textLayoutFormat = new TextLayoutFormat();
 				textLayoutFormat.whiteSpaceCollapse = WhiteSpaceCollapse.PRESERVE;
 				_textLayoutConfiguration.textFlowInitialFormat = textLayoutFormat;
-				
 			}
+			
+			private var _buttonArray:Array;
 			
 			override protected function commitProperties():void
 			{
@@ -126,13 +122,13 @@
 							if (fieldInfo.visible)
 							{
 								var fieldLabel:Label = new Label();
+								fieldLabel.text = ( fieldInfo.label || fieldInfo.fieldName );
 								fieldLabel.setStyle( "textAlign", "end" );
 								fieldLabel.setStyle( "fontWeight", "bold" );
-								fieldLabel.text = ( fieldInfo.label || fieldInfo.fieldName );
 								fieldLabel.left = 0;
 								fieldLabel.right = "col1:0";
-								fieldLabel.top = "row" + rowID + ":" + (rowID == 1 ? 5 : 15);
-//								fieldLabel.setStyle( "backgroundColor", getStyle( "selectionColor" ) );
+								fieldLabel.top = "row" + rowID + ":" + (rowID == 1 ? 5 : 10);
+								//								fieldLabel.setStyle( "backgroundColor", getStyle( "selectionColor" ) );
 								keyValueGroup.addElement(fieldLabel);
 								
 								var fieldValue:RichEditableText;
@@ -161,46 +157,55 @@
 							fieldLabel.bottom = "row" + --rowID + ":5"; // add a little bottom padding to last label
 							vGroup.addElement(keyValueGroup);
 						}
-					}
-					
-					_buttonArray = popUpInfo.buttonArray;
-					if ( _buttonArray && _buttonArray.length > 0 )
-					{
-						footer.addElement( naviContainer );
-//						footerLine.includeInLayout = footerLine.visible = true;
-						for each ( var buttonObj:Object in _buttonArray )
+						
+						vGroup.addElement( imageContainer );
+						
+						_buttonArray = popUpInfo.buttonArray;
+						if ( _buttonArray && _buttonArray.length > 0 )
 						{
-							var label:String = buttonObj.label;
-							var action:String = buttonObj.action;
-							var idField:String = buttonObj.idField || "";
-							var id:String = "";
-							if ( idField != "" )
+							footerLine.includeInLayout = footerLine.visible = true;
+							for each ( var buttonObj:Object in _buttonArray )
 							{
-								for each (fieldInfo in popUpInfo.popUpFieldInfos)
+								var label:String = buttonObj.label;
+								var action:String = buttonObj.action;
+								var idField:String = buttonObj.idField || "";
+								var id:String = "";
+								if ( idField != "" )
 								{
-									if ( idField == fieldInfo.fieldName )
+									for each (fieldInfo in popUpInfo.popUpFieldInfos)
 									{
-										id = formattedAttributes[fieldInfo.fieldName];
-										break;
+										if ( idField == fieldInfo.fieldName )
+										{
+											id = formattedAttributes[fieldInfo.fieldName];
+											break;
+										}
 									}
 								}
-							}
-							else
-							{
-								id = graphic.id;
+								else
+								{
+									id = graphic.id;
+								}
+								
+								var button:Button = new Button();
+								button.minWidth = 50;
+								button.label = label;
+								button.id = id;
+								//							button.setStyle( "skinClass", Class( btSkin ) );
+								switch( action.toLowerCase() )
+								{
+									//显示设备详细信息，调用js函数
+									case "opendevice":
+										button.addEventListener( MouseEvent.CLICK, openDevice_clickHandler );
+										break;
+								}
+								buttonContainer.addElement( button );
 							}
 							
-							var button:Button = new Button();
-							button.label = label;
-							button.id = id;
-							button.setStyle( "skinClass", Class( btSkin ) );
-							switch( action.toLowerCase() )
-							{
-								case "opendevice":
-									button.addEventListener( MouseEvent.CLICK, openDevice_clickHandler );
-									break;
-							}
-							buttonContainer.addElement( button );
+							footer.addElement( buttonContainer );
+						}
+						else
+						{
+							footerLine.includeInLayout = footerLine.visible = false;
 						}
 					}
 				}
@@ -300,7 +305,6 @@
 					} 
 				);
 			}
-			
 		]]>
 	</fx:Script>
 	
@@ -343,22 +347,19 @@
 				  label="{resourceManager.getString('ESRIMessages', 'zoomLabel')}"
 				  click="zoomToButton_clickHandler(event)"/>
 		
-		<s:Group id="naviContainer" width="100%" height="100%">
-			<s:Rect left="0" top="0" width="100%" height="25">
-				<s:fill>
-					<s:SolidColor color="0xeeeeee" alpha="1"/>
-				</s:fill>
-			</s:Rect>
-			
-			<mx:TabNavigator left="0" top="0" width="100%" height="100%" 
-							 creationPolicy="all" tabHeight="25"
-							 borderStyle="none">
-				<s:NavigatorContent width="100%" height="100%" label="操  作" icon="{starIcon}">
-					<s:HGroup id="buttonContainer" width="100%" height="100%" verticalAlign="middle" paddingLeft="5" gap="15"/>
-				</s:NavigatorContent>
-			</mx:TabNavigator>
-		</s:Group>
+		<s:TileGroup id="buttonContainer" width="100%"
+					 horizontalGap="10" verticalGap="5"/>
 		
+		<s:TileGroup id="imageContainer" width="100%">
+			<s:Image fillMode="scale" scaleMode="letterbox" 
+					 width="250" source="assets/images/cameraPic/17019027-1.jpg"/>
+			<s:Image fillMode="scale" scaleMode="letterbox" 
+					 width="250" source="assets/images/cameraPic/17019027-2.jpg"/>
+			<s:Image fillMode="scale" scaleMode="letterbox" 
+					 width="250" source="assets/images/cameraPic/17019027-3.jpg"/>
+			<s:Image fillMode="scale" scaleMode="letterbox" 
+					 width="250" source="assets/images/cameraPic/17019027-4.jpg"/>
+		</s:TileGroup>
 	</fx:Declarations>
 	
 	<s:VGroup width="100%" height="100%" paddingLeft="10" paddingRight="10">

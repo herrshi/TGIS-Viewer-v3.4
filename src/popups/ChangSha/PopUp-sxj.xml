@@ -8,6 +8,6 @@
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
 		<button label="详细信息" action="openDevice" type="SXJ" idfield="DEVICEID" />
-        <button label="故障受理" action="openDevice" type="repair_SXJ" idfield="ID"/>
+        <button label="故障受理" action="openDevice" type="repair_SXJ" idfield="DEVICEID"/>
 	</buttons>
 </configuration>

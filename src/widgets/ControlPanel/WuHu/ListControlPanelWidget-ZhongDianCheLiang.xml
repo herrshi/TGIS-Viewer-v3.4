@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<configuration>
+	<menu>
+		<itemgroup label="重点车辆">
+			<item label="重点车辆" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="重点车辆" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="应急资源" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="应急资源" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="应急单位" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="应急单位" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+		</itemgroup>
+	</menu>
+</configuration>
+	

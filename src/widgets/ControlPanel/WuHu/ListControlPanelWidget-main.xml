@@ -58,65 +58,65 @@
 			</item>
 		</itemgroup>
 		
-		<itemgroup label="勤务">
-			<item label="岗点" initenable="true">
-				<clickfunctions>
-					<clickfunction name="ChangeOverlayVisible">
-						<params>
-							<param name="OverlayType" value="policeSentry" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-			<item label="警车" initenable="true">
-				<clickfunctions>
-					<clickfunction name="ChangeOverlayVisible">
-						<params>
-							<param name="OverlayType" value="policeCar" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-			<item label="警员" initenable="true">
-				<clickfunctions>
-					<clickfunction name="ChangeOverlayVisible">
-						<params>
-							<param name="OverlayType" value="police" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-		</itemgroup>
+<!-- 		<itemgroup label="勤务"> -->
+<!-- 			<item label="岗点" initenable="true"> -->
+<!-- 				<clickfunctions> -->
+<!-- 					<clickfunction name="ChangeOverlayVisible"> -->
+<!-- 						<params> -->
+<!-- 							<param name="OverlayType" value="policeSentry" /> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
+<!-- 				</clickfunctions> -->
+<!-- 			</item> -->
+<!-- 			<item label="警车" initenable="true"> -->
+<!-- 				<clickfunctions> -->
+<!-- 					<clickfunction name="ChangeOverlayVisible"> -->
+<!-- 						<params> -->
+<!-- 							<param name="OverlayType" value="policeCar" /> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
+<!-- 				</clickfunctions> -->
+<!-- 			</item> -->
+<!-- 			<item label="警员" initenable="true"> -->
+<!-- 				<clickfunctions> -->
+<!-- 					<clickfunction name="ChangeOverlayVisible"> -->
+<!-- 						<params> -->
+<!-- 							<param name="OverlayType" value="police" /> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
+<!-- 				</clickfunctions> -->
+<!-- 			</item> -->
+<!-- 		</itemgroup> -->
 		
-		<itemgroup label="重点车辆">
-			<item label="重点车辆" initenable="true">
-				<clickfunctions>
-					<clickfunction name="ChangeWidget">
-						<params>
-							<param name="WidgetName" value="重点车辆" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-			<item label="应急资源" initenable="true">
-				<clickfunctions>
-					<clickfunction name="ChangeWidget">
-						<params>
-							<param name="WidgetName" value="应急资源" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-			<item label="应急单位" initenable="true">
-				<clickfunctions>
-					<clickfunction name="ChangeWidget">
-						<params>
-							<param name="WidgetName" value="应急单位" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-		</itemgroup>
+<!-- 		<itemgroup label="重点车辆"> -->
+<!-- 			<item label="重点车辆" initenable="true"> -->
+<!-- 				<clickfunctions> -->
+<!-- 					<clickfunction name="ChangeWidget"> -->
+<!-- 						<params> -->
+<!-- 							<param name="WidgetName" value="重点车辆" /> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
+<!-- 				</clickfunctions> -->
+<!-- 			</item> -->
+<!-- 			<item label="应急资源" initenable="true"> -->
+<!-- 				<clickfunctions> -->
+<!-- 					<clickfunction name="ChangeWidget"> -->
+<!-- 						<params> -->
+<!-- 							<param name="WidgetName" value="应急资源" /> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
+<!-- 				</clickfunctions> -->
+<!-- 			</item> -->
+<!-- 			<item label="应急单位" initenable="true"> -->
+<!-- 				<clickfunctions> -->
+<!-- 					<clickfunction name="ChangeWidget"> -->
+<!-- 						<params> -->
+<!-- 							<param name="WidgetName" value="应急单位" /> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
+<!-- 				</clickfunctions> -->
+<!-- 			</item> -->
+<!-- 		</itemgroup> -->
 
 		<item label="测距">
 			<clickfunctions>

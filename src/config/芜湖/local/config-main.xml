@@ -20,7 +20,7 @@
 	<arcgisserverip>128.64.151.220:6080</arcgisserverip>
 <!-- 	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip> -->
 	
-	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
 
 	<!-- UI elements -->
 	<widget  left="10" top="10" 
@@ -169,6 +169,10 @@
 		<widget label="勤务菜单" right="20" top="50"
 			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-QinWu.xml"
 			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="重点车辆菜单" right="20" top="50"
+			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-ZhongDianCheLiang.xml"
+			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 	</widgetcontainer>
 	
 	<widgetcontainer layout="horizontal">
@@ -185,8 +189,8 @@
 	
 	<widgetcontainer layout="vertical">
 		<widget label="底图切换" preload="open"
-			config="widgets\MapSwitcher\MapSwitcherWidget.xml"
-			url="widgets\MapSwitcher\MapSwitcherWidget.swf"/>
+			config="widgets/MapSwitcher/MapSwitcherWidget.xml"
+			url="widgets/MapSwitcher/MapSwitcherWidget.swf"/>
 		
 <!-- 		<widget label="mainPanel" preload="open" right="50" top="50" -->
 <!-- 			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-main.xml" -->

@@ -114,6 +114,14 @@ package cn.seisys.TGISViewer.managers
 			//设置搜索条件
 			ExternalInterface.addCallback( "setSearchGeometry", dispatchSetSearchGeometryEvent );
 			ExternalInterface.addCallback( "clearSearchResult", dispatchClearSearchResult );
+			
+			//打开菜单
+			ExternalInterface.addCallback( "openMenu", dispatchOpenMenuEvent );
+		}
+		
+		private function dispatchOpenMenuEvent( param:String ):void
+		{
+			AppEvent.dispatch( AppEvent.OPEN_MENU, param );
 		}
 		
 		private function dispatchClearSearchResult():void

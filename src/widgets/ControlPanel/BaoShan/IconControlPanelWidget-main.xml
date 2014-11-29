@@ -2,11 +2,23 @@
 	<layout direction="horizontal" gap="10" />
 	<groups>
 		<group>
-			<item id="fbd" name="发布段" image="assets/images/buttons/FaBuDuan.png" initstate="enable">
+			<item id="fbd-ksl" name="快速路发布段" image="assets/images/buttons/FaBuDuan.png" initstate="enable">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
 							<param name="ServiceName" value="发布段" />
+							<param name="LayerId" value="0" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item id="fbd-dm" name="地面发布段" image="assets/images/buttons/FaBuDuan.png" initstate="enable">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="发布段" />
+							<param name="LayerId" value="1" />
 						</params>
 					</clickfunction>
 				</clickfunctions>

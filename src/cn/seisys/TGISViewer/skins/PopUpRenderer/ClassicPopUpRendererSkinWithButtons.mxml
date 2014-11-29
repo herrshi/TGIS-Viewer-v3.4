@@ -56,7 +56,6 @@
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.WidgetStates;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
-			import cn.seisys.TGISViewer.skins.btSkin;
 			import cn.seisys.TGISViewer.utils.MapServiceUtil;
 			
 			import flashx.textLayout.conversion.TextConverter;
@@ -114,7 +113,7 @@
             /**
              * @private
              */
-			private var buttonArray:Array;
+			private var _buttonArray:Array;
 			
             override protected function commitProperties():void
             {
@@ -200,11 +199,12 @@
                             if (fieldInfo.visible)
                             {
                                 var fieldLabel:Label = new Label();
+								fieldLabel.setStyle( "fontWeight", "bold" );
+								fieldLabel.setStyle( "textAlign", "end" );
                                 fieldLabel.text = ( fieldInfo.label || fieldInfo.fieldName );
                                 fieldLabel.left = 0;
                                 fieldLabel.right = "col1:0";
                                 fieldLabel.top = "row" + rowID + ":" + (rowID == 1 ? 5 : 15);
-								fieldLabel.setStyle( "fontWeight", "bold" );
                                 keyValueGroup.addElement(fieldLabel);
 
                                 var fieldValue:RichEditableText;
@@ -270,11 +270,11 @@
                     }
 					
 					
-					buttonArray = popUpInfo.buttonArray;
-					if ( buttonArray && buttonArray.length > 0 )
+					_buttonArray = popUpInfo.buttonArray;
+					if ( _buttonArray && _buttonArray.length > 0 )
 					{
 						footerLine.includeInLayout = footerLine.visible = true;
-						for each ( var buttonObj:Object in buttonArray )
+						for each ( var buttonObj:Object in _buttonArray )
 						{
 							var label:String = buttonObj.label;
 							var action:String = buttonObj.action;
@@ -453,7 +453,7 @@
 				var button:Button = event.currentTarget as Button;
 				var buttonLabel:String = button.label;
 				
-				for each ( var buttonObj:Object in buttonArray )
+				for each ( var buttonObj:Object in _buttonArray )
 				{
 					if ( buttonObj.label == buttonLabel )
 					{
@@ -476,7 +476,7 @@
 				var button:Button = event.currentTarget as Button;
 				var buttonLabel:String = button.label;
 				
-				for each ( var buttonObj:Object in buttonArray )
+				for each ( var buttonObj:Object in _buttonArray )
 				{
 					if ( buttonObj.label == buttonLabel )
 					{
@@ -495,7 +495,7 @@
 			{
 				var button:Button = event.currentTarget as Button;
 				var buttonLabel:String = button.label;
-				for each ( var buttonObj:Object in buttonArray )
+				for each ( var buttonObj:Object in _buttonArray )
 				{
 					if ( buttonObj.label == buttonLabel )
 					{
@@ -518,7 +518,7 @@
 				
 				var centerPoint:MapPoint = MapServiceUtil.getGeomCenter( hostComponent.graphic );
 				
-				for each ( var buttonObj:Object in buttonArray )
+				for each ( var buttonObj:Object in _buttonArray )
 				{
 					if ( buttonObj.label == buttonLabel )
 					{
@@ -537,7 +537,7 @@
 			{
 				var button:Button = event.currentTarget as Button;
 				var buttonLabel:String = button.label;
-				for each ( var buttonObj:Object in buttonArray )
+				for each ( var buttonObj:Object in _buttonArray )
 				{
 					if ( buttonObj.label == buttonLabel )
 					{
@@ -568,7 +568,7 @@
 			{
 				var button:Button = event.currentTarget as Button;
 				var buttonLabel:String = button.label;
-				for each ( var buttonObj:Object in buttonArray )
+				for each ( var buttonObj:Object in _buttonArray )
 				{
 					if ( buttonObj.label == buttonLabel )
 					{
@@ -589,7 +589,7 @@
 			{
 				var button:Button = event.currentTarget as Button;
 				var buttonLabel:String = button.label;
-				for each ( var buttonObj:Object in buttonArray )
+				for each ( var buttonObj:Object in _buttonArray )
 				{
 					if ( buttonObj.label == buttonLabel )
 					{
@@ -610,7 +610,7 @@
 				var button:Button = event.currentTarget as Button;
 				var buttonLabel:String = button.label;
 				
-				for each ( var buttonObj:Object in buttonArray )
+				for each ( var buttonObj:Object in _buttonArray )
 				{
 					if ( buttonObj.label == buttonLabel )
 					{
@@ -651,7 +651,7 @@
 				
 				function deleteAlertClickHandler( event:CloseEvent ):void
 				{
-					for each ( var buttonObj:Object in buttonArray )
+					for each ( var buttonObj:Object in _buttonArray )
 					{
 						if ( buttonObj.label == buttonLabel )
 						{

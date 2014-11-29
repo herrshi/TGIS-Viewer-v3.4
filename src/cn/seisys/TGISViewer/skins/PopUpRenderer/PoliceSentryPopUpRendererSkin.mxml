@@ -129,6 +129,7 @@
 								var fieldLabel:Label = new Label();
 								fieldLabel.text = ( fieldInfo.label || fieldInfo.fieldName );
 								fieldLabel.setStyle( "textAlign", "end" );
+								fieldLabel.setStyle( "fontWeight", "bold" );
 								fieldLabel.left = 0;
 								fieldLabel.right = "col1:0";
 								fieldLabel.top = "row" + rowID + ":" + (rowID == 1 ? 5 : 10);

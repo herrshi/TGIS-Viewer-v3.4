@@ -700,6 +700,12 @@ public class AppEvent extends Event
 	 
 	 public static const CHANGE_OVERLAY_VISIBLE:String = "changeOverlayVisible";
 	 
+	 /**
+	 * 打开菜单组件
+	 * 某个菜单打开时，其他菜单关闭，保证只打开一个菜单
+	 * */
+	 public static const OPEN_MENU:String = "openMenu";
+	 
 	 
     //--------------------------------------------------------------------------
     //

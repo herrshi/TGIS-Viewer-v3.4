@@ -78,7 +78,7 @@ public final class PopUpInfoParser
 		
 		if ( popUpXML.showdetaillink[0] )
 		{
-			popUpInfo.showDetailLink = ( popUpXML.showdetaillink == "false" ? false : true );
+			popUpInfo.showDetailLink = ( popUpXML.showdetaillink == "true" ? true : false );
 		}
 
         return popUpInfo;

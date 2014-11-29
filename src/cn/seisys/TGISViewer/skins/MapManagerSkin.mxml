@@ -122,7 +122,7 @@
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"stationEnd","points":[{"id":"72","x":"117.74461","y":"39.10428","fields":{"name":"永定洲公交站","id":"37713","address":"null"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"publicbus-currpos","points":[{"id":"798","x":"117.74588","y":"39.104107","fields":{"time":"2014-05-04 09:30:18","name":"无"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"schoolbus-currpos","points":[{"id":"102","x":"117.7491361","y":"39.1196442","fields":{"time":"2014-05-04 09:22:32","name":"津A12345"}}]}' );
-				AppEvent.dispatch( AppEvent.ADD_LINES, '{"type":"busRoute","lines":[{"id":"1","line":{"paths":[[[117.73871,39.101463],[117.73847,39.10168],[117.73473,39.103855],[117.73456,39.103806],[117.73138,39.101406],[117.73043,39.102238],[117.73031,39.102272],[117.73024,39.102364],[117.73012,39.10244],[117.72986,39.102615],[117.72958,39.10286],[117.72937,39.103096]]]}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_LINES, '{"type":"busRoute","lines":[{"id":"1","fields":{"lineNo":"生态城公交1号线"},"line":{"paths":[[[117.73871,39.101463],[117.73847,39.10168],[117.73473,39.103855],[117.73456,39.103806],[117.73138,39.101406],[117.73043,39.102238],[117.73031,39.102272],[117.73024,39.102364],[117.73012,39.10244],[117.72986,39.102615],[117.72958,39.10286],[117.72937,39.103096],[117.72924,39.103394],[117.72914,39.10375],[117.72914,39.104042],[117.729225,39.10445],[117.72933,39.104702],[117.72949,39.104927],[117.73225,39.107803],[117.73231,39.10794],[117.732506,39.108086],[117.73321,39.1088],[117.73342,39.108967],[117.734436,39.1096],[117.734985,39.110004],[117.73523,39.110207],[117.735695,39.110714],[117.73595,39.111095],[117.73597,39.111298],[117.73535,39.111595],[117.73482,39.111977],[117.734505,39.11209],[117.73443,39.112385],[117.73414,39.11277],[117.73392,39.11332],[117.73385,39.11373],[117.733505,39.11478],[117.73396,39.11517],[117.73463,39.115788],[117.735435,39.116333],[117.73548,39.116405],[117.735565,39.116413],[117.736626,39.117023],[117.73665,39.117123],[117.73646,39.117558],[117.73627,39.117886],[117.73605,39.11817],[117.73453,39.119766],[117.73436,39.119823],[117.73433,39.12],[117.73383,39.120518],[117.73271,39.121227],[117.73251,39.12114],[117.732506,39.121353],[117.73108,39.122276],[117.73079,39.122517],[117.73059,39.122723],[117.730415,39.12291],[117.73027,39.12312],[117.73018,39.123325],[117.73004,39.12388],[117.73005,39.12429],[117.73009,39.124573],[117.73021,39.124992],[117.73067,39.12564],[117.731346,39.12618],[117.732056,39.126476],[117.73271,39.126644],[117.73278,39.126797],[117.73291,39.12668],[117.73361,39.126667],[117.73455,39.126526],[117.73402,39.12547],[117.73397,39.1253],[117.73396,39.125183],[117.7336,39.125267],[117.73322,39.125282],[117.73297,39.125256],[117.73267,39.125183],[117.73247,39.125095],[117.73224,39.12494],[117.73221,39.124866],[117.73212,39.124825],[117.731834,39.124344],[117.731834,39.12388],[117.73202,39.12352],[117.73228,39.12327],[117.732414,39.123077],[117.732445,39.122887],[117.7324,39.122692],[117.73228,39.1225],[117.73172,39.1221],[117.73169,39.12199],[117.732506,39.121395],[117.73284,39.1215],[117.73281,39.121273],[117.733795,39.120667],[117.73398,39.120586],[117.73453,39.120033],[117.7347,39.120018],[117.73473,39.119827],[117.73586,39.118645],[117.736595,39.117767],[117.73689,39.11727],[117.74007,39.119022],[117.7404,39.119305],[117.73853,39.121258],[117.73837,39.12129],[117.73834,39.121475],[117.73705,39.122818],[117.73841,39.123745],[117.738556,39.123882],[117.74042,39.125195],[117.74152,39.124092],[117.741745,39.124092],[117.74169,39.12389],[117.74406,39.121426],[117.74672,39.122993],[117.74672,39.123158],[117.74691,39.123135],[117.74767,39.123634],[117.75076,39.12037],[117.74921,39.119404],[117.74919,39.11923],[117.749016,39.119286],[117.74719,39.118217],[117.74848,39.116844],[117.74865,39.116844],[117.748634,39.116684],[117.75015,39.11531],[117.74872,39.114277],[117.748634,39.1141],[117.74845,39.11408],[117.741745,39.110043],[117.7417,39.109943],[117.74156,39.10995],[117.73802,39.1076],[117.73482,39.10406],[117.73875,39.101685],[117.73892,39.101685]]]}}]}' );
 				
 				//乌鲁木齐测试
 //				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"新A88888","kkPoints":[{"deviceId":"650100100239","deviceDesc":"天区 光明路（北门环岛）西→东","passTime":"2014-06-04 22:19:18","picUrl":""}]}' );
@@ -190,7 +190,7 @@
 				//六盘水测试
 //				AppEvent.dispatch( AppEvent.GET_DEVICE_COORDINATE, '{"type":"摄像机","DeviceList":["52020114001322020006"]}' );
 //				AppEvent.dispatch( AppEvent.START_ADD_OVERLAY, "policeSentry" );
-				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"贵BU0051","kkPoints":[{"deviceId":"djkk1","deviceDesc":"凤凰大道-水西路","passTime":"2014-07-22 09:19:03","picUrl":""},{"deviceId":"djkk2","deviceDesc":"凤凰大道-水西路","passTime":"2014-07-22 09:19:16","picUrl":""},{"deviceId":"djkk3","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""},{"deviceId":"djkk4","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""},{"deviceId":"djkk5","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""},{"deviceId":"djkk6","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""}]}' ); 
+//				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"贵BU0051","kkPoints":[{"deviceId":"djkk1","deviceDesc":"凤凰大道-水西路","passTime":"2014-07-22 09:19:03","picUrl":""},{"deviceId":"djkk2","deviceDesc":"凤凰大道-水西路","passTime":"2014-07-22 09:19:16","picUrl":""},{"deviceId":"djkk3","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""},{"deviceId":"djkk4","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""},{"deviceId":"djkk5","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""},{"deviceId":"djkk6","deviceDesc":"钟山大连路口","passTime":"2014-07-22 09:27:24","picUrl":""}]}' ); 
 //				AppEvent.dispatch( AppEvent.GUARD_SET_DEVICE_SEARCH_DISTANCE, '[{"type": "信号机","distance":50},{"type": "摄像机","distance":50},{"type": "电子警察","distance":50},{"type": "岗点","distance":100}]' );
 //				AppEvent.dispatch( AppEvent.GUARD_SHOW_GEOMETRY, '[{"jobId":"1","geometries":[{"geometry":{"paths":[[[104.82753544368516,26.605192984571427],[104.83929949889798,26.592629430460643],[104.84478177705541,26.600281777055393],[104.84638077485134,26.59422842825656]]]},"type":"esriGeometryPolyline","index":0}]}]' );
 //				AppEvent.dispatch( AppEvent.GUARD_SHOW_DEVICE, '[{"jobId":"1","devices": [{"type":"信号机","index":1,"id":"GMVDT66","desc":"人民路（西）","x":104.84551666700004,"y":26.59183333300001},{"type":"摄像机","index":1,"id":"1932","desc":"松坪北路曾家烙锅西小巷","x":104.838306,"y":26.59388899999999},{"type":"policeSentry","index":1,"id":"373AC306-EAED-2A64-60D0-67CA7A2CE5DC","desc":"gd1","x":104.83290350771429,"y":26.600395991183678},{"type":"policeSentry","index":2,"id":"81D31191-21B2-81F9-05B0-67CAAC9BE604","desc":"gd2","x":104.83838578587173,"y":26.59125886092129}]}]' );				
@@ -219,9 +219,9 @@
 					}
 				);*/
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"2272","x":"118.4040699","y":"31.387664","fields":{"cameraDesc":"麒麟路北口东侧车道","cameraIp":"52.123.34.43","cameraState":"连接"}}]}' );
-//				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "首页菜单" );
-//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "勤务菜单" );
-				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"KaKou","points":[{"id":"KK001","x":118.39563496200003 ,"y":31.342197578000082 ,"fields":{"desc":"坦克山路(天网)"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"KaKou","points":[{"id":"KK001","x":118.39563496200003 ,"y":31.342197578000082 ,"fields":{"desc":"坦克山路(天网)"}}]}' );
+				AppEvent.dispatch( AppEvent.OPEN_MENU, "勤务菜单" );
+				AppEvent.dispatch( AppEvent.WIDGET_RUN, "勤务菜单" );
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
@@ -306,7 +306,8 @@
 //				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "police", id: "712" } );
 //				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "勤务菜单" );
 //				AppEvent.dispatch( AppEvent.WIDGET_RUN, "首页菜单" );
-				
+				AppEvent.dispatch( AppEvent.OPEN_MENU, "首页菜单" );
+				AppEvent.dispatch( AppEvent.WIDGET_RUN, "首页菜单" );
 				
 				//浦东测试
 				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
@@ -325,7 +326,7 @@
 						whereClause: "1=1" 
 					} 
 				);*/
-				AppEvent.dispatch( AppEvent.DELETE_POINTS, '{"type":"地面监控","ids":["INFRASTUR20140702190910000008"]}' );
+//				AppEvent.dispatch( AppEvent.DELETE_POINTS, '{"type":"地面监控","ids":["INFRASTUR20140702190910000008"]}' );
 			}
 			
 			protected function btnTest3_clickHandler(event:MouseEvent):void
@@ -362,7 +363,7 @@
 				  left.resized="{hostComponent.mapLeft}" right.resized="{hostComponent.mapRight}"
 				  top.resized="{hostComponent.mapTop}" bottom.resized="{hostComponent.mapBottom}"/>
     </s:Group>
-	<s:HGroup visible="true" right="10" bottom="10">
+	<s:HGroup visible="false" right="10" bottom="10">
 		<s:Button id="btnTest1" label="test1" click="btnTest1_clickHandler(event)"/>
 		<s:Button id="btnTest2" label="test2" click="btnTest2_clickHandler(event)"/>
 		<s:Button id="btnTest3" label="test3" click="btnTest3_clickHandler(event)"/>

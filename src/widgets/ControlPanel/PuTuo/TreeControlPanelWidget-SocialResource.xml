@@ -216,18 +216,25 @@
 			</item>
 			<item id="GongAnShiPin" name="公安视频">
 				<clickfunctions>
-					<clickfunction name="ChangeLayer">
+					<clickfunction name="ChangeWidget">
 						<params>
-							<param name="ServiceName" value="3" />
+							<param name="WidgetName" value="公安视频" />
 						</params>
 					</clickfunction>
+<!-- 					<clickfunction name="ChangeLayer"> -->
+<!-- 						<params> -->
+<!-- 							<param name="ServiceName" value="社会资源" /> -->
+<!-- 							<param name="LayerId" value="3"/> -->
+<!-- 						</params> -->
+<!-- 					</clickfunction> -->
 				</clickfunctions>
 			</item>
 			<item id="GaoQingKaKou" name="高清卡口">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
-							<param name="ServiceName" value="4" />
+							<param name="ServiceName" value="社会资源" />
+							<param name="LayerId" value="4"/>
 						</params>
 					</clickfunction>
 				</clickfunctions>

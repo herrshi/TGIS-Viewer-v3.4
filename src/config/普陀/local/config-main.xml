@@ -9,7 +9,7 @@
 		<font name="微软雅黑" size="14" />
 	</style>
 
-	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip>
+	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
 	
 	<geometryservice
 		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
@@ -80,5 +80,9 @@
 		<widget label="获取坐标"  preload="open"
 				config="widgets/GetDeviceCoordinate/PuTuo/GetDeviceCoordinateWidget.xml" 
 				url="widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.swf"/>
+				
+		<widget label="公安视频"
+			config="widgets/LayerSymbolFilter/PuTuo/SingleLayerSymbolFilterWidget-GongAnShiPin.xml"
+			url="widgets/LayerSymbolFilter/SingleLayerSymbolFilterWidget.swf"/>
 	</widgetcontainer>
 </configuration>
