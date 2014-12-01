@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   layout="absolute" height="38">
+	
+	<fx:Script>
+		<![CDATA[
+			[Embed(source="assets/images/HuanBaoJu/center/title_bar.png", 
+                scaleGridTop="6", scaleGridBottom="34", 
+                scaleGridLeft="6", scaleGridRight="186"
+            )]
+			
+			[Bindable]
+			public var _titleBackground:Class;
+			
+			protected function btnQuYuFenBuTu_clickHandler(event:MouseEvent):void
+			{
+				btnQuYuFenBuTu.source = "assets/images/HuanBaoJu/center/b_qyfbt_d.png";
+				btnDianWeiTu.source = "assets/images/HuanBaoJu/center/b_dwt.png";
+				btnReDianTu.source = "assets/images/HuanBaoJu/center/b_rdt.png";
+			}
+			
+			protected function btnDianWeiTu_clickHandler(event:MouseEvent):void
+			{
+				btnQuYuFenBuTu.source = "assets/images/HuanBaoJu/center/b_qyfbt.png";
+				btnDianWeiTu.source = "assets/images/HuanBaoJu/center/b_dwt_d.png";
+				btnReDianTu.source = "assets/images/HuanBaoJu/center/b_rdt.png";
+			}
+			
+			protected function btnReDianTu_clickHandler(event:MouseEvent):void
+			{
+				btnQuYuFenBuTu.source = "assets/images/HuanBaoJu/center/b_qyfbt.png";
+				btnDianWeiTu.source = "assets/images/HuanBaoJu/center/b_dwt.png";
+				btnReDianTu.source = "assets/images/HuanBaoJu/center/b_rdt_d.png";
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:Image width="100%" height="100%" 
+			 source="{_titleBackground}"/>
+	
+	<s:HGroup width="100%" height="100%" 
+			  paddingLeft="10" paddingRight="10" gap="5" 
+			  verticalAlign="middle">
+		<s:HGroup height="100%" verticalAlign="middle">
+			<s:Button id="btnMonthBackward" 
+					  skinClass="widgets.HuanBaoJu.skins.BackwardButtonSkin" 
+					  useHandCursor="true" buttonMode="true"/>
+			<s:Label id="lblMonthSelect" 
+					 text="2014年7月" 
+					 color="0xffffff" fontSize="16"/>
+			<s:Button id="btnMonthForward" 
+					  skinClass="widgets.HuanBaoJu.skins.ForwardButtonSkin" 
+					  useHandCursor="true" buttonMode="true"/>
+			
+			<!--<s:Image source="assets/images/HuanBaoJu/center/sep.png" height="100%"/>-->
+			
+			<s:Button id="btnBackThisMonth" height="100%"
+					  skinClass="widgets.HuanBaoJu.skins.BackThisMonthButtonSkin"
+					  useHandCursor="true" buttonMode="true"/>
+		</s:HGroup>
+		
+		<s:HGroup height="100%" verticalAlign="middle" gap="10">
+			<s:Label text="时间段: " 
+					 color="0xffffff" fontSize="16"/>
+			<s:ComboBox width="125" 
+						skinClass="widgets.HuanBaoJu.skins.CustomComboBoxSkin"/>
+			<s:Label text="至"
+					 color="0xffffff" fontSize="16"/>
+			<s:ComboBox width="125" 
+						skinClass="widgets.HuanBaoJu.skins.CustomComboBoxSkin"/>
+		</s:HGroup>
+		
+		<s:HGroup height="100%" verticalAlign="middle" paddingLeft="15" gap="0">
+			<s:Image source="assets/images/HuanBaoJu/center/map_bg.png"/>
+			<s:Image id="btnQuYuFenBuTu" 
+					 source="assets/images/HuanBaoJu/center/b_qyfbt_d.png"
+					 buttonMode="true" useHandCursor="true" 
+					 click="btnQuYuFenBuTu_clickHandler(event)"/>
+			<s:Image id="btnDianWeiTu" 
+					 source="assets/images/HuanBaoJu/center/b_dwt.png"
+					 buttonMode="true" useHandCursor="true" 
+					 click="btnDianWeiTu_clickHandler(event)"/>
+			<s:Image id="btnReDianTu" 
+					 source="assets/images/HuanBaoJu/center/b_rdt.png"
+					 buttonMode="true" useHandCursor="true" 
+					 click="btnReDianTu_clickHandler(event)"/>
+		</s:HGroup>
+	</s:HGroup>
+</TGISViewer:BaseWidget>
