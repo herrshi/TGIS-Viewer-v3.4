@@ -9,10 +9,10 @@
 		<font name="微软雅黑" size="14" />
 	</style>
 
-	<arcgisserverip>15.152.17.108:8399</arcgisserverip>
+	<arcgisserverip>10.16.192.201:6080</arcgisserverip>
 	
 	<geometryservice
-		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+		url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
 
 	<!-- UI elements -->
 	<widget left="10" top="10" 

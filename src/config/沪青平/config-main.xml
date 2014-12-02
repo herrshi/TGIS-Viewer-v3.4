@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+﻿<?xml version="1.0" ?>
 <configuration>
 	<style>
 		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
@@ -8,9 +8,9 @@
 		<font name="微软雅黑" size="14" />
 	</style>
 
-	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+	<arcgisserverip>180.166.184.126:8399</arcgisserverip>
 
-	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
 
 	<!-- UI elements -->
 	<widget left="10" top="10" 
@@ -23,9 +23,9 @@
 
 	<map top="0" initialextent="-10436.659 -23091.129 -56029.75 -3787.091"
 		scalebarvisible="false" esrilogovisible="false">
-		<basemaps>
-			<layer label="基础图" type="tiled" visible="true"
-				url="http://{serverip}/arcgis/rest/services/STIC/XXZX_base_road/MapServer" />
+	<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/huqingping/XXZX_base_road/MapServer" />
 		</basemaps>
 		<operationallayers>
 			<layer label="沪青平高速公路" type="dynamic" visible="true"
@@ -87,9 +87,9 @@
 					<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-blue.png" yoffset="13" />
 				</simplerenderer>
 			</layer>
-			
+				
 			<layer label="注记" type="dynamic" visible="true"
-				url="http://{serverip}/arcgis/rest/services/STIC/XXZX_ann/MapServer" />
+				url="http://{serverip}/arcgis/rest/services/huqingping/XXZX_ann/MapServer" />
 		</operationallayers>
 	</map>
 

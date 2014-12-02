@@ -220,8 +220,8 @@
 				);*/
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"2272","x":"118.4040699","y":"31.387664","fields":{"cameraDesc":"麒麟路北口东侧车道","cameraIp":"52.123.34.43","cameraState":"连接"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"KaKou","points":[{"id":"KK001","x":118.39563496200003 ,"y":31.342197578000082 ,"fields":{"desc":"坦克山路(天网)"}}]}' );
-				AppEvent.dispatch( AppEvent.OPEN_MENU, "勤务菜单" );
-				AppEvent.dispatch( AppEvent.WIDGET_RUN, "勤务菜单" );
+//				AppEvent.dispatch( AppEvent.OPEN_MENU, "勤务菜单" );
+//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "勤务菜单" );
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
@@ -247,6 +247,13 @@
 						visible:true
 					} 
 				);*/
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName:"道路摄像机",
+						layerIds:"",
+						visible:true
+					} 
+				);
 			}
 			
 			protected function btnTest2_clickHandler(event:MouseEvent):void

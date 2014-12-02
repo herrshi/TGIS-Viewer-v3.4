@@ -6,7 +6,7 @@
 		</group>
 		
 		<group name="基层组织">
-			<item id="JuWeiHui" name="居委会">
+			<item id="JuWeiHui" name="居委会(256个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -15,7 +15,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="JingWuShi" name="警务室">
+			<item id="JingWuShi" name="警务室(235个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -24,7 +24,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="FengBiShiXiaoQu" name="封闭式小区">
+			<item id="FengBiShiXiaoQu" name="封闭式小区(568个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -36,7 +36,7 @@
 		</group>
 		
 		<group name="公共设施">
-			<item id="ATM" name="ATM机">
+			<item id="ATM" name="ATM机(211个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -45,7 +45,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="GongGongDianHua" name="公共电话">
+			<item id="GongGongDianHua" name="公共电话(871个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -54,7 +54,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="XiaoFangShuan" name="消防栓">
+			<item id="XiaoFangShuan" name="消防栓(1881个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -66,7 +66,7 @@
 		</group>
 		
 		<group name="医疗单位">
-			<item id="YiYuan" name="医院">
+			<item id="YiYuan" name="医院(10个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -78,7 +78,7 @@
 		</group>
 		
 		<group name="学校">
-			<item id="XueXiao" name="学校">
+			<item id="XueXiao" name="学校(212个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -90,7 +90,7 @@
 		</group>
 		
 		<group name="金融单位">
-			<item id="YinHang" name="银行">
+			<item id="YinHang" name="银行(274个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -99,7 +99,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="ZhengQuan" name="证券">
+			<item id="ZhengQuan" name="证券(31个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -108,7 +108,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="DianDangHang" name="典当行">
+			<item id="DianDangHang" name="典当行(18个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -117,7 +117,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="YouZheng" name="邮政">
+			<item id="YouZheng" name="邮政(22个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -126,7 +126,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="BaoXian" name="保险">
+			<item id="BaoXian" name="保险(7个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -138,7 +138,7 @@
 		</group>
 		
 		<group name="商业单位">
-			<item id="DaXingShangChang" name="大型商场">
+			<item id="DaXingShangChang" name="大型商场(23个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -147,7 +147,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="24hBianLiDian" name="24小时便利店">
+			<item id="24hBianLiDian" name="24小时便利店(226个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -156,7 +156,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="JiaYouQiZhan" name="加油气站">
+			<item id="JiaYouQiZhan" name="加油气站(20个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -165,7 +165,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="JinYinShiPinDian" name="金银饰品店">
+			<item id="JinYinShiPinDian" name="金银饰品店(50个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -189,7 +189,7 @@
 		</group>
 		
 		<group name="集贸市场">
-			<item id="ShiChang" name="市场">
+			<item id="ShiChang" name="市场(53个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -205,7 +205,7 @@
 		</group>
 		
 		<group name="视频资源">
-			<item id="SheHuiShiPin" name="社会视频">
+			<item id="SheHuiShiPin" name="社会视频(3191个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -214,27 +214,25 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="GongAnShiPin" name="公安视频">
+			<item id="GongAnShiPin" name="公安视频(1837个)">
 				<clickfunctions>
-					<clickfunction name="ChangeWidget">
-						<params>
-							<param name="WidgetName" value="公安视频" />
-						</params>
-					</clickfunction>
-<!-- 					<clickfunction name="ChangeLayer"> -->
+<!-- 					<clickfunction name="ChangeWidget"> -->
 <!-- 						<params> -->
-<!-- 							<param name="ServiceName" value="社会资源" /> -->
-<!-- 							<param name="LayerId" value="3"/> -->
+<!-- 							<param name="WidgetName" value="公安视频" /> -->
 <!-- 						</params> -->
 <!-- 					</clickfunction> -->
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="3" />
+						</params>
+					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="GaoQingKaKou" name="高清卡口">
+			<item id="GaoQingKaKou" name="高清卡口(44个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
-							<param name="ServiceName" value="社会资源" />
-							<param name="LayerId" value="4"/>
+							<param name="ServiceName" value="4" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
@@ -242,7 +240,7 @@
 		</group>
 		
 		<group name="楼宇大厦">
-			<item id="DaSha" name="大厦">
+			<item id="DaSha" name="大厦(74幢)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>

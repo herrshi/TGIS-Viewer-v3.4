@@ -2,7 +2,7 @@
 <configuration>
 	<groups>
 		<group name="视频资源">
-			<item id="SheHuiShiPin" name="社会视频">
+			<item id="SheHuiShiPin" name="社会视频(3191个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -11,7 +11,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="GongAnShiPin" name="公安视频">
+			<item id="GongAnShiPin" name="公安视频(1837个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
@@ -20,7 +20,7 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item id="GaoQingKaKou" name="高清卡口">
+			<item id="GaoQingKaKou" name="高清卡口(44个)">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>

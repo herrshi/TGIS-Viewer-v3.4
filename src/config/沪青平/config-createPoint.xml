@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+﻿<?xml version="1.0" ?>
 <configuration>
 	<style>
 		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
@@ -8,14 +8,14 @@
 		<font name="微软雅黑" size="14" />
 	</style>
 
-	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
+	<arcgisserverip>180.166.184.126:8399</arcgisserverip>
 
-	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
 
 	<!-- UI elements -->
 	<widget left="10" top="10" 
-				  config="widgets/Navigation/NavigationWidget.xml"
-		    	  url="widgets/Navigation/NavigationWidget.swf" />
+			config="widgets/Navigation/NavigationWidget.xml"
+		    url="widgets/Navigation/NavigationWidget.swf" />
 		    
 <!-- 	<widget left="3" bottom="3" -->
 <!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
@@ -24,12 +24,10 @@
 	<map top="0" initialextent="-10436.659 -23091.129 -56029.75 -3787.091"
 		scalebarvisible="false" esrilogovisible="false">
 		<basemaps>
-			<layer label="基础图" type="tiled" visible="true"
-				url="http://{serverip}/arcgis/rest/services/STIC/XXZX_base_road/MapServer" />
+			<layer label="基础图层" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/huqingping/XXZX_base_road/MapServer" />
 		</basemaps>
 		<operationallayers>
-			<layer label="沪青平高速公路" type="dynamic" visible="true"
-				url="http://{serverip}/arcgis/rest/services/huqingping/hqp_road/MapServer" />
 			
 			<layer label="道路摄像机" type="feature" visible="false" 
 				   url="http://{serverip}/arcgis/rest/services/huqingping/hqp_device/MapServer/0"
@@ -88,30 +86,30 @@
 				</simplerenderer>
 			</layer>
 			
-			<layer label="注记" type="dynamic" visible="true"
-				url="http://{serverip}/arcgis/rest/services/STIC/XXZX_ann/MapServer" />
+			<layer label="注记图层" type="dynamic" visible="true" 
+				   url="http://{serverip}/arcgis/rest/services/huqingping/XXZX_ann/MapServer"/>
 		</operationallayers>
 	</map>
 
 	<!-- widgets organized into widget containers that manage close/open etc -->
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="fix">
-		<widget label="新增要素工具栏" preload="open" left="80" top="10"
-					  config="widgets/EditorToolbar/WuXi/AddNewGeometryToolbarWidget.xml"
-					  url="widgets/EditorToolbar/AddNewGeometryToolbarWidget.swf"/>
-		
-		<widget label="编辑工具栏" left="250" top="10"
+		<widget label="周边搜索"  preload="open"
+					  config="widgets/MultiLayerSearch/WuXi/BackgroundMultiLayerSearchWidget-roadAndCross.xml"
+					  url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+			
+		<widget label="编辑工具栏" left="80" top="10"
 					  url="widgets/EditorToolbar/EditorToolbarWidget.swf"/>
-					  
-		<widget label="Device" preload="open"
-					  config="widgets/Overlay/HuQingPing/PointOverlayByPageWidget.xml" 
+		
+		<widget label="新增点" preload="open"
+					  config="widgets/Overlay/WuXi/PointOverlayByPageWidget-add.xml"
 					  url="widgets/Overlay/PointOverlayByPageWidget.swf" />
 	</widgetcontainer>
 	
-<!-- 	<widgetcontainer layout="horizontal"> -->
-<!-- 		<widget label="搜索" preload="minimized"  -->
-<!-- 					  icon="assets/images/i_search.png" -->
-<!-- 					  config="widgets/MultiLayerSearch/WuXi/MultiLayerSearchWidget-poi.xml" -->
-<!-- 					  url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/> -->
-<!-- 	</widgetcontainer> -->
+	<widgetcontainer layout="horizontal">
+		<widget label="搜索" preload="minimized" 
+				icon="assets/images/i_search.png"
+				config="widgets/MultiLayerSearch/WuXi/MultiLayerSearchWidget-poi.xml"
+				url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+	</widgetcontainer>
 </configuration>

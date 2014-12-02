@@ -350,15 +350,20 @@
 		<s:TileGroup id="buttonContainer" width="100%"
 					 horizontalGap="10" verticalGap="5"/>
 		
-		<s:TileGroup id="imageContainer" width="100%">
-			<s:Image fillMode="scale" scaleMode="letterbox" 
-					 width="250" source="assets/images/cameraPic/17019027-1.jpg"/>
-			<s:Image fillMode="scale" scaleMode="letterbox" 
-					 width="250" source="assets/images/cameraPic/17019027-2.jpg"/>
-			<s:Image fillMode="scale" scaleMode="letterbox" 
-					 width="250" source="assets/images/cameraPic/17019027-3.jpg"/>
-			<s:Image fillMode="scale" scaleMode="letterbox" 
-					 width="250" source="assets/images/cameraPic/17019027-4.jpg"/>
+		<s:TileGroup id="imageContainer" width="100%" height="100%"
+					 paddingLeft="5" paddingRight="5" horizontalGap="5" verticalGap="5">
+			<s:Image fillMode="scale" scaleMode="stretch" 
+					 width="230" height="160" 
+					 source="assets/images/cameraPic/17019027-1.jpg"/>
+			<!--<s:Image fillMode="scale" scaleMode="stretch" 
+					 width="230" height="160" 
+					 source="assets/images/cameraPic/17019027-2.jpg"/>
+			<s:Image fillMode="scale" scaleMode="stretch" 
+					 width="230" height="160" 
+					 source="assets/images/cameraPic/17019027-3.jpg"/>
+			<s:Image fillMode="scale" scaleMode="stretch" 
+					 width="230" height="160" 
+					 source="assets/images/cameraPic/17019027-4.jpg"/>-->
 		</s:TileGroup>
 	</fx:Declarations>
 	
