@@ -2,7 +2,7 @@
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:mx="library://ns.adobe.com/flex/mx"
-		width="550" maxHeight="500"
+		maxWidth="550" maxHeight="500"
 		preinitialize="this_preinitializeHandler(event)">
 	<!-- host component -->
 	<fx:Metadata>
@@ -20,6 +20,7 @@
 			import com.esri.ags.portal.supportClasses.PopUpFieldInfo;
 			import com.esri.ags.utils.StringUtil;
 			
+			import mx.collections.ArrayCollection;
 			import mx.containers.utilityClasses.ConstraintRow;
 			import mx.events.FlexEvent;
 			
@@ -81,7 +82,8 @@
 				if (popUpInfo)
 				{
 					headerLine.visible = headerLine.includeInLayout = 
-						header.visible = header.includeInLayout = ( popUpInfo.title || popUpInfo.showDetailLink );
+						header.visible = header.includeInLayout = 
+						( popUpInfo.title || popUpInfo.showDetailLink );
 					
 					
 					if (popUpInfo.title)
@@ -158,7 +160,24 @@
 							vGroup.addElement(keyValueGroup);
 						}
 						
-						vGroup.addElement( imageContainer );
+						var picCount:Number = formattedAttributes["picCount"] || 0;
+						if ( picCount > 0 )
+						{
+							var picInfoAC:ArrayCollection = new ArrayCollection();
+							for ( var picIndex:int = 1; picIndex <= picCount; picIndex++ )
+							{
+								var imageSource:String = "assets/images/cameraPic/17019027-" + picIndex + ".jpg";
+								picInfoAC.addItem( 
+									{ 
+										imageSource: imageSource,
+										map: map
+									} 
+								);
+							}
+							imageContainer.dataProvider = picInfoAC;
+							vGroup.addElement( imageContainer );
+						}
+						
 						
 						_buttonArray = popUpInfo.buttonArray;
 						if ( _buttonArray && _buttonArray.length > 0 )
@@ -350,21 +369,12 @@
 		<s:TileGroup id="buttonContainer" width="100%"
 					 horizontalGap="10" verticalGap="5"/>
 		
-		<s:TileGroup id="imageContainer" width="100%" height="100%"
-					 paddingLeft="5" paddingRight="5" horizontalGap="5" verticalGap="5">
-			<s:Image fillMode="scale" scaleMode="stretch" 
-					 width="230" height="160" 
-					 source="assets/images/cameraPic/17019027-1.jpg"/>
-			<!--<s:Image fillMode="scale" scaleMode="stretch" 
-					 width="230" height="160" 
-					 source="assets/images/cameraPic/17019027-2.jpg"/>
-			<s:Image fillMode="scale" scaleMode="stretch" 
-					 width="230" height="160" 
-					 source="assets/images/cameraPic/17019027-3.jpg"/>
-			<s:Image fillMode="scale" scaleMode="stretch" 
-					 width="230" height="160" 
-					 source="assets/images/cameraPic/17019027-4.jpg"/>-->
-		</s:TileGroup>
+		<s:DataGroup id="imageContainer" width="100%" height="100%" 
+					 itemRenderer="cn.seisys.TGISViewer.skins.PopUpRenderer.CameraPicItemRenderer">
+			<s:layout>
+				<s:TileLayout horizontalGap="5" verticalGap="5"/>
+			</s:layout>
+		</s:DataGroup>
 	</fx:Declarations>
 	
 	<s:VGroup width="100%" height="100%" paddingLeft="10" paddingRight="10">

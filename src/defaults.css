@@ -13,6 +13,11 @@ TGISViewer|WidgetTemplate
     skinClass: ClassReference("cn.seisys.TGISViewer.skins.WidgetTemplateSkin");
 }
 
+TGISViewer|WidgetTemplateLargeIcon
+{
+	skinClass: ClassReference("cn.seisys.TGISViewer.skins.WidgetTemplateSkinLargeIcon");
+}
+
 components|TitlebarButton
 {
     skinClass: ClassReference("cn.seisys.TGISViewer.skins.TitlebarButtonSkin");

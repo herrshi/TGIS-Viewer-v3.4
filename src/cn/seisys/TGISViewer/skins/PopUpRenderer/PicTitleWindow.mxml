@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   close="titlewindow1_closeHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			private var _imageSource:String
+
+			public function set imageSource(value:String):void
+			{
+				_imageSource = value;
+			}
+
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				PopUpManager.removePopUp( this );
+			}
+			
+			protected function image_completeHandler(event:Event):void
+			{
+				/*trace( image.width, image.height );
+				this.x = Capabilities.screenResolutionX / 2 - this.width / 2;
+				this.y = Capabilities.screenResolutionY / 2 - this.height / 2;*/
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Image id="image" source="{_imageSource}" 
+			 complete="image_completeHandler(event)"/>
+</s:TitleWindow>

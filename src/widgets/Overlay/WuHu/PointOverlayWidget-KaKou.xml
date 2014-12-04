@@ -7,12 +7,16 @@
 	<!-- 组件关闭时通知页面 -->
 	<widgetclosenotify></widgetclosenotify>
 	
+	<popupskinclass>advanced</popupskinclass>
 	<popup>
-		<title>{desc}</title>
-		<fields/>
+		<title>{KKMC}</title>
+		<fields>
+			<field name="KKDM" alias="设备ID：" visible="true"/>
+			<field name="KKMC" alias="位置描述：" visible="true"/>
+		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<buttons>
-			<button label="详细信息" action="openDevice" type="KaKou"/>
+			<button label="卡口实时" action="openDevice" type="KaKou"/>
 		</buttons>
 	</popup>
 	

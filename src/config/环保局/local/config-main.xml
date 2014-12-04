@@ -2,7 +2,7 @@
 <configuration>
 	<style>
 		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
-		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC,0x8FD5D3</colors>
 		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
 		<alpha>0.8</alpha>
 		<font name="微软雅黑" size="14" />
@@ -15,9 +15,6 @@
 	<!-- UI elements -->
 	<widget left="0" top="0"
 			url="widgets/HuanBaoJu/LogoWidget.swf"/>
-		
-	<widget left="10" top="100" 
-			url="widgets/HuanBaoJu/HeaderWidget.swf"/>
 			
 	<widget left="10" top="150" 
 			config="widgets/Navigation/NavigationWidget.xml"
@@ -42,6 +39,15 @@
 	<!-- widgets organized into widget containers that manage close/open etc -->
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="fix">
-		
+		<widget left="10" top="100" preload="open"
+				url="widgets/HuanBaoJu/HeaderWidget.swf"/>
+				
+		<widget label="污染类型" right="10" top="125" preload="open"
+				icon="assets/images/HuanBaoJu/center/b_dqwr.png"
+				url="widgets/HuanBaoJu/PollutionTypeWidget.swf"/>
+				
+		<widget label="图层" right="10" top="500" preload="open"
+				icon="assets/images/HuanBaoJu/center/b_tc.png"
+				url="widgets/HuanBaoJu/LayerWidget.swf"/>
 	</widgetcontainer>
 </configuration>

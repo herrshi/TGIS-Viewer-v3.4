@@ -18,10 +18,10 @@
 		<s:State name="disabled"/>
 	</s:states>
 	
-	<s:Image visible="true" visible.over="false"
+	<s:Image visible="true" visible.down="false"
 			 source="assets/images/HuanBaoJu/center/ComboboxOpenButton.png"/>
 	
-	<s:Image visible="false" visible.over="true" 
+	<s:Image visible="false" visible.down="true" 
 			 source="assets/images/HuanBaoJu/center/ComboboxOpenButton_d.png"/>
 	
 	

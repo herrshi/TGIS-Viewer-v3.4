@@ -12,7 +12,7 @@
 	<!--<arcgisserverip>10.10.40.105:6080</arcgisserverip>-->
 	<arcgisserverip>128.64.151.220:6080</arcgisserverip>
 	
-	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
 
 	<!-- UI elements -->
 	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"

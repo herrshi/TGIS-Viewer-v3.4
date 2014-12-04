@@ -75,6 +75,8 @@
     <module application="src/index.mxml" destPath="widgets/CarTrack/CarTrackWidget.swf" optimize="true" sourcePath="src/widgets/CarTrack/CarTrackWidget.mxml"/>
     <module application="src/index.mxml" destPath="widgets/LayerList/LayerListWidget.swf" optimize="true" sourcePath="src/widgets/LayerList/LayerListWidget.mxml"/>
     <module application="src/index.mxml" destPath="widgets/HuanBaoJu/HeaderWidget.swf" optimize="true" sourcePath="src/widgets/HuanBaoJu/HeaderWidget.mxml"/>
+    <module application="src/index.mxml" destPath="widgets/HuanBaoJu/PollutionTypeWidget.swf" optimize="true" sourcePath="src/widgets/HuanBaoJu/PollutionTypeWidget.mxml"/>
+    <module application="src/index.mxml" destPath="widgets/HuanBaoJu/LayerWidget.swf" optimize="true" sourcePath="src/widgets/HuanBaoJu/LayerWidget.mxml"/>
   </modules>
   <workers managerFilePath="src/Workers.as">
     <worker embed="true" path="src/workers/SocketWorker.as"/>

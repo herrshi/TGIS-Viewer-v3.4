@@ -8,7 +8,7 @@
 	<popup>
 		<title>{name}</title>
 		<fields>
-			<field name="name" visible="false"/>
+			<field name="name"/>
 			<field name="desc" alias="描述" visible="true"/>
 			<field name="time" alias="时间" visible="true"/>
 		</fields>
@@ -18,7 +18,32 @@
 			<button label="视频" action="openDevice" type="publicbus-currpos-video" />
 		</buttons>
 	</popup>
+	
+	<uniquevaluerenderer field="name">
+		<picturemarkersymbol url="assets/images/mapIcons/TianJin/GongJiao/GongJiaoChe_current.png" 
+							 yoffset="21" />
+							 
+		<uniquevalueinfo value="生态城公交1号线">
+			<picturemarkersymbol url="assets/images/mapIcons/TianJin/GongJiao/GongJiaoChe_current.png" 
+							 	 yoffset="21" />
+		</uniquevalueinfo>
+							 
+		<uniquevalueinfo value="生态城公交2号线">
+			<picturemarkersymbol url="assets/images/mapIcons/TianJin/GongJiao/GongJiaoChe_current.png" 
+							 	 yoffset="21" />
+		</uniquevalueinfo>
+							 
+		<uniquevalueinfo value="生态城公交3号线">
+			<picturemarkersymbol url="assets/images/mapIcons/TianJin/GongJiao/GongJiaoChe_current.png" 
+							 	 yoffset="21" />
+		</uniquevalueinfo>
+							 
+		<uniquevalueinfo value="生态城公交4号线">
+			<picturemarkersymbol url="assets/images/mapIcons/TianJin/GongJiao/GongJiaoChe_current.png" 
+							 	 yoffset="21" />
+		</uniquevalueinfo>
+	</uniquevaluerenderer>
 	<simplerenderer>
-		<picturemarkersymbol url="assets/images/mapIcons/TianJin/GongJiao/GongJiaoChe_current.png" yoffset="21" />
+		
 	</simplerenderer>
 </configuration>

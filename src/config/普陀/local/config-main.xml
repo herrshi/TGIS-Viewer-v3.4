@@ -65,52 +65,52 @@
 				</simplerenderer>
 			</layer>
 			
-			<layer label="3" type="feature" visible="false" 
-				url="http://{serverip}/arcgis/rest/services/putuo/pt_live/MapServer/3" 
-				popupconfig="popups/PuTuo/PopUp-GongAnShiPin.xml">
+<!-- 			<layer label="3" type="feature" visible="false"  -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/putuo/pt_live/MapServer/3"  -->
+<!-- 				popupconfig="popups/PuTuo/PopUp-GongAnShiPin.xml"> -->
 				
-				<classbreaksrenderer field="FX">
-					<classbreakinfo min="0" max="0">
-						<picturemarkersymbol url="assets/images/building/gasp0.png"/>
-					</classbreakinfo>
+<!-- 				<classbreaksrenderer field="FX"> -->
+<!-- 					<classbreakinfo min="0" max="0"> -->
+<!-- 						<picturemarkersymbol url="assets/images/building/gasp0.png"/> -->
+<!-- 					</classbreakinfo> -->
 					
-					<classbreakinfo min="292.5" max="337.4999">
-						<picturemarkersymbol url="assets/images/building/gasp1.png"/>
-					</classbreakinfo>
+<!-- 					<classbreakinfo min="292.5" max="337.4999"> -->
+<!-- 						<picturemarkersymbol url="assets/images/building/gasp1.png"/> -->
+<!-- 					</classbreakinfo> -->
 					
-					<classbreakinfo min="337.5" max="360">
-						<picturemarkersymbol url="assets/images/building/gasp2.png"/>
-					</classbreakinfo>
+<!-- 					<classbreakinfo min="337.5" max="360"> -->
+<!-- 						<picturemarkersymbol url="assets/images/building/gasp2.png"/> -->
+<!-- 					</classbreakinfo> -->
 					
-					<classbreakinfo min="0.001" max="22.4999">
-						<picturemarkersymbol url="assets/images/building/gasp2.png"/>
-					</classbreakinfo>
+<!-- 					<classbreakinfo min="0.001" max="22.4999"> -->
+<!-- 						<picturemarkersymbol url="assets/images/building/gasp2.png"/> -->
+<!-- 					</classbreakinfo> -->
 					
-					<classbreakinfo min="22.5" max="67.4999">
-						<picturemarkersymbol url="assets/images/building/gasp3.png"/>
-					</classbreakinfo>
+<!-- 					<classbreakinfo min="22.5" max="67.4999"> -->
+<!-- 						<picturemarkersymbol url="assets/images/building/gasp3.png"/> -->
+<!-- 					</classbreakinfo> -->
 					
-					<classbreakinfo min="67.5" max="112.4999">
-						<picturemarkersymbol url="assets/images/building/gasp4.png"/>
-					</classbreakinfo>
+<!-- 					<classbreakinfo min="67.5" max="112.4999"> -->
+<!-- 						<picturemarkersymbol url="assets/images/building/gasp4.png"/> -->
+<!-- 					</classbreakinfo> -->
 					
-					<classbreakinfo min="112.5" max="157.4999">
-						<picturemarkersymbol url="assets/images/building/gasp5.png"/>
-					</classbreakinfo>
+<!-- 					<classbreakinfo min="112.5" max="157.4999"> -->
+<!-- 						<picturemarkersymbol url="assets/images/building/gasp5.png"/> -->
+<!-- 					</classbreakinfo> -->
 					
-					<classbreakinfo min="157.5" max="202.4999">
-						<picturemarkersymbol url="assets/images/building/gasp6.png"/>
-					</classbreakinfo>
+<!-- 					<classbreakinfo min="157.5" max="202.4999"> -->
+<!-- 						<picturemarkersymbol url="assets/images/building/gasp6.png"/> -->
+<!-- 					</classbreakinfo> -->
 					
-					<classbreakinfo min="202.5" max="247.4999">
-						<picturemarkersymbol url="assets/images/building/gasp7.png"/>
-					</classbreakinfo>
+<!-- 					<classbreakinfo min="202.5" max="247.4999"> -->
+<!-- 						<picturemarkersymbol url="assets/images/building/gasp7.png"/> -->
+<!-- 					</classbreakinfo> -->
 					
-					<classbreakinfo min="247.5" max="292.4999">
-						<picturemarkersymbol url="assets/images/building/gasp8.png"/>
-					</classbreakinfo>
-				</classbreaksrenderer>
-			</layer>
+<!-- 					<classbreakinfo min="247.5" max="292.4999"> -->
+<!-- 						<picturemarkersymbol url="assets/images/building/gasp8.png"/> -->
+<!-- 					</classbreakinfo> -->
+<!-- 				</classbreaksrenderer> -->
+<!-- 			</layer> -->
 			
 			<layer label="4" type="feature" visible="false" 
 				url="http://{serverip}/arcgis/rest/services/putuo/pt_live/MapServer/4" 
@@ -317,7 +317,7 @@
 				url="widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.swf"/>
 				
 		<widget label="公安视频"
-			config="widgets/LayerSymbolFilter/PuTuo/SingleLayerSymbolFilterWidget-GongAnShiPin.xml"
-			url="widgets/LayerSymbolFilter/SingleLayerSymbolFilterWidget.swf"/>
+				config="widgets/LayerSymbolFilter/PuTuo/SingleLayerSymbolFilterWidget-GongAnShiPin.xml"
+				url="widgets/LayerSymbolFilter/SingleLayerSymbolFilterWidget.swf"/>
 	</widgetcontainer>
 </configuration>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   layout="absolute" >
+	
+	<fx:Script>
+		<![CDATA[
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="radioButtonGroup"/>
+	</fx:Declarations>
+	
+	<TGISViewer:WidgetTemplateLargeIcon id="wTemplate" 
+										width="200" height="320">
+		<s:VGroup width="100%"
+				  paddingTop="20" gap="0">
+			<s:HGroup width="100%" height="50"
+					  paddingLeft="10" paddingRight="10" 
+					  verticalAlign="middle" 
+					  gap="10">
+				<s:Image source="assets/images/HuanBaoJu/center/i_total.png"/>
+				<s:Label text="所有类型" width="100%" 
+						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
+						 color="0x444444"/>
+				<s:RadioButton groupName="radioButtonGroup"/>
+			</s:HGroup>
+			
+			<s:Image width="100%" 
+					 fillMode="scale" scaleMode="stretch"
+					 source="assets/images/HuanBaoJu/center/dot_line.png"/>
+			
+			<s:HGroup width="100%" height="50"
+					  paddingLeft="10" paddingRight="10" 
+					  verticalAlign="middle" 
+					  gap="10">
+				<s:Image source="assets/images/HuanBaoJu/center/i_swr.png"/>
+				<s:Label text="水污染" width="100%" 
+						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
+						 color="0x444444"/>
+				<s:RadioButton groupName="radioButtonGroup"/>
+			</s:HGroup>
+			
+			<s:Image width="100%" 
+					 fillMode="scale" scaleMode="stretch"
+					 source="assets/images/HuanBaoJu/center/dot_line.png"/>
+			
+			<s:HGroup width="100%" height="50"
+					  paddingLeft="10" paddingRight="10" 
+					  verticalAlign="middle" 
+					  gap="10">
+				<s:Image source="assets/images/HuanBaoJu/center/i_dqwr.png"/>
+				<s:Label text="大气污染" width="100%" 
+						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
+						 color="0x444444"/>
+				<s:RadioButton groupName="radioButtonGroup"/>
+			</s:HGroup>
+			
+			<s:Image width="100%" 
+					 fillMode="scale" scaleMode="stretch"
+					 source="assets/images/HuanBaoJu/center/dot_line.png"/>
+			
+			<s:HGroup width="100%" height="50"
+					  paddingLeft="10" paddingRight="10" 
+					  verticalAlign="middle" 
+					  gap="10">
+				<s:Image source="assets/images/HuanBaoJu/center/i_zswr.png"/>
+				<s:Label text="噪声污染" width="100%" 
+						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
+						 color="0x444444"/>
+				<s:RadioButton groupName="radioButtonGroup"/>
+			</s:HGroup>
+			
+			<s:Image width="100%" 
+					 fillMode="scale" scaleMode="stretch"
+					 source="assets/images/HuanBaoJu/center/dot_line.png"/>
+			
+			<s:HGroup width="100%" height="50"
+					  paddingLeft="10" paddingRight="10" 
+					  verticalAlign="middle" 
+					  gap="10">
+				<s:Image source="assets/images/HuanBaoJu/center/i_gtfwwr.png"/>
+				<s:Label text="固体废物污染" width="100%" 
+						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
+						 color="0x444444"/>
+				<s:RadioButton groupName="radioButtonGroup"/>
+			</s:HGroup>
+		</s:VGroup>
+	</TGISViewer:WidgetTemplateLargeIcon>
+</TGISViewer:BaseWidget>

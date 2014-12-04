@@ -100,7 +100,7 @@
 	<!-- widgets organized into widget containers that manage close/open etc -->
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="float">
-		<widget label="气象站"
+		<widget label="气象站" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-QiXiangZhan.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
@@ -172,6 +172,10 @@
 		
 		<widget label="重点车辆菜单" right="20" top="50"
 			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-ZhongDianCheLiang.xml"
+			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="道路气象菜单" right="20" top="50"
+			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-DaoLuQiXiang.xml"
 			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 	</widgetcontainer>
 	

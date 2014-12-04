@@ -16,6 +16,7 @@
 			<field name="LG_ID" alias="编号：" visible="true"/>
 			<field name="DH" alias="电话：" visible="true"/>
 			<field name="FX"/>
+			<field name="picCount"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<buttons>

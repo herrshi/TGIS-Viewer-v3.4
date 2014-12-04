@@ -10,7 +10,10 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
+			
+			/**九宫格缩放*/
 			[Embed(source="assets/images/HuanBaoJu/center/title_bar.png", 
                 scaleGridTop="6", scaleGridBottom="34", 
                 scaleGridLeft="6", scaleGridRight="186"
@@ -22,9 +25,35 @@
 			[Bindable]
 			private var _selectedMonth:Date;
 			
+			[Bindable]
+			private var _startMonthAC:ArrayCollection;
+			[Bindable]
+			private var _endMonthAC:ArrayCollection;
+			
+			/**
+			 * 下拉列表选择月份时的最久时间
+			 * */
+			private var _monthCount:int = 24;
+			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
 				_selectedMonth = new Date();
+				
+				_startMonthAC = new ArrayCollection();
+				_endMonthAC = new ArrayCollection();
+				//月份选择
+				for ( var i:int = 0; i < _monthCount; i++ )
+				{
+					var month:Date = new Date( _selectedMonth.fullYear, _selectedMonth.month - i );
+					var monthString:String = dateTimeFormatter.format( month );
+					var monthObj:Object = 
+						{ 
+							month: month, 
+							monthString: monthString 
+						};
+					_startMonthAC.addItem( monthObj );
+					_endMonthAC.addItem( monthObj );
+				}
 			}
 			
 			protected function btnQuYuFenBuTu_clickHandler(event:MouseEvent):void
@@ -109,12 +138,20 @@
 		<s:HGroup height="100%" verticalAlign="middle" gap="10">
 			<s:Label text="时间段: " 
 					 color="0xffffff"/>
-			<s:ComboBox width="125" 
-						skinClass="widgets.HuanBaoJu.skins.CustomComboBoxSkin"/>
+			<s:DropDownList id="dplstStartMonth" 
+							width="125" 
+							requireSelection="true"
+							dataProvider="{_startMonthAC}" 
+							labelField="monthString"
+							skinClass="widgets.HuanBaoJu.skins.CustomDropDownListSkin"/>
 			<s:Label text="至"
 					 color="0xffffff"/>
-			<s:ComboBox width="125" 
-						skinClass="widgets.HuanBaoJu.skins.CustomComboBoxSkin"/>
+			<s:DropDownList id="dplstEndMonth" 
+							width="125" 
+							requireSelection="true"
+							dataProvider="{_endMonthAC}"
+							labelField="monthString"
+							skinClass="widgets.HuanBaoJu.skins.CustomDropDownListSkin"/>
 		</s:HGroup>
 		
 		<s:HGroup height="100%" verticalAlign="middle" paddingLeft="15" gap="0">
