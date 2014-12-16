@@ -124,8 +124,8 @@
 			config="widgets/Overlay/WuHu/PointOverlayWidget-KaKou.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="占道施工"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-ZhanDaoShiGong.xml" 
+		<widget label="占道施工" preload="open"
+			config="widgets/Overlay/WuHu/orc/show/PointOverlayWidget-OrcShow.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="视频事件"

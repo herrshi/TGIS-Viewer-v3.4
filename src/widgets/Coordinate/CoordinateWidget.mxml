@@ -20,8 +20,9 @@
                    xmlns:s="library://ns.adobe.com/flex/spark"
                    xmlns:mx="library://ns.adobe.com/flex/mx"
                    xmlns:viewer="cn.seisys.TGISViewer.*"
+				   xmlns:TGISViewer="cn.seisys.TGISViewer.*"
                    layout="horizontal"
-                   widgetConfigLoaded="basewidget_widgetConfigLoadedHandler(event)" xmlns:TGISViewer="cn.seisys.TGISViewer.*">
+                   widgetConfigLoaded="basewidget_widgetConfigLoadedHandler(event)" >
     <fx:Script>
         <![CDATA[
             import com.esri.ags.events.MapEvent;

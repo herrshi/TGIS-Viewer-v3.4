@@ -43,7 +43,8 @@
 							 	 yoffset="21" />
 		</uniquevalueinfo>
 	</uniquevaluerenderer>
-	<simplerenderer>
-		
-	</simplerenderer>
+	
+<!-- 	<clickfunction> -->
+<!-- 		<action>showInfoWindow</action> -->
+<!-- 	</clickfunction> -->
 </configuration>

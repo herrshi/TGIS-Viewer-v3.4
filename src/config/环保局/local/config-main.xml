@@ -20,7 +20,7 @@
 			config="widgets/Navigation/NavigationWidget.xml"
 		    url="widgets/Navigation/NavigationWidget.swf" />
 		    
-	<widget left="3" bottom="3"
+	<widget left="3" bottom="3" visible="false"
 			config="widgets/Coordinate/CoordinateWidget.xml" 
 			url="widgets/Coordinate/CoordinateWidget.swf" />
 
@@ -49,5 +49,9 @@
 		<widget label="图层" right="10" top="500" preload="open"
 				icon="assets/images/HuanBaoJu/center/b_tc.png"
 				url="widgets/HuanBaoJu/LayerWidget.swf"/>
+		
+		<widget label="用颜色显示信访数量" preload="open" 
+				config="widgets/RenderPolygonByPointCount/HuanBaoJu/RenderPolygonByPointCountWidget.xml"
+				url="widgets/RenderPolygonByPointCount/RenderPolygonByPointCountWidget.swf"/>
 	</widgetcontainer>
 </configuration>

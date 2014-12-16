@@ -38,6 +38,8 @@ import flash.utils.setInterval;
 import mx.collections.ArrayCollection;
 import mx.collections.ArrayList;
 
+import cn.seisys.TGISViewer.components.TianDiTuTileLayer;
+
 public class LayerCreator
 {
     public static function createLayerFromLayerObject(layerObject:Object):Layer
@@ -81,6 +83,10 @@ public class LayerCreator
         {
             return createWMTSLayer(layerCreationProperties);
         }
+		else if ( layerType == "tianditu" )
+		{
+			return createTianDiTuLayer( layerCreationProperties );
+		}
         else if (layerType == "osm")
         {
             return createOSMLayer(layerCreationProperties);
@@ -513,6 +519,53 @@ public class LayerCreator
         }
         return wmtsLayer;
     }
+	
+	private static function createTianDiTuLayer(layerCreationProperties:LayerCreationProperties):TianDiTuTileLayer
+	{
+		var tdtLayer:TianDiTuTileLayer = new TianDiTuTileLayer(layerCreationProperties.url);
+		tdtLayer.alpha = layerCreationProperties.alpha;
+		tdtLayer.id = layerCreationProperties.label;
+		tdtLayer.name = layerCreationProperties.label;
+		tdtLayer.visible = layerCreationProperties.visible;
+		tdtLayer.showInLegend = layerCreationProperties.showInLegend;
+		if (layerCreationProperties.copyright != null)
+		{
+			tdtLayer.copyright = layerCreationProperties.copyright;
+		}
+		if (layerCreationProperties.imageFormat)
+		{
+			tdtLayer.imageFormat = layerCreationProperties.imageFormat;
+		}
+		if (layerCreationProperties.proxyUrl && layerCreationProperties.useProxy)
+		{
+			tdtLayer.proxyURL = layerCreationProperties.proxyUrl;
+		}
+		if (layerCreationProperties.serviceMode)
+		{
+			tdtLayer.serviceMode = layerCreationProperties.serviceMode;
+		}
+		if (layerCreationProperties.layerId)
+		{
+			tdtLayer.layerId = layerCreationProperties.layerId;
+		}
+		if (layerCreationProperties.tileMatrixSetId)
+		{
+			tdtLayer.tileMatrixSetId = layerCreationProperties.tileMatrixSetId;
+		}
+		if (layerCreationProperties.style)
+		{
+			tdtLayer.style = layerCreationProperties.style;
+		}
+		if (!isNaN(layerCreationProperties.minScale))
+		{
+			tdtLayer.minScale = layerCreationProperties.minScale;
+		}
+		if (!isNaN(layerCreationProperties.maxScale))
+		{
+			tdtLayer.maxScale = layerCreationProperties.maxScale;
+		}
+		return tdtLayer;
+	}
 
     private static function createOSMLayer(layerCreationProperties:LayerCreationProperties):OpenStreetMapLayer
     {

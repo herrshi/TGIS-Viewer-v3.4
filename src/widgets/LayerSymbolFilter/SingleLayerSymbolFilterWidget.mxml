@@ -67,8 +67,6 @@
 			
 			private var _timer:Timer;
 			
-			private var _graphicToResultAttributes:Dictionary;
-			
 			[Bindable]
 			private var _msgVisible:Boolean = false;
 			[Bindable]
@@ -282,12 +280,10 @@
 			{
 				if ( _queryLayer )
 				{
-					_graphicToResultAttributes = new Dictionary;
-					
 					var query:Query = new Query();
 					query.where = _queryExpr;
 					query.outSpatialReference = map.spatialReference;
-					_queryLayer.queryFeatures(query, new AsyncResponder(onResult, onFault));
+					_queryLayer.queryFeatures(query, new AsyncResponder( onResult, onFault ));
 					showMessage( _loadingLabel, true );
 					
 					function onResult(featureSet:FeatureSet, token:Object = null):void

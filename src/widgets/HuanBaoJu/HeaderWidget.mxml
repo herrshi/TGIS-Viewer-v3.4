@@ -13,6 +13,8 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			
+			import cn.seisys.TGISViewer.AppEvent;
+			
 			/**九宫格缩放*/
 			[Embed(source="assets/images/HuanBaoJu/center/title_bar.png", 
                 scaleGridTop="6", scaleGridBottom="34", 
@@ -61,6 +63,30 @@
 				btnQuYuFenBuTu.source = "assets/images/HuanBaoJu/center/b_qyfbt_d.png";
 				btnDianWeiTu.source = "assets/images/HuanBaoJu/center/b_dwt.png";
 				btnReDianTu.source = "assets/images/HuanBaoJu/center/b_rdt.png";
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "标注线", 
+						layerIds: "", 
+						visible: true 
+					} 
+				);
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "信访点", 
+						layerIds: "", 
+						visible: false 
+					} 
+				);
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "插值图", 
+						layerIds: "", 
+						visible: false 
+					} 
+				);
 			}
 			
 			protected function btnDianWeiTu_clickHandler(event:MouseEvent):void
@@ -68,6 +94,30 @@
 				btnQuYuFenBuTu.source = "assets/images/HuanBaoJu/center/b_qyfbt.png";
 				btnDianWeiTu.source = "assets/images/HuanBaoJu/center/b_dwt_d.png";
 				btnReDianTu.source = "assets/images/HuanBaoJu/center/b_rdt.png";
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "标注线", 
+						layerIds: "", 
+						visible: false 
+					} 
+				);
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "信访点", 
+						layerIds: "", 
+						visible: true 
+					} 
+				);
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "插值图", 
+						layerIds: "", 
+						visible: false 
+					} 
+				);
 			}
 			
 			protected function btnReDianTu_clickHandler(event:MouseEvent):void
@@ -75,6 +125,30 @@
 				btnQuYuFenBuTu.source = "assets/images/HuanBaoJu/center/b_qyfbt.png";
 				btnDianWeiTu.source = "assets/images/HuanBaoJu/center/b_dwt.png";
 				btnReDianTu.source = "assets/images/HuanBaoJu/center/b_rdt_d.png";
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "标注线", 
+						layerIds: "", 
+						visible: false 
+					} 
+				);
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "信访点", 
+						layerIds: "", 
+						visible: false 
+					} 
+				);
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "插值图", 
+						layerIds: "", 
+						visible: true 
+					} 
+				);
 			}
 			
 			protected function btnMonthBackward_clickHandler(event:MouseEvent):void

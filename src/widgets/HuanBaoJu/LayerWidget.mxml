@@ -5,6 +5,86 @@
 					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
 					   layout="absolute">
 	
+	<fx:Script>
+		<![CDATA[
+			import cn.seisys.TGISViewer.AppEvent;
+			
+			protected function lblWuRanYuan_clickHandler(event:MouseEvent):void
+			{
+				chkWuRanYuan.selected = !chkWuRanYuan.selected;
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "功能区", 
+						layerIds: "", 
+						visible: chkWuRanYuan.selected
+					} 
+				);
+			}
+			
+			protected function chkWuRanYuan_clickHandler(event:MouseEvent):void
+			{
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "功能区", 
+						layerIds: "", 
+						visible: chkWuRanYuan.selected
+					} 
+				);
+			}
+			
+			protected function lblGongNengYuan_clickHandler(event:MouseEvent):void
+			{
+				chkGongNengYuan.selected = !chkGongNengYuan.selected;
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "功能区", 
+						layerIds: "", 
+						visible: chkGongNengYuan.selected
+					} 
+				);
+			}
+			
+			protected function chkGongNengYuan_clickHandler(event:MouseEvent):void
+			{
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "功能区", 
+						layerIds: "", 
+						visible: chkGongNengYuan.selected
+					} 
+				);
+			}
+			
+			protected function lblHuanJingSheShi_clickHandler(event:MouseEvent):void
+			{
+				chkHuanJingSheShi.selected = !chkHuanJingSheShi.selected;
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "功能区", 
+						layerIds: "", 
+						visible: chkHuanJingSheShi.selected
+					} 
+				);
+			}
+			
+			protected function chkHuanJingSheShi_clickHandler(event:MouseEvent):void
+			{
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "功能区", 
+						layerIds: "", 
+						visible: chkHuanJingSheShi.selected
+					} 
+				);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
 	<TGISViewer:WidgetTemplateLargeIcon id="wTemplate" 
 										width="200" height="200">
 		<s:VGroup width="100%" 
@@ -14,10 +94,14 @@
 					  verticalAlign="middle" 
 					  gap="10">
 				<s:Image source="assets/images/HuanBaoJu/center/i_wry.png"/>
-				<s:Label text="污染源" width="100%" 
+				<s:Label id="lblWuRanYuan" 
+						 text="污染源" width="100%" 
+						 buttonMode="true" useHandCursor="true"
 						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
-						 color="0x444444"/>
-				<s:CheckBox/>
+						 color="0x444444" 
+						 click="lblWuRanYuan_clickHandler(event)"/>
+				<s:CheckBox id="chkWuRanYuan" 
+							click="chkWuRanYuan_clickHandler(event)"/>
 			</s:HGroup>
 			
 			<s:Image width="100%" 
@@ -29,10 +113,14 @@
 					  verticalAlign="middle" 
 					  gap="10">
 				<s:Image source="assets/images/HuanBaoJu/center/i_gny.png"/>
-				<s:Label text="功能源" width="100%" 
+				<s:Label id="lblGongNengYuan" 
+						 text="功能源" width="100%" 
+						 buttonMode="true" useHandCursor="true"
 						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
-						 color="0x444444"/>
-				<s:CheckBox/>
+						 color="0x444444" 
+						 click="lblGongNengYuan_clickHandler(event)"/>
+				<s:CheckBox id="chkGongNengYuan" 
+							click="chkGongNengYuan_clickHandler(event)"/>
 			</s:HGroup>
 			
 			<s:Image width="100%" 
@@ -44,10 +132,14 @@
 					  verticalAlign="middle" 
 					  gap="10">
 				<s:Image source="assets/images/HuanBaoJu/center/i_hjss.png"/>
-				<s:Label text="环境设施" width="100%" 
+				<s:Label id="lblHuanJingSheShi" 
+						 text="环境设施" width="100%" 
+						 buttonMode="true" useHandCursor="true"
 						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
-						 color="0x444444"/>
-				<s:CheckBox/>
+						 color="0x444444" 
+						 click="lblHuanJingSheShi_clickHandler(event)"/>
+				<s:CheckBox id="chkHuanJingSheShi" 
+							click="chkHuanJingSheShi_clickHandler(event)"/>
 			</s:HGroup>
 		</s:VGroup>
 	</TGISViewer:WidgetTemplateLargeIcon>

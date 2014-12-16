@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<configuration>
+	<pointlayer>
+		<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1</url>
+	</pointlayer>
+	
+	<polygonlayer>
+		<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/0</url>
+		
+<!-- 		<gradient> -->
+<!-- 			<color1>0x00ff00</color1> -->
+<!-- 			<color2>0xff0000</color2> -->
+<!-- 			<count>10</count> -->
+<!-- 		</gradient> -->
+		<gradientcolor>0x006100,0x3c8000,0x6ba100,0xa4c400,0xdfeb00,0xffea00,0xffbb00,0xff9100,0xff6200,0xff2200</gradientcolor>
+	</polygonlayer>
+	
+	<labellayer>
+		<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/LabelLine/MapServer/0</url>
+		<pointnamefield>name</pointnamefield>
+		<polygonnamefield>名称</polygonnamefield>
+	</labellayer>
+</configuration>

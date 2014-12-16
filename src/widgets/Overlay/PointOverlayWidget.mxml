@@ -287,7 +287,7 @@
 					{
 						_clickFunctionInfo = 
 							{
-								action: String( configXML.clickfunction.action ) || "showInfoWindow",
+								action: String( configXML.clickfunction.action ),
 								type: String( configXML.clickfunction.type ),
 								idField: String( configXML.clickfunction.idfield )
 								/*widgetName: String( configXML.clickfunction.widgetname );*/

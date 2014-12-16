@@ -3,8 +3,8 @@
 	<title>{名称}</title>
 	<fields>
 		<field name="名称" />
-		<field name="地址" visible="true" />
-		<field name="联系电话" visible="true" />
+		<field name="地址：" visible="true" />
+		<field name="联系电话：" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>
