@@ -19,10 +19,12 @@
 		<![CDATA[
 			import com.esri.ags.FeatureSet;
 			import com.esri.ags.Graphic;
+			import com.esri.ags.components.supportClasses.InfoPlacement;
 			import com.esri.ags.geometry.MapPoint;
 			import com.esri.ags.layers.GraphicsLayer;
 			import com.esri.ags.renderers.ClassBreaksRenderer;
 			import com.esri.ags.renderers.supportClasses.ClassBreakInfo;
+			import com.esri.ags.symbols.InfoSymbol;
 			import com.esri.ags.symbols.SimpleFillSymbol;
 			import com.esri.ags.symbols.SimpleLineSymbol;
 			import com.esri.ags.symbols.TextSymbol;
@@ -37,6 +39,10 @@
 			import mx.managers.CursorManager;
 			import mx.rpc.AsyncResponder;
 			import mx.rpc.Fault;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.skins.InfoSymbol.HuanBaoJu.XinFangDianCountSymbol;
+			
 			
 			
 			
@@ -96,8 +102,13 @@
 			 * */
 			private var _labelLayer:GraphicsLayer;
 			
+			private var _countSymbol:InfoSymbol;
+			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
+				AppEvent.addListener( AppEvent.HUANBAOJU_QUERYEXPRESSION_TIME, appevent_queryExpressionTimeHandler );
+				AppEvent.addListener( AppEvent.HUANBAOJU_QUERYEXPRESSION_TYPE, appevent_queryExpressionTypeHandler );
+				
 				_geometryService = new GeometryService( GeometryServiceSingleton.instance.url );
 				_geometryService.token = GeometryServiceSingleton.instance.token;
 				_geometryService.proxyURL = GeometryServiceSingleton.instance.proxyURL;
@@ -117,6 +128,9 @@
 				//面图层放在标线和标注下方
 				map.reorderLayer( "colorRendererPolygonLayer", 1 );
 				
+				_countSymbol = new InfoSymbol();
+				_countSymbol.infoRenderer = new ClassFactory( XinFangDianCountSymbol );
+				_countSymbol.infoPlacement = InfoPlacement.CENTER;
 				_labelLayer = new GraphicsLayer();
 				map.addLayer( _labelLayer );
 			}
@@ -182,25 +196,35 @@
 				}
 			}*/
 			
-			private function queryPoints():void
+			private function queryPoints( expr:String = "1=1" ):void
 			{
 				CursorManager.setBusyCursor();
 				
 				var query:Query = new Query();
 				query.returnGeometry = true;
-				query.where = "1=1";
+				query.where = expr;
 				query.outSpatialReference = map.spatialReference;
 				_pointQueryTask.execute( query, new AsyncResponder( onResult, onFault ) );
 				
 				function onResult( featureSet:FeatureSet, token:Object = null ):void
 				{
 					_pointGeometryArray = [];
+					
 					for each ( var graphic:Graphic in featureSet.features )
 					{
-						graphic.geometry.spatialReference = map.spatialReference;
 						_pointGeometryArray.push( graphic.geometry );
 					}
 					_pointQueryTaskFinish = true;
+					
+					//清除原有的计数
+					if ( _polygonGraphicAC )
+					{
+						for each ( var polygonGraphic:Graphic in _polygonGraphicAC )
+						{
+							polygonGraphic.attributes.count = 0;
+						}
+					}
+					
 					if ( _pointQueryTaskFinish && _polygonQueryTaskFinish )
 					{
 						executeRelation();
@@ -222,12 +246,13 @@
 					_polygonGraphicAC.removeAll();
 					for each ( var graphic:Graphic in featureSet.features )
 					{
-						graphic.geometry.spatialReference = map.spatialReference;
+//						graphic.geometry.spatialReference = map.spatialReference;
 						_polygonGeometryArray.push( graphic.geometry );
 						
 						graphic.attributes.count = 0;
 						_polygonGraphicAC.addItem( graphic );
 					}
+//					trace( JSON.stringify( _polygonGeometryArray ) );
 					_polygonQueryTaskFinish = true;
 					if ( _pointQueryTaskFinish && _polygonQueryTaskFinish )
 					{
@@ -255,6 +280,7 @@
 					_polygonLayer.graphicProvider = _polygonGraphicAC;
 					_polygonLayer.renderer = generateClassBreakRenderer();
 					
+					_labelLayer.clear();
 					for each ( var graphic:Graphic in _polygonGraphicAC )
 					{
 						var centerPt:MapPoint = graphic.geometry.extent.center;
@@ -350,10 +376,24 @@
 						var polygonLayerName:String = polygonGraphic.attributes[ _polygonLayerNameField ];
 						if ( labelPointLayerName == polygonLayerName )
 						{
+							labelGraphic.symbol = _countSymbol;
+//							_labelLayer.add( labelGraphic );
 							break;
 						}
 					}
 				}
+			}
+			
+			private function appevent_queryExpressionTimeHandler( event:AppEvent ):void
+			{
+				var timeExpr:String = event.data as String;
+				queryPoints( timeExpr );
+			}
+			
+			private function appevent_queryExpressionTypeHandler( event:AppEvent ):void
+			{
+				var typeExpr:String = event.data as String;
+				
 			}
 		]]>
 	</fx:Script>

@@ -706,6 +706,10 @@ public class AppEvent extends Event
 	 * */
 	 public static const OPEN_MENU:String = "openMenu";
 	 
+	 public static const HUANBAOJU_QUERYEXPRESSION_TIME:String = "HuanBaoJuQueryExpressionTime";
+	 
+	 public static const HUANBAOJU_QUERYEXPRESSION_TYPE:String = "HuanBaoJuQueryExpressionType";
+	 
 	 
     //--------------------------------------------------------------------------
     //

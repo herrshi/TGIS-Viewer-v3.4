@@ -10,8 +10,9 @@
 
 	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
 
+<!-- 	<geometryservice url="http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/Geometry/GeometryServer"/> -->
 	<geometryservice url="http://localhost:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer"/>
-
+	
 	<!-- UI elements -->
 	<widget left="0" top="0"
 			url="widgets/HuanBaoJu/LogoWidget.swf"/>
@@ -24,7 +25,7 @@
 			config="widgets/Coordinate/CoordinateWidget.xml" 
 			url="widgets/Coordinate/CoordinateWidget.swf" />
 
-		<!-- 天地图配置 -->
+	<!-- 天地图配置 -->
 	<map top="90" initialextent="121.176502 30.833721 122.099353 31.586284"
 		 scalebarvisible="false" esrilogovisible="false">
 		<basemaps>
@@ -82,7 +83,8 @@
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="fix">
 		<widget left="10" top="100" preload="open"
-				url="widgets/HuanBaoJu/HeaderWidget.swf"/>
+				config="widgets/HuanBaoJu/HeaderWidget.xml"
+				url="widgets/HuanBaoJu/HeaderWidget.swf" />
 				
 		<widget label="污染类型" right="10" top="125" preload="open"
 				icon="assets/images/HuanBaoJu/center/b_dqwr.png"

@@ -6,7 +6,8 @@
 					   layout="absolute" 
 					   height="38" 
 					   fontFamily="宋体" fontSize="14"
-					   creationComplete="this_creationCompleteHandler(event)">
+					   creationComplete="this_creationCompleteHandler(event)" 
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
@@ -15,20 +16,30 @@
 			
 			import cn.seisys.TGISViewer.AppEvent;
 			
-			/**九宫格缩放*/
+			/**
+			 * 九宫格缩放的底图
+			 * */
 			[Embed(source="assets/images/HuanBaoJu/center/title_bar.png", 
                 scaleGridTop="6", scaleGridBottom="34", 
                 scaleGridLeft="6", scaleGridRight="186"
             )]
-			
 			[Bindable]
-			public var _titleBackground:Class;
+			public var _titleBackgroundImage:Class;
 			
+			/**
+			 * 单月查询时的时间
+			 * */
 			[Bindable]
 			private var _selectedMonth:Date;
 			
+			/**
+			 * 多月查询时的开始时间列表，包括用于显示的字符串和用于查询的date对象
+			 * */
 			[Bindable]
 			private var _startMonthAC:ArrayCollection;
+			/**
+			 * 多月查询时的结束时间列表，包括用于显示的字符串和用于查询的date对象
+			 * */
 			[Bindable]
 			private var _endMonthAC:ArrayCollection;
 			
@@ -37,17 +48,36 @@
 			 * */
 			private var _monthCount:int = 24;
 			
+			private var _timeFieldName:String;
+			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
-				_selectedMonth = new Date();
+				
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				var date:Date = new Date();
+				//初始年月，没有配置则为当前时间
+				if ( configXML.defaultyear[0] && configXML.defaultyear != "" )
+				{
+					var defaultYear:int = configXML.defaultyear;
+					date.fullYear = defaultYear;
+				}
+				if ( configXML.defaultmonth[0] && configXML.defaultmonth != "" )
+				{
+					var defaultMonth:int = configXML.defaultmonth;
+					date.month = defaultMonth;
+				}
+				_selectedMonth = date;
 				
 				_startMonthAC = new ArrayCollection();
 				_endMonthAC = new ArrayCollection();
-				//月份选择
+				//多月选择时时间范围为初始年月-monthCount
 				for ( var i:int = 0; i < _monthCount; i++ )
 				{
 					var month:Date = new Date( _selectedMonth.fullYear, _selectedMonth.month - i );
-					var monthString:String = dateTimeFormatter.format( month );
+					var monthString:String = dateTimeFormatterDisplay.format( month );
 					var monthObj:Object = 
 						{ 
 							month: month, 
@@ -56,6 +86,9 @@
 					_startMonthAC.addItem( monthObj );
 					_endMonthAC.addItem( monthObj );
 				}
+				
+				_timeFieldName = configXML.timefieldname;
+				_timeFieldName = '"' + _timeFieldName + '"';
 			}
 			
 			protected function btnQuYuFenBuTu_clickHandler(event:MouseEvent):void
@@ -153,18 +186,49 @@
 			
 			protected function btnMonthBackward_clickHandler(event:MouseEvent):void
 			{
-				_selectedMonth = new Date( _selectedMonth.fullYear, _selectedMonth.month - 1 );
+				var year:int = _selectedMonth.fullYear;
+				//后退一个月
+				var month:int = _selectedMonth.month - 1;
+				var startDate:int = 1;
+				//month从0开始，需要+1
+				var endDate:int = getLastDateOfMonth( year, month + 1 );
+				
+				_selectedMonth = new Date( year, month, startDate );
+				
 				btnMonthForward.enabled = true;
+				
+				//开始时间为当月第一天
+				var startDateString:String = dateTimeFormatterQuery.format( _selectedMonth );
+				//结束时间为当月最后一天
+				var endDateString:String = dateTimeFormatterQuery.format( new Date( year, month, endDate ) );
+				var queryExpr:String = _timeFieldName + " >= date '" + startDateString + "' AND " + 
+					_timeFieldName + " <= date '" + endDateString + "'";
+				AppEvent.dispatch( AppEvent.HUANBAOJU_QUERYEXPRESSION_TIME, queryExpr );
 			}
 			
 			protected function btnMonthForward_clickHandler(event:MouseEvent):void
 			{
-				_selectedMonth = new Date( _selectedMonth.fullYear, _selectedMonth.month + 1 );
+				var year:int = _selectedMonth.fullYear;
+				//前进一个月
+				var month:int = _selectedMonth.month + 1;
+				var startDate:int = 1;
+				//month从0开始，需要+1
+				var endDate:int = getLastDateOfMonth( year, month + 1 );
+				
+				_selectedMonth = new Date( year, month, startDate );
 				var date:Date = new Date();
 				if ( _selectedMonth.fullYear == date.fullYear && _selectedMonth.month == date.month )
 				{
 					btnMonthForward.enabled = false;
 				}
+				
+				//开始时间为当月第一天
+				var startDateString:String = dateTimeFormatterQuery.format( _selectedMonth );
+				//结束时间为当月最后一天
+				var endDateString:String = dateTimeFormatterQuery.format( new Date( year, month, endDate ) );
+				var queryExpr:String = _timeFieldName + " >= date '" + startDateString + "' AND " + 
+					_timeFieldName + " <= date '" + endDateString + "'";
+				AppEvent.dispatch( AppEvent.HUANBAOJU_QUERYEXPRESSION_TIME, queryExpr );
 			}
 			
 			protected function btnBackThisMonth_clickHandler(event:MouseEvent):void
@@ -173,16 +237,51 @@
 				btnMonthForward.enabled = false;
 			}
 			
+			private function getLastDateOfMonth( year:int, month:int ):int
+			{
+				switch(month)
+				{
+					case 1:
+					case 3:
+					case 5:
+					case 7:
+					case 8:
+					case 10:
+					case 12:
+						return 31;
+					
+					case 4:
+					case 6:
+					case 9:
+					case 11:
+						return 30;
+						
+					case 2:
+						//闰年
+						if ( ( year % 4 == 0 && year % 100 != 0 ) || year % 400 == 0 )
+						{
+							return 29;
+						}
+						else
+						{
+							return 28;
+						}
+					
+					default:
+						return 0;
+				}
+			}
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
-		<s:DateTimeFormatter id="dateTimeFormatter" dateTimePattern="yyyy'年'MM'月'"/>
+		<s:DateTimeFormatter id="dateTimeFormatterDisplay" dateTimePattern="yyyy'年'MM'月'"/>
+		<s:DateTimeFormatter id="dateTimeFormatterQuery" dateTimePattern="yyyy-MM-dd"/>
 	</fx:Declarations>
 	
 	
 	<s:Image width="100%" height="100%" 
-			 source="{_titleBackground}"/>
+			 source="{_titleBackgroundImage}"/>
 	
 	<s:HGroup width="100%" height="100%" 
 			  paddingLeft="10" paddingRight="10" gap="5" 
@@ -193,7 +292,7 @@
 					  useHandCursor="true" buttonMode="true" 
 					  click="btnMonthBackward_clickHandler(event)"/>
 			<s:Label id="lblMonthSelect" 
-					 text="{dateTimeFormatter.format(_selectedMonth)}" 
+					 text="{dateTimeFormatterDisplay.format(_selectedMonth)}" 
 					 color="0xffffff"/>
 			<s:Button id="btnMonthForward" 
 					  enabled="false"

@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<configuration>
+	<defaultyear>2013</defaultyear>
+	
+	<timefieldname>信访日期</timefieldname>
+</configuration>
