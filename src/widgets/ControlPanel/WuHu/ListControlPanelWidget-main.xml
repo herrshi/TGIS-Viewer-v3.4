@@ -15,6 +15,7 @@
 				<clickfunctions>
 					<clickfunction name="ChangeOverlayVisible">
 						<params>
+							<param name="WidgetName" value="气象站Overlay"/>
 							<param name="OverlayType" value="QiXiangZhan" />
 						</params>
 					</clickfunction>
@@ -22,8 +23,9 @@
 			</item>
 			<item label="电子警察">
 				<clickfunctions>
-					<clickfunction name="ChangeOverlayVisible">
+					<clickfunction name="">
 						<params>
+							<param name="WidgetName" value="电子警察Overlay"/>
 							<param name="OverlayType" value="DianZiJingCha" />
 						</params>
 					</clickfunction>
@@ -31,8 +33,9 @@
 			</item>
 			<item label="摄像机">
 				<clickfunctions>
-					<clickfunction name="ChangeOverlayVisible">
+					<clickfunction name="">
 						<params>
+							<param name="WidgetName" value="摄像机Overlay"/>
 							<param name="OverlayType" value="SheXiangJi" />
 						</params>
 					</clickfunction>
@@ -40,8 +43,9 @@
 			</item>
 			<item label="占道施工">
 				<clickfunctions>
-					<clickfunction name="ChangeOverlayVisible">
+					<clickfunction name="">
 						<params>
+							<param name="WidgetName" value="占道施工Overlay"/>
 							<param name="OverlayType" value="ZhanDaoShiGong" />
 						</params>
 					</clickfunction>
@@ -49,8 +53,9 @@
 			</item>
 			<item label="视频事件">
 				<clickfunctions>
-					<clickfunction name="ChangeOverlayVisible">
+					<clickfunction name="">
 						<params>
+							<param name="WidgetName" value="视频事件Overlay"/>
 							<param name="OverlayType" value="ShiPinShiJian" />
 						</params>
 					</clickfunction>

@@ -239,6 +239,8 @@ public class AppEvent extends Event
     public static const WIDGET_ADD:String = "addWidget";
 
     public static const WIDGET_ADDED:String = "widgetAdded";
+	
+	public static const WIDGET_CREATED:String = "widgetCreated";
 
     public static const WIDGET_CLOSE:String = "closeWidget";
 

@@ -227,14 +227,22 @@
 					
 					_widgetRunNotifyFunctionName = configXML.widgetrunnotify;
 					_widgetCloseNotifyFunctionName = configXML.widgetclosenotify;
+					//老版函数
 					if ( _widgetRunNotifyFunctionName != "" )
 					{
-						//通知页面组件创建完成
 						AppEvent.dispatch( 
 							AppEvent.EXTERNALINTERFACE_CALL, 
 							{ functionName: _widgetRunNotifyFunctionName } 
 						);
 					}
+					//新版函数
+					AppEvent.dispatch( 
+						AppEvent.EXTERNALINTERFACE_CALL, 
+						{ 
+							functionName: "mapWidgetStateChanged",
+							params: [ _lineType, "open" ]
+						} 
+					);
 					
 				}
 			}

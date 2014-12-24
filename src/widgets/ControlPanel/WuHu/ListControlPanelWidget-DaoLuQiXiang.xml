@@ -4,9 +4,10 @@
 		<itemgroup label="道路气象">
 			<item label="气象站" initenable="true">
 				<clickfunctions>
-					<clickfunction name="ChangeWidget">
+					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="气象站" />
+							<param name="WidgetName" value="气象站Overlay"/>
+							<param name="OverlayType" value="QiXiangZhan" />
 						</params>
 					</clickfunction>
 				</clickfunctions>

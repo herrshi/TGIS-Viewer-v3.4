@@ -25,12 +25,38 @@
 			[Bindable]
 			private var _menuListItemAC:ArrayCollection;
 			
+			/**
+			 * 需要预先启动的组件
+			 * 包括所有clickfunction.@name="ChangeOverlayVisible"的组件
+			 * 和 clickfunction.@name="ChangeWidget" && initenable=true的组件
+			 * 启动一个组件删掉一个
+			 * */
+			private var _preloadWidgetArray:Array;
+			
+			/**
+			 * 和_preloadWidgetArray内容一样，但组件加载完以后_preloadWidgetArray会清空
+			 * 需要保留一个副本，用于关闭菜单时关闭关联的组件
+			 * */
+			private var _savedPreloadWidgetArray:Array;
+			
+			/**
+			 * 需要预先设置GraphicsLayer.visible=true的Overlay
+			 * clickfunction.@name="ChangeOverlayVisible" && initenable=true的组件
+			 * */
+			private var _presetOverlayVisibleArray:Array;
+			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
 				_menuItemAC = new ArrayCollection();
 				_menuListItemAC = new ArrayCollection();
 				
+				_preloadWidgetArray = [];
+				_savedPreloadWidgetArray = [];
+				_presetOverlayVisibleArray = [];
+				
 				AppEvent.addListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
+				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
+				AppEvent.addListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
 			}
 			
 			protected function this_widgetConfigLoadedHandler(event:Event):void
@@ -47,7 +73,8 @@
 						if ( menuItemXML.name() == "itemgroup" )
 						{
 							var itemGroupXMLList:XMLList = XMLList( menuItemXML );
-							createMenuItem(  itemGroupXMLList.item, true, itemGroupXMLList.item.length(), itemGroupXMLList.@label );
+							createMenuItem(  itemGroupXMLList.item, true, itemGroupXMLList.item.length(), 
+								itemGroupXMLList.@label );
 						}
 						else
 						{
@@ -55,6 +82,8 @@
 							createMenuItem( itemXMLList, false );
 						}
 					}
+					
+					preloadNextWidget();
 					
 					//整理菜单项，每个顶级菜单项一个对象，结果绑定到listMenuItemDataGroup
 					var menuItem:MenuItem;
@@ -127,9 +156,18 @@
 									}
 								functionArray.push( clickFunctionObj );
 								
-								if ( functionName == "ChangeOverlayVisible" && open )
+								//如果是overlay组件则立即启动，让页面可以调用addPoints
+								if ( functionName == "ChangeOverlayVisible" )
 								{
+									var widgetName:String = paramTable.find( "WidgetName" );
+									_preloadWidgetArray.push( widgetName );
+									_savedPreloadWidgetArray.push( widgetName );
 									
+									if ( open )
+									{
+										var overlayType:String = paramTable.find( "OverlayType" );
+										_presetOverlayVisibleArray.push( overlayType );
+									}
 								}
 							}
 							
@@ -148,12 +186,74 @@
 				}
 			}
 			
+			/**
+			 * 按照顺序启动widget
+			 * 不能在一个循环里全部启动，必须等上一个启动完触发WIDGET_ADDED后再启动下一个
+			 * */
+			private function preloadNextWidget():void
+			{
+				if ( _preloadWidgetArray.length > 0 )
+				{
+					var widgetName:String = _preloadWidgetArray[0];
+					_preloadWidgetArray.splice( 0, 1 );
+					AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
+				}
+			}
+			
+			private function appevent_widgetCreatedHandler( event:AppEvent ):void
+			{
+				if ( _preloadWidgetArray.length == 0 )
+				{
+					presetOverlayVisible();
+				}
+				else
+				{
+					preloadNextWidget();
+				}
+			}
+			
+			
+			private function presetOverlayVisible():void
+			{
+				for each ( var overlayType:String in _presetOverlayVisibleArray )
+				{
+					AppEvent.dispatch( AppEvent.CHANGE_OVERLAY_VISIBLE, 
+						{ 
+							type: overlayType, 
+							visible: true
+						} 
+					);
+				}
+			}
+			
+			private function appevent_WidgetRunHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					AppEvent.addListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
+					//还原预加载组件
+					for each ( var widgetName:String in _savedPreloadWidgetArray )
+					{
+						_preloadWidgetArray.push( widgetName );
+					}
+					preloadNextWidget();
+				}
+			}
+			
 			private function appevent_openMenuHandler( event:AppEvent ):void
 			{
 				var menuName:String = event.data as String;
-				//打开一个菜单是关闭其他菜单
+				//打开一个菜单时关闭其他菜单
 				if ( menuName != widgetTitle )
 				{
+					AppEvent.removeListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
+					//关闭所有自动打开的组件
+					for each ( var widgetName:String in _savedPreloadWidgetArray )
+					{
+						AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+					}
+					
+					//把自身关闭
 					setState( WidgetStates.WIDGET_CLOSED );
 				}
 			}
@@ -173,7 +273,7 @@
 						
 						_menuListItemAC.addItem( groupMenuItem );
 					}
-					menuListContainer.visible = menuListContainer.includeInLayout = true;
+					menuListContainer.visible = menuListContainer.includeInLayout = true; 
 				}
 				else
 				{

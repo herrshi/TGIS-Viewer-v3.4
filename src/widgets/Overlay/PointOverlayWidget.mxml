@@ -215,6 +215,9 @@
 			
 				AppEvent.addListener( AppEvent.FIND_DEVICE, appevent_findDeviceHandler );
 				
+				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
+				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_WidgetCloseHandler );
+				
 				AppEvent.addListener( AppEvent.ADD_POINTS, appevent_addPointsHandler );
 				AppEvent.addListener( AppEvent.DELETE_ALL_POINTS, appevent_deleteAllPointsHandler );
 				AppEvent.addListener( AppEvent.DELETE_POINTS, appevent_deletePointsHandler );
@@ -330,6 +333,79 @@
 						}
 						
 					}
+					else
+					{
+						notifyPageWidgetOpen();
+					}
+					
+					
+				}
+			}
+			
+			/**
+			 * 通知页面组件加载完成，可以调用addPoints
+			 * */
+			private function notifyPageWidgetOpen():void
+			{
+				AppEvent.dispatch( AppEvent.WIDGET_CREATED, widgetTitle );
+				
+				//老版函数
+				if ( _widgetRunNotifyFunctionName != "" )
+				{
+					AppEvent.dispatch( 
+						AppEvent.EXTERNALINTERFACE_CALL, 
+						{ functionName: _widgetRunNotifyFunctionName } 
+					);
+				}
+				//新版函数
+				AppEvent.dispatch( 
+					AppEvent.EXTERNALINTERFACE_CALL, 
+					{ 
+						functionName: "mapWidgetStateChanged",
+						params: [ _pointType, "open" ]
+					} 
+				);
+			}
+			
+			/**
+			 * 通知页面组件关闭，不要再调用addPoints
+			 * */
+			private function notifyPageWidgetClose():void
+			{
+				if ( _widgetRunNotifyFunctionName != "" )
+				{
+					//通知页面组件创建完成
+					AppEvent.dispatch( 
+						AppEvent.EXTERNALINTERFACE_CALL, 
+						{ functionName: _widgetCloseNotifyFunctionName } 
+					);
+				}
+				//新版函数
+				AppEvent.dispatch( 
+					AppEvent.EXTERNALINTERFACE_CALL, 
+					{ 
+						functionName: "mapWidgetStateChanged",
+						params: [ _pointType, "close" ]
+					} 
+				);
+			}
+			
+			private function appevent_WidgetRunHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					map.addLayer( _pointOverlayLayer );
+					notifyPageWidgetOpen();
+				}
+			}
+			
+			private function appevent_WidgetCloseHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					_pointOverlayLayer.clear();
+					map.removeLayer( _pointOverlayLayer );
+					notifyPageWidgetClose();
 				}
 			}
 			
@@ -368,6 +444,10 @@
 							layerObj.queryFinish = true;
 						}
 						allFinish = allFinish && layerObj.queryFinish;
+					}
+					if ( allFinish )
+					{
+						notifyPageWidgetOpen();
 					}
 				}
 				
@@ -687,7 +767,7 @@
 			}
 			
 			//向js页面请求数据，传id号到js页面
-			private function  openDetail_clickHandler(event:MouseEvent):void
+			private function openDetail_clickHandler(event:MouseEvent):void
 			{
 				if(event.currentTarget != null)
 				{
@@ -1196,53 +1276,12 @@
 			private function appevent_ChangeOverlayVisibleHandler( event:AppEvent ):void
 			{
 				var overlayType:String = event.data.type;
-				var overlayVisible:Boolean = event.data.visible;
 				if ( _pointType == overlayType )
 				{
+					var overlayVisible:Boolean = event.data.visible;
+					trace( overlayType, overlayVisible );
 					_pointOverlayLayer.visible = overlayVisible;
 				}
-				
-				//通知页面开始加点
-				if ( overlayVisible )
-				{
-					if ( _widgetRunNotifyFunctionName != "" )
-					{
-						//老版函数
-						AppEvent.dispatch( 
-							AppEvent.EXTERNALINTERFACE_CALL, 
-							{ functionName: _widgetRunNotifyFunctionName } 
-						);
-					}
-					//新版函数
-					AppEvent.dispatch( 
-						AppEvent.EXTERNALINTERFACE_CALL, 
-						{ 
-							functionName: "mapWidgetStateChanged",
-							params: [ _pointType, "open" ]
-						} 
-					);
-				}
-				//通知页面停止加点
-				else
-				{
-					if ( _widgetRunNotifyFunctionName != "" )
-					{
-						//通知页面组件创建完成
-						AppEvent.dispatch( 
-							AppEvent.EXTERNALINTERFACE_CALL, 
-							{ functionName: _widgetCloseNotifyFunctionName } 
-						);
-					}
-					//新版函数
-					AppEvent.dispatch( 
-						AppEvent.EXTERNALINTERFACE_CALL, 
-						{ 
-							functionName: "mapWidgetStateChanged",
-							params: [ _pointType, "close" ]
-						} 
-					);
-				}
-				
 			}
 		]]>
 	</fx:Script>

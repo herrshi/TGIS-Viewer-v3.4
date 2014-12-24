@@ -221,8 +221,8 @@
 				);*/
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"2272","x":"118.4040699","y":"31.387664","fields":{"cameraDesc":"麒麟路北口东侧车道","cameraIp":"52.123.34.43","cameraState":"连接"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"KaKou","points":[{"id":"KK001","x":118.39563496200003 ,"y":31.342197578000082 ,"fields":{"desc":"坦克山路(天网)"}}]}' );
-//				AppEvent.dispatch( AppEvent.OPEN_MENU, "道路气象菜单" );
-//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "道路气象菜单" );
+				AppEvent.dispatch( AppEvent.OPEN_MENU, "应急事件菜单" );
+				AppEvent.dispatch( AppEvent.WIDGET_RUN, "应急事件菜单" );
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
@@ -312,10 +312,9 @@
 //				AppEvent.dispatch( AppEvent.SET_POLICE_EVENT_DATA ,'[ {"id": "event001","title": "交通警情-道路交通警情-机动车与非机动车","image": " ", "level": 1,"time": "2014-07-22 15:35","interaction119":"联动119", "interaction110":"联动110", "interaction120":"联动120", "interactionContent":"有危险品", "source": "122电话报警","content": "小汽车驶入非机动车道撞上电动车，发生擦挂事件","location": "锦江区锦华路100号万特欢乐世界正门口","deatCount": 0,"injuredCount": 3,"trappedCount": 5,"fields": {"报警人": "李四 男 138 8888 8888","涉案人": "张三 男 137 7777 7777"},"actions": "上报,回退,派警,结案,回访","logs": "2014-07-22 15: 35一分局刘某进行三快处理并结案；2014-07-22 15: 35一分局刘某电话核实；2014-07-22 15: 35交管局下发至一分局；"}]');
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":118.419,"y":31.334,"fields":{"gpsState":"离岗"}}]}' );
 //				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "police", id: "712" } );
-//				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "勤务菜单" );
+//				AppEvent.dispatch( AppEvent.OPEN_MENU, "首页菜单" );
 //				AppEvent.dispatch( AppEvent.WIDGET_RUN, "首页菜单" );
-				AppEvent.dispatch( AppEvent.OPEN_MENU, "首页菜单" );
-				AppEvent.dispatch( AppEvent.WIDGET_RUN, "首页菜单" );
+				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"YingJiShiJian","points":[{"x":118.566158,"y":31.146213,"id":"1111","fields":{"occurTime":"2014-12-17 17:19:39","sceneDesc":"南北高架中环立交入口","yjType":"机动车碰撞","sjLevel":"一级(重大)","brief":"中环共和立交入口辆车相撞"}}]}' );
 				
 				//浦东测试
 				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
@@ -345,7 +344,10 @@
 				/*芜湖测试*/
 //				AppEvent.dispatch( AppEvent.STOP_ADD_OVERLAY, "police" );
 				
-				AppEvent.dispatch( AppEvent.GET_TRAFFIC_FLOW_NOTICE);
+//				AppEvent.dispatch( AppEvent.GET_TRAFFIC_FLOW_NOTICE);
+				
+				AppEvent.dispatch( AppEvent.OPEN_MENU, "首页菜单" );
+				AppEvent.dispatch( AppEvent.WIDGET_RUN, "首页菜单" );
 			
 		    }
 		]]>

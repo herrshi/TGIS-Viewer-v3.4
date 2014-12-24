@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<configuration>
+	<menu>
+		<item label="应急事件" initenable="true">
+			<clickfunctions>
+				<clickfunction name="ChangeOverlayVisible">
+					<params>
+						<param name="WidgetName" value="应急事件Overlay"/>
+						<param name="OverlayType" value="YingJiShiJian" />
+					</params>
+				</clickfunction>
+			</clickfunctions>
+		</item>
+	</menu>
+</configuration>
+	
