@@ -7,7 +7,7 @@
 		<field name="STATE"/>
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
-	<buttons>
-		<button label="详细信息" action="openDevice" type="XHD" idfield="DEVICEID" />
-	</buttons>
+<!-- 	<buttons> -->
+<!-- 		<button label="详细信息" action="openDevice" type="XHD" idfield="DEVICEID" /> -->
+<!-- 	</buttons> -->
 </configuration>

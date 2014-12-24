@@ -57,6 +57,7 @@
 			import cn.seisys.TGISViewer.skins.PopUpRenderer.ClassicPopUpRendererSkinWithButtons;
 			import cn.seisys.TGISViewer.skins.PopUpRenderer.PoliceEventPopUpRendererSkin;
 			import cn.seisys.TGISViewer.skins.PopUpRenderer.PoliceSentryPopUpRendererSkin;
+			import cn.seisys.TGISViewer.skins.PopUpRenderer.YingJiShiJianPopUpRendererSkin;
 			import cn.seisys.TGISViewer.utils.Hashtable;
 			import cn.seisys.TGISViewer.utils.MapServiceUtil;
 			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
@@ -214,9 +215,6 @@
 			
 				AppEvent.addListener( AppEvent.FIND_DEVICE, appevent_findDeviceHandler );
 				
-				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_widgetRunHandler );
-				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_widgetCloseHandler );
-				
 				AppEvent.addListener( AppEvent.ADD_POINTS, appevent_addPointsHandler );
 				AppEvent.addListener( AppEvent.DELETE_ALL_POINTS, appevent_deleteAllPointsHandler );
 				AppEvent.addListener( AppEvent.DELETE_POINTS, appevent_deletePointsHandler );
@@ -310,7 +308,6 @@
 					_widgetCloseNotifyFunctionName = configXML.widgetclosenotify;
 					
 					//查询设备点位，页面可以通过设备编号加点
-					//查询完成之后再通知页面组件创建完成
 					if ( configXML.querylayers[0] )
 					{
 						//多个图层的数据合并到一个array中
@@ -332,26 +329,6 @@
 							}
 						}
 						
-					}
-					//不需要查询，通知页面组件创建完成
-					else
-					{
-						if ( _widgetRunNotifyFunctionName != "" )
-						{
-							//老版函数
-							AppEvent.dispatch( 
-								AppEvent.EXTERNALINTERFACE_CALL, 
-								{ functionName: _widgetRunNotifyFunctionName } 
-							);
-						}
-						//新版函数
-						AppEvent.dispatch( 
-							AppEvent.EXTERNALINTERFACE_CALL, 
-							{ 
-								functionName: "mapWidgetStateChanged",
-								params: [ _pointType, "open" ]
-							} 
-						);
 					}
 				}
 			}
@@ -392,75 +369,11 @@
 						}
 						allFinish = allFinish && layerObj.queryFinish;
 					}
-					if ( allFinish && _widgetRunNotifyFunctionName != "" )
-					{
-						//老版函数
-						AppEvent.dispatch( 
-							AppEvent.EXTERNALINTERFACE_CALL, 
-							{ functionName: _widgetRunNotifyFunctionName } 
-						);
-						//新版函数
-						AppEvent.dispatch( 
-							AppEvent.EXTERNALINTERFACE_CALL, 
-							{ 
-								functionName: "mapWidgetStateChanged",
-								params: [ _pointType, "open" ]
-							} 
-						);
-					}
 				}
 				
 				function onFault(info:Object, token:Object = null):void
 				{
 					showError( info.toString(), widgetTitle );
-				}
-			}
-			
-			private function appevent_widgetRunHandler( event:AppEvent ):void
-			{
-				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
-				{
-					map.addLayer( _pointOverlayLayer );
-					if ( _widgetRunNotifyFunctionName != "" )
-					{
-						//老版函数
-						AppEvent.dispatch( 
-							AppEvent.EXTERNALINTERFACE_CALL, 
-							{ functionName: _widgetRunNotifyFunctionName } 
-						);
-					}
-					//新版函数
-					AppEvent.dispatch( 
-						AppEvent.EXTERNALINTERFACE_CALL, 
-						{ 
-							functionName: "mapWidgetStateChanged",
-							params: [ _pointType, "open" ]
-						} 
-					);
-				}
-			}
-			
-			private function appevent_widgetCloseHandler( event:AppEvent ):void
-			{
-				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
-				{
-					map.removeLayer( _pointOverlayLayer );
-					if ( _widgetRunNotifyFunctionName != "" )
-					{
-						//通知页面组件创建完成
-						AppEvent.dispatch( 
-							AppEvent.EXTERNALINTERFACE_CALL, 
-							{ functionName: _widgetCloseNotifyFunctionName } 
-						);
-					}
-					//新版函数
-					AppEvent.dispatch( 
-						AppEvent.EXTERNALINTERFACE_CALL, 
-						{ 
-							functionName: "mapWidgetStateChanged",
-							params: [ _pointType, "close" ]
-						} 
-					);
 				}
 			}
 			
@@ -759,7 +672,11 @@
 					case "policeEvent":
 						popupRenderer.setStyle( "skinClass", Class( PoliceEventPopUpRendererSkin ) );
 						break;
-						
+					
+					case "YingJiShiJian":
+						popupRenderer.setStyle( "skinClass", Class( YingJiShiJianPopUpRendererSkin ) );
+						break;
+					
 					default:
 						popupRenderer.setStyle( "skinClass", Class( ClassicPopUpRendererSkinWithButtons ) );
 						break;
@@ -1284,6 +1201,48 @@
 				{
 					_pointOverlayLayer.visible = overlayVisible;
 				}
+				
+				//通知页面开始加点
+				if ( overlayVisible )
+				{
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//老版函数
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetRunNotifyFunctionName } 
+						);
+					}
+					//新版函数
+					AppEvent.dispatch( 
+						AppEvent.EXTERNALINTERFACE_CALL, 
+						{ 
+							functionName: "mapWidgetStateChanged",
+							params: [ _pointType, "open" ]
+						} 
+					);
+				}
+				//通知页面停止加点
+				else
+				{
+					if ( _widgetRunNotifyFunctionName != "" )
+					{
+						//通知页面组件创建完成
+						AppEvent.dispatch( 
+							AppEvent.EXTERNALINTERFACE_CALL, 
+							{ functionName: _widgetCloseNotifyFunctionName } 
+						);
+					}
+					//新版函数
+					AppEvent.dispatch( 
+						AppEvent.EXTERNALINTERFACE_CALL, 
+						{ 
+							functionName: "mapWidgetStateChanged",
+							params: [ _pointType, "close" ]
+						} 
+					);
+				}
+				
 			}
 		]]>
 	</fx:Script>

@@ -126,6 +126,11 @@
 										paramTable: paramTable
 									}
 								functionArray.push( clickFunctionObj );
+								
+								if ( functionName == "ChangeOverlayVisible" && open )
+								{
+									
+								}
 							}
 							
 							var configItemObj:Object = 

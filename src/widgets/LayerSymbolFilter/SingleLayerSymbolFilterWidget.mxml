@@ -35,7 +35,7 @@
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
 			import cn.seisys.TGISViewer.skins.PopUpRenderer.AdvancedPopUpRendererSkin;
-			import cn.seisys.TGISViewer.skins.PopUpRenderer.CameraWithPicPopUpRenderer;
+			import cn.seisys.TGISViewer.skins.PopUpRenderer.DeviceWithPicPopUpRendererSkin;
 			import cn.seisys.TGISViewer.skins.PopUpRenderer.ClassicPopUpRendererSkinWithButtons;
 			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
 			import cn.seisys.TGISViewer.utils.RendererParser;
@@ -381,7 +381,7 @@
 						break;
 					
 					case "CameraWithPic":
-						popupRenderer.setStyle( "skinClass", Class( CameraWithPicPopUpRenderer ) );
+						popupRenderer.setStyle( "skinClass", Class( DeviceWithPicPopUpRendererSkin ) );
 						break;
 					
 					default:

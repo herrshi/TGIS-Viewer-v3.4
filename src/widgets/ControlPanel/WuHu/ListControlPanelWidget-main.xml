@@ -11,47 +11,47 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item label="气象站">
+			<item label="气象站" initenable="true">
 				<clickfunctions>
-					<clickfunction name="ChangeWidget">
+					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="气象站" />
+							<param name="OverlayType" value="QiXiangZhan" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
 			</item>
 			<item label="电子警察">
 				<clickfunctions>
-					<clickfunction name="ChangeWidget">
+					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="电子警察" />
+							<param name="OverlayType" value="DianZiJingCha" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
 			</item>
 			<item label="摄像机">
 				<clickfunctions>
-					<clickfunction name="ChangeWidget">
+					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="摄像机" />
+							<param name="OverlayType" value="SheXiangJi" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
 			</item>
 			<item label="占道施工">
 				<clickfunctions>
-					<clickfunction name="ChangeWidget">
+					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="占道施工" />
+							<param name="OverlayType" value="ZhanDaoShiGong" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
 			</item>
 			<item label="视频事件">
 				<clickfunctions>
-					<clickfunction name="ChangeWidget">
+					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="视频事件" />
+							<param name="OverlayType" value="ShiPinShiJian" />
 						</params>
 					</clickfunction>
 				</clickfunctions>

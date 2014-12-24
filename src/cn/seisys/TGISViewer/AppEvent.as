@@ -710,7 +710,6 @@ public class AppEvent extends Event
 	 
 	 public static const HUANBAOJU_QUERYEXPRESSION_TYPE:String = "HuanBaoJuQueryExpressionType";
 	 
-	 
     //--------------------------------------------------------------------------
     //
     //  Constructor

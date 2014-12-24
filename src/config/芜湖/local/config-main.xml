@@ -100,64 +100,68 @@
 	<!-- widgets organized into widget containers that manage close/open etc -->
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="float">
-		<widget label="气象站" preload="open"
+		<widget label="气象站Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-QiXiangZhan.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="诱导板"
+		<widget label="诱导板Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-QingBaoBan.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="电子警察"
+		<widget label="电子警察Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-DianZiJingCha.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="摄像机"
+		<widget label="摄像机Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-SheXiangJi.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="信号机"
+		<widget label="信号机Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-XinHaoJi.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="卡口" preload="open"
+		<widget label="卡口Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-KaKou.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="占道施工" preload="open"
+		<widget label="占道施工Overlay" preload="open"
 			config="widgets/Overlay/WuHu/orc/show/PointOverlayWidget-OrcShow.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="视频事件"
+		<widget label="视频事件Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-ShiPinShiJian.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 			
-		<widget label="警情" preload="open"
+		<widget label="警情Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeEvent.xml" 
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 
-		<widget label="警员" preload="open"
+		<widget label="警员Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-police.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="警车" preload="open"
+		<widget label="警车Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeCar.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
-		<widget label="岗点" preload="open"
+		<widget label="岗点Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-policeSentry.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf" />
 		
-		<widget label="重点车辆" preload="open"
+		<widget label="重点车辆Overlay" preload="open" 
 			config="widgets/Overlay/WuHu/PointOverlayWidget-ZhongDianCheLiang.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf" />
 		
-		<widget label="应急资源" preload="open"
+		<widget label="应急资源Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiZiYuan.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf" />
 		
-		<widget label="应急单位" preload="open"
+		<widget label="应急单位Overlay" preload="open"
 			config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiDanWei.xml"
+			url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="应急事件Overlay" preload="open"
+			config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiShiJian.xml"
 			url="widgets/Overlay/PointOverlayWidget.swf" />
 	</widgetcontainer>
 	

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 应急事件 -->
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			 xmlns:s="library://ns.adobe.com/flex/spark" 
-			 xmlns:mx="library://ns.adobe.com/flex/mx" 
-			 width="320" maxHeight="300"
+			 xmlns:mx="library://ns.adobe.com/flex/mx"
 			 preinitialize="this_preinitializeHandler(event)">
-	
+	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("com.esri.ags.portal.PopUpRenderer")]
 	</fx:Metadata>
@@ -23,6 +23,8 @@
 			
 			import mx.containers.utilityClasses.ConstraintRow;
 			import mx.events.FlexEvent;
+			
+			import spark.components.RichEditableText;
 			
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
@@ -65,7 +67,6 @@
 				textLayoutFormat = new TextLayoutFormat();
 				textLayoutFormat.whiteSpaceCollapse = WhiteSpaceCollapse.PRESERVE;
 				_textLayoutConfiguration.textFlowInitialFormat = textLayoutFormat;
-				
 			}
 			
 			override protected function commitProperties():void
@@ -106,7 +107,8 @@
 					if (popUpInfo.popUpFieldInfos)
 					{
 						// make sure there's enough constraint rows
-						var constraintRows:Vector.<ConstraintRow> = keyValueGroupLayout.constraintRows; // returns a clone
+						// returns a clone
+						var constraintRows:Vector.<ConstraintRow> = keyValueGroupLayout.constraintRows; 
 						if (constraintRows.length < popUpInfo.popUpFieldInfos.length)
 						{
 							for (var i:int = constraintRows.length + 1; i <= popUpInfo.popUpFieldInfos.length; i++)
@@ -144,7 +146,8 @@
 									var match:Array = htmlText.match(/^\s*((https?|ftp):\/\/\S+)\s*$/i);
 									if (match && match.length > 0)
 									{
-										htmlText = '<a href="' + match[1] + '" target="_blank">' + match[1] + "</a>";
+										htmlText = '<a href="' + match[1] + '" target="_blank">' + 
+											match[1] + "</a>";
 									}
 									setTextFlow(fieldValue, htmlText);
 									fieldValue.editable = false;
@@ -158,7 +161,8 @@
 						}
 						if (keyValueGroup.numElements > 0)
 						{
-							fieldLabel.bottom = "row" + --rowID + ":5"; // add a little bottom padding to last label
+							// add a little bottom padding to last label
+							fieldLabel.bottom = "row" + --rowID + ":5"; 
 							vGroup.addElement(keyValueGroup);
 						}
 					}
@@ -167,7 +171,7 @@
 					if ( _buttonArray && _buttonArray.length > 0 )
 					{
 						footer.addElement( naviContainer );
-//						footerLine.includeInLayout = footerLine.visible = true;
+						//						footerLine.includeInLayout = footerLine.visible = true;
 						for each ( var buttonObj:Object in _buttonArray )
 						{
 							var label:String = buttonObj.label;
@@ -230,11 +234,12 @@
 			{
 				if (textComp && htmlText != null)
 				{
-					var textFlow:TextFlow = TextConverter.importToFlow(htmlText, TextConverter.TEXT_FIELD_HTML_FORMAT, 
-						_textLayoutConfiguration);
+					var textFlow:TextFlow = TextConverter.importToFlow(htmlText, 
+						TextConverter.TEXT_FIELD_HTML_FORMAT, _textLayoutConfiguration);
 					if (textFlow)
 					{
-						textFlow.addEventListener(FlowElementMouseEvent.CLICK, textFlow_linkClickHandler, false, 0, true);
+						textFlow.addEventListener(FlowElementMouseEvent.CLICK, 
+							textFlow_linkClickHandler, false, 0, true);
 						textComp.textFlow = textFlow;
 					}
 				}
@@ -255,7 +260,8 @@
 				var map:Map = hostComponent.map;
 				var geometry:Geometry = graphic.geometry;
 				
-				var extent:Extent = geometry.extent; // returns null for MapPoint or Multipoint's with only one point
+				// returns null for MapPoint or Multipoint's with only one point
+				var extent:Extent = geometry.extent;
 				if ( extent )
 				{
 					map.zoomTo( geometry );
@@ -297,6 +303,27 @@
 					{
 						functionName: "openDevice",
 						params: [ graphic.attributes.type + "Detail", graphic.id ]
+					} 
+				);
+			}
+			
+			protected function lblCheckYuAn_clickHandler(event:MouseEvent):void
+			{
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "openDevice",
+						params: [ "YingJiShiJian_ChaKanYuAn", hostComponent.graphic.id ]
+					} 
+				);
+				
+			}
+			
+			protected function lblCheckWuZi_clickHandler(event:MouseEvent):void
+			{
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "openDevice",
+						params: [ "YingJiShiJian_ChaKanWuZi", hostComponent.graphic.id ]
 					} 
 				);
 			}
@@ -359,10 +386,9 @@
 				</s:NavigatorContent>
 			</mx:TabNavigator>
 		</s:Group>
-		
 	</fx:Declarations>
 	
-	<s:VGroup width="100%" height="100%" paddingLeft="10" paddingRight="10">
+	<s:VGroup width="100%" height="100%" paddingLeft="10" paddingRight="10" gap="15">
 		<s:HGroup id="header"
 				  width="100%" 
 				  verticalAlign="middle"
@@ -389,6 +415,20 @@
 					<!-- elements are added in commitProperties() -->
 				</s:VGroup>
 			</s:Scroller>
+		</s:HGroup>
+		
+		<s:HGroup width="100%" gap="15">
+			<s:Label text="已启动预案"/>
+			<s:Label id="lblCheckYuAn" text="查看预案" 
+					 color="0x5185b5" buttonMode="true" 
+					 click="lblCheckYuAn_clickHandler(event)"/>
+		</s:HGroup>
+		
+		<s:HGroup width="100%" gap="15">
+			<s:Label text="已调拨物资"/>
+			<s:Label id="lblCheckWuZi" text="查看物资" 
+					 color="0x5185b5" buttonMode="true" 
+					 click="lblCheckWuZi_clickHandler(event)"/>
 		</s:HGroup>
 		
 		<s:Line id="footerLine" width="100%" includeInLayout="false" visible="false">

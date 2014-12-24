@@ -7,6 +7,8 @@
 	<!-- 组件关闭时通知页面 -->
 	<widgetclosenotify></widgetclosenotify>
 	
+	<initvisible>false</initvisible>
+	
 	<popup>
 		<title>{address}</title>
 		<fields>
