@@ -105,7 +105,7 @@
 			/**
 			 * 弹出窗使用的皮肤类
 			 * */
-			private var _popUpSkinClass:String;
+			private var _popUpSkinClass:Class;
 			
 			/**
 			 * 弹出窗样式。 
@@ -262,7 +262,30 @@
 						var popupXML:XML = configXML.popup[0];
 						_popUpInfo = PopUpInfoParser.parsePopUpInfo( popupXML );
 						
-						_popUpSkinClass = configXML.popupskinclass || "Classic";
+						var skinClassType:String = configXML.popupskinclass || "Classic";
+						switch( skinClassType )
+						{
+							case "advanced":
+								_popUpSkinClass = Class( AdvancedPopUpRendererSkin );
+								break;
+							
+							case "policeSentry":
+								_popUpSkinClass = Class( PoliceSentryPopUpRendererSkin );
+								break;
+							
+							case "policeEvent":
+								_popUpSkinClass = Class( PoliceEventPopUpRendererSkin );
+								break;
+							
+							case "YingJiShiJian":
+								_popUpSkinClass = Class( YingJiShiJianPopUpRendererSkin );
+								break;
+							
+							default:
+								_popUpSkinClass = Class( ClassicPopUpRendererSkinWithButtons );
+								break;
+						}
+						
 						/*_popUpRenderer = new ClassFactory( PopUpRenderer );
 						_popUpRenderer.properties = 
 							{ 
@@ -739,7 +762,8 @@
 				var popupRenderer:PopUpRenderer = new PopUpRenderer();
 				popupRenderer.graphic = graphic;
 				popupRenderer.popUpInfo = _popUpInfo;
-				switch( _popUpSkinClass )
+				popupRenderer.setStyle( "skinClass", _popUpSkinClass );
+				/*switch( _popUpSkinClass )
 				{
 					case "advanced":
 						popupRenderer.setStyle( "skinClass", Class( AdvancedPopUpRendererSkin ) );
@@ -760,7 +784,7 @@
 					default:
 						popupRenderer.setStyle( "skinClass", Class( ClassicPopUpRendererSkinWithButtons ) );
 						break;
-				}
+				}*/
 				map.infoWindow.content = popupRenderer;
 				map.infoWindow.contentOwner = popupRenderer.graphic;
 				map.infoWindow.show( graphic.geometry as MapPoint );
@@ -1244,7 +1268,8 @@
 							var popupRenderer:PopUpRenderer = new PopUpRenderer();
 							popupRenderer.graphic = graphic;
 							popupRenderer.popUpInfo = _popUpInfo;
-							switch( _popUpSkinClass )
+							popupRenderer.setStyle( "skinClass", _popUpSkinClass );
+							/*switch( _popUpSkinClass )
 							{
 								case "advanced":
 									popupRenderer.setStyle( "skinClass", Class( AdvancedPopUpRendererSkin ) );
@@ -1254,12 +1279,16 @@
 									popupRenderer.setStyle( "skinClass", Class( PoliceSentryPopUpRendererSkin ) );
 									break;
 								
+								case "YingJiShiJian":
+									popupRenderer.setStyle( "skinClass", Class( YingJiShiJianPopUpRendererSkin ) );
+									break;
+								
 								default:
 								{
 									popupRenderer.setStyle( "skinClass", Class( ClassicPopUpRendererSkinWithButtons ) );
 									break;
 								}
-							}
+							}*/
 							map.infoWindow.content = popupRenderer;
 							map.infoWindow.contentOwner = popupRenderer.graphic;
 							map.infoWindow.show( graphic.geometry as MapPoint );
@@ -1283,6 +1312,7 @@
 					_pointOverlayLayer.visible = overlayVisible;
 				}
 			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>

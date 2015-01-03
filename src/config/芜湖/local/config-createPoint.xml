@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>1</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+	
+	<socketinfo enable="false">
+		<!-- 接收安全策略文件 -->
+		<securitysocketip>128.64.25.42</securitysocketip>
+		<securitysocketport>6000</securitysocketport>
+		<!-- 接收数据 -->
+		<datasocketip>128.64.25.42</datasocketip>
+		<datasocketport>6001</datasocketport>
+	</socketinfo>
+
+	<arcgisserverip>128.64.151.220:6080</arcgisserverip>
+<!-- 	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip> -->
+	
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+			config="widgets/Navigation/NavigationWidget.xml"
+			url="widgets/Navigation/NavigationWidget.swf" />
+		    
+	<widget left="3" bottom="3"
+			config="widgets/Coordinate/CoordinateWidget.xml" 
+			url="widgets/Coordinate/CoordinateWidget.swf" />
+	
+	<widget label="底图切换" right="10" top="10"
+			config="widgets/MapSwitcher/MapSwitcherWidget.xml"
+			url="widgets/MapSwitcher/MapSwitcherWidget.swf"/>
+			
+	<map top="0"  center="118.417947 31.337093" scale="48000"
+		 scalebarvisible="false" esrilogovisible="false">
+<!-- 	<map top="0" center="112.9894 28.185" scale="96000" -->
+<!-- 		scalebarvisible="false" esrilogovisible="false"> -->
+		<basemaps>
+<!-- 			<layer label="矢量图" type="tiled" visible="true" -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/changsha/changsha_base_GHY/MapServer" /> -->
+			<layer label="矢量图" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base_new/MapServer" />
+			<layer label="卫星图" type="tiled" visible="false"
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" />
+		</basemaps>
+		
+		<operationallayers>
+			
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="float">
+		<widget label="添加点位" preload="open"
+				config="widgets/SendMapClickCoordinate/SendMapClickCoordinate-general.xml"
+				url="widgets/SendMapClickCoordinate/SendMapClickCoordinateWidget.swf"/>
+	</widgetcontainer>
+	
+	
+	
+	<widgetcontainer layout="horizontal">
+		<widget label="搜索" preload="minimized" 
+				icon="assets/images/i_search.png"
+				config="widgets/MultiLayerSearch/WuHu/MultiLayerSearchWidget-roadAndPoi.xml"
+				url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+	</widgetcontainer>
+</configuration>

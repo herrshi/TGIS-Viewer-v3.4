@@ -55,8 +55,9 @@
 				_presetOverlayVisibleArray = [];
 				
 				AppEvent.addListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
-				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
-				AppEvent.addListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
+				
+//				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
+//				AppEvent.addListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
 			}
 			
 			protected function this_widgetConfigLoadedHandler(event:Event):void
@@ -188,7 +189,7 @@
 			
 			/**
 			 * 按照顺序启动widget
-			 * 不能在一个循环里全部启动，必须等上一个启动完触发WIDGET_ADDED后再启动下一个
+			 * 不能在一个循环里全部启动，必须等上一个启动完触发WIDGET_CREATED后再启动下一个
 			 * */
 			private function preloadNextWidget():void
 			{
@@ -243,6 +244,7 @@
 			private function appevent_openMenuHandler( event:AppEvent ):void
 			{
 				var menuName:String = event.data as String;
+				
 				//打开一个菜单时关闭其他菜单
 				if ( menuName != widgetTitle )
 				{
@@ -254,7 +256,7 @@
 					}
 					
 					//把自身关闭
-					setState( WidgetStates.WIDGET_CLOSED );
+					AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetTitle );
 				}
 			}
 			

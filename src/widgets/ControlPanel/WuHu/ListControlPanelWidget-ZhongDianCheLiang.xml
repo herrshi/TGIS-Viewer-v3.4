@@ -4,27 +4,30 @@
 		<itemgroup label="重点车辆">
 			<item label="重点车辆" initenable="true">
 				<clickfunctions>
-					<clickfunction name="ChangeWidget">
+					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="重点车辆" />
+							<param name="WidgetName" value="重点车辆Overlay" />
+							<param name="OverlayType" value="ZhongDianCheLiang" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
 			</item>
 			<item label="应急资源" initenable="true">
 				<clickfunctions>
-					<clickfunction name="ChangeWidget">
+					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="应急资源" />
+							<param name="WidgetName" value="应急资源Overlay" />
+							<param name="OverlayType" value="YingJiZiYuan" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
 			</item>
 			<item label="应急单位" initenable="true">
 				<clickfunctions>
-					<clickfunction name="ChangeWidget">
+					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="应急单位" />
+							<param name="WidgetName" value="应急单位Overlay" />
+							<param name="OverlayType" value="YingJiDanWei" />
 						</params>
 					</clickfunction>
 				</clickfunctions>

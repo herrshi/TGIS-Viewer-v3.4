@@ -92,11 +92,11 @@
 			<s:HGroup width="100%"
 					  paddingLeft="10" paddingRight="10" 
 					  verticalAlign="middle" 
-					  gap="10">
+					  gap="10" 
+					  buttonMode="true">
 				<s:Image source="assets/images/HuanBaoJu/center/i_wry.png"/>
 				<s:Label id="lblWuRanYuan" 
 						 text="污染源" width="100%" 
-						 buttonMode="true" useHandCursor="true"
 						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
 						 color="0x444444" 
 						 click="lblWuRanYuan_clickHandler(event)"/>
@@ -111,11 +111,11 @@
 			<s:HGroup width="100%"
 					  paddingLeft="10" paddingRight="10" 
 					  verticalAlign="middle" 
-					  gap="10">
+					  gap="10"
+					  buttonMode="true">
 				<s:Image source="assets/images/HuanBaoJu/center/i_gny.png"/>
 				<s:Label id="lblGongNengYuan" 
 						 text="功能源" width="100%" 
-						 buttonMode="true" useHandCursor="true"
 						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
 						 color="0x444444" 
 						 click="lblGongNengYuan_clickHandler(event)"/>
@@ -130,11 +130,11 @@
 			<s:HGroup width="100%"
 					  paddingLeft="10" paddingRight="10" 
 					  verticalAlign="middle" 
-					  gap="10">
+					  gap="10"
+					  buttonMode="true">
 				<s:Image source="assets/images/HuanBaoJu/center/i_hjss.png"/>
 				<s:Label id="lblHuanJingSheShi" 
 						 text="环境设施" width="100%" 
-						 buttonMode="true" useHandCursor="true"
 						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
 						 color="0x444444" 
 						 click="lblHuanJingSheShi_clickHandler(event)"/>

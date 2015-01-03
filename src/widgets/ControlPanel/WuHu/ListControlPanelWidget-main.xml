@@ -122,16 +122,27 @@
 <!-- 				</clickfunctions> -->
 <!-- 			</item> -->
 <!-- 		</itemgroup> -->
-
-		<item label="测距">
-			<clickfunctions>
-				<clickfunction name="ChangeWidget">
-					<params>
-						<param name="WidgetName" value="测距" />
-					</params>
-				</clickfunction>
-			</clickfunctions>
-		</item>
+		
+		<itemgroup label="功能">
+			<item label="测距">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="测距" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="搜索" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeWidget">
+						<params>
+							<param name="WidgetName" value="搜索"/>
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+		</itemgroup>
 	</menu>
-
 </configuration>

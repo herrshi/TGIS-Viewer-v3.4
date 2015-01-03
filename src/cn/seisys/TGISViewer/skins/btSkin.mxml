@@ -19,7 +19,7 @@
 	</s:states>
 	
 	<!-- 按下时添加阴影 -->
-	<s:Rect includeIn="down,over" top="-5" bottom="-5" left="-5" right="-5">
+	<s:Rect includeIn="down,over" top="-5" bottom="-5" left="-10" right="-10">
 		<s:fill>
 			<s:SolidColor color="0x58abed" alpha="1" color.down="0x58abed" color.over="0x58abed"/>
 		</s:fill>
@@ -29,7 +29,7 @@
 	</s:Rect>
 	
 	<!-- 按钮的背景和边框 -->
-	<s:Rect id="rect" excludeFrom="down,over" top="-5" bottom="-5" left="-5" right="-5">
+	<s:Rect id="rect" excludeFrom="down,over" top="-5" bottom="-5" left="-10" right="-10">
 		<s:fill>
 			<s:LinearGradient rotation="90">
 				<s:GradientEntry alpha="1" color="0xFFFFFF"/>

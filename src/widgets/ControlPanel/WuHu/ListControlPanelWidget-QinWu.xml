@@ -6,6 +6,7 @@
 				<clickfunctions>
 					<clickfunction name="ChangeOverlayVisible">
 						<params>
+							<param name="WidgetName" value="岗点Overlay"/>
 							<param name="OverlayType" value="policeSentry" />
 						</params>
 					</clickfunction>
@@ -15,6 +16,7 @@
 				<clickfunctions>
 					<clickfunction name="ChangeOverlayVisible">
 						<params>
+							<param name="WidgetName" value="警车Overlay"/>
 							<param name="OverlayType" value="policeCar" />
 						</params>
 					</clickfunction>
@@ -24,6 +26,7 @@
 				<clickfunctions>
 					<clickfunction name="ChangeOverlayVisible">
 						<params>
+							<param name="WidgetName" value="警员Overlay"/>
 							<param name="OverlayType" value="police" />
 						</params>
 					</clickfunction>

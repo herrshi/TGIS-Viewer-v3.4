@@ -1,13 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx" 
-		  width="300" height="300">
-	<s:Label width="100%" text="嘉定区"/>
-	<s:HGroup width="100%" height="100%">
-		<s:Group width="100%" height="100%">
+		  width="150" height="150"
+		  implements="mx.core.IDataRenderer">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.charts.events.ChartItemEvent;
+			import mx.charts.series.items.PieSeriesItem;
+			import mx.collections.ArrayCollection;
+			import mx.effects.easing.Elastic;
+			import mx.events.FlexEvent;
 			
-		</s:Group>
-		<mx:PieChart width="100%" height="100%"/>
-	</s:HGroup>
-</s:VGroup>
+			[Bindable]
+			private var _pieDataAC:ArrayCollection;
+			
+			private var _data:Object;
+			
+			[Bindable]
+			// implement IDataRenderer
+			public function get data():Object
+			{
+				return _data;
+			}
+			
+			public function set data(value:Object):void
+			{
+				_data = value;
+				
+				_pieDataAC = _data.countAC;
+				
+				//计算总数
+				var total:int = 0;
+				for each ( var countObj:Object in _pieDataAC )
+				{
+					total += countObj.count;
+				}
+				lblDistrictName.text = _data.DistrictName + " 共" + total + "件";
+			}
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+			}
+			
+			protected function pieChart_itemClickHandler(event:ChartItemEvent):void
+			{
+				var item:PieSeriesItem = event.hitData.chartItem as PieSeriesItem;
+				var degrees:Number = radiansToDegrees(item.startAngle);
+				var arr:Array = [];
+				arr[item.index] = 0.2;
+				pieSeries.perWedgeExplodeRadius = arr;
+				pieSeries.startAngle -= degrees;
+				
+				_pieDataAC.refresh();
+			}
+			
+			private function radiansToDegrees(radians:Number):Number 
+			{
+				return radians * (180 / Math.PI);
+			}
+		]]>
+	</fx:Script>
+	<s:backgroundFill> 
+		<s:SolidColor color="0xffffff" alpha="0.5"/> 
+	</s:backgroundFill>
+	
+	<s:VGroup width="100%" height="100%" 
+			  paddingTop="5">
+		<s:Label id="lblDistrictName" 
+				 textAlign="center" width="100%"
+				 fontSize="16" fontWeight="bold"/>
+		
+		<s:VGroup width="100%" height="100%">
+			<mx:PieChart id="pieChart" 
+						 width="100%" height="100%" 
+						 dataProvider="{_pieDataAC}" 
+						 showDataTips="true"
+						 itemClick="pieChart_itemClickHandler(event)">
+				<mx:series>
+					<mx:PieSeries id="pieSeries" 
+								  field="count" 
+								  nameField="name">
+						<mx:showDataEffect>
+							<mx:SeriesInterpolate duration="1500"
+												  easingFunction="{Elastic.easeOut}" />
+						</mx:showDataEffect>
+					</mx:PieSeries>
+				</mx:series>
+			</mx:PieChart>
+			
+			<!--<mx:Legend width="100%" dataProvider="{pieChart}" direction="horizontal" />-->
+		</s:VGroup>
+		
+	</s:VGroup>
+	
+</s:BorderContainer>

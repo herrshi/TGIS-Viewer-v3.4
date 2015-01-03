@@ -23,29 +23,29 @@
 	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
 
 	<!-- UI elements -->
-	<widget  left="10" top="10" 
-		config="widgets/Navigation/NavigationWidget.xml"
-		url="widgets/Navigation/NavigationWidget.swf" />
+	<widget left="10" top="10" 
+			config="widgets/Navigation/NavigationWidget.xml"
+			url="widgets/Navigation/NavigationWidget.swf" />
 		    
 	<widget left="3" bottom="3"
-		config="widgets/Coordinate/CoordinateWidget.xml" 
-		url="widgets/Coordinate/CoordinateWidget.swf" />
+			config="widgets/Coordinate/CoordinateWidget.xml" 
+			url="widgets/Coordinate/CoordinateWidget.swf" />
 	
 	<widget label="底图切换" right="10" top="10"
 			config="widgets/MapSwitcher/MapSwitcherWidget.xml"
 			url="widgets/MapSwitcher/MapSwitcherWidget.swf"/>
 			
 	<map top="0"  center="118.417947 31.337093" scale="48000"
-			 scalebarvisible="false" esrilogovisible="false">
+		 scalebarvisible="false" esrilogovisible="false">
 <!-- 	<map top="0" center="112.9894 28.185" scale="96000" -->
 <!-- 		scalebarvisible="false" esrilogovisible="false"> -->
 		<basemaps>
 <!-- 			<layer label="矢量图" type="tiled" visible="true" -->
 <!-- 				url="http://{serverip}/arcgis/rest/services/changsha/changsha_base_GHY/MapServer" /> -->
 			<layer label="矢量图" type="tiled" visible="true"
-				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base_new/MapServer" />
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base_new/MapServer" />
 			<layer label="卫星图" type="tiled" visible="false"
-				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" />
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" />
 		</basemaps>
 		
 		<operationallayers>
@@ -105,101 +105,114 @@
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	<widgetcontainer layout="float">
 		<widget label="气象站Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-QiXiangZhan.xml" 
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/PointOverlayWidget-QiXiangZhan.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="诱导板Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-QingBaoBan.xml" 
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/PointOverlayWidget-QingBaoBan.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="电子警察Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-DianZiJingCha.xml" 
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/PointOverlayWidget-DianZiJingCha.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="摄像机Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-SheXiangJi.xml" 
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/PointOverlayWidget-SheXiangJi.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="信号机Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-XinHaoJi.xml" 
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/PointOverlayWidget-XinHaoJi.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="卡口Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-KaKou.xml" 
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/PointOverlayWidget-KaKou.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="占道施工Overlay"
-			config="widgets/Overlay/WuHu/orc/show/PointOverlayWidget-OrcShow.xml" 
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/orc/show/PointOverlayWidget-OrcShow.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="视频事件Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-ShiPinShiJian.xml" 
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/PointOverlayWidget-ShiPinShiJian.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 			
 		<widget label="警情Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-policeEvent.xml" 
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/PointOverlayWidget-policeEvent.xml" 
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 
 		<widget label="警员Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-police.xml"
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/PointOverlayWidget-police.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="警车Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-policeCar.xml"
-			url="widgets/Overlay/PointOverlayWidget.swf"/>
+				config="widgets/Overlay/WuHu/PointOverlayWidget-policeCar.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
 		<widget label="岗点Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-policeSentry.xml"
-			url="widgets/Overlay/PointOverlayWidget.swf" />
+				config="widgets/Overlay/WuHu/PointOverlayWidget-policeSentry.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
 		
 		<widget label="重点车辆Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-ZhongDianCheLiang.xml"
-			url="widgets/Overlay/PointOverlayWidget.swf" />
+				config="widgets/Overlay/WuHu/PointOverlayWidget-ZhongDianCheLiang.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
 		
 		<widget label="应急资源Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiZiYuan.xml"
-			url="widgets/Overlay/PointOverlayWidget.swf" />
+				config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiZiYuan.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
 		
 		<widget label="应急单位Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiDanWei.xml"
-			url="widgets/Overlay/PointOverlayWidget.swf" />
+				config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiDanWei.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
 		
 		<widget label="应急事件Overlay"
-			config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiShiJian.xml"
-			url="widgets/Overlay/PointOverlayWidget.swf" />
+				config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiShiJian.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="应急设施Overlay"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiSheShi.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="添加点位" 
+				config="widgets/SendMapClickCoordinate/SendMapClickCoordinate-general.xml"
+				url="widgets/SendMapClickCoordinate/SendMapClickCoordinateWidget.swf"/>
 	</widgetcontainer>
 	
 	<widgetcontainer layout="fix">
-		<widget label="首页菜单" preload="open" right="20" top="50"
-			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-main.xml"
-			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		<widget label="首页菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-main.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 		
 		<widget label="勤务菜单" right="20" top="50"
-			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-QinWu.xml"
-			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-QinWu.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 		
 		<widget label="重点车辆菜单" right="20" top="50"
-			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-ZhongDianCheLiang.xml"
-			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-ZhongDianCheLiang.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 		
 		<widget label="道路气象菜单" right="20" top="50"
-			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-DaoLuQiXiang.xml"
-			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-DaoLuQiXiang.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 		
 		<widget label="应急事件菜单" right="20" top="50"
-			config="widgets/ControlPanel/WuHu/ListControlPanelWidget-YingJiShiJian.xml"
-			url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-YingJiShiJian.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 	</widgetcontainer>
 	
 	<widgetcontainer layout="horizontal">
 		<widget label="搜索" preload="minimized" 
-			icon="assets/images/i_search.png"
-			config="widgets/MultiLayerSearch/WuHu/MultiLayerSearchWidget-roadAndPoi.xml"
-			url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+				icon="assets/images/i_search.png"
+				config="widgets/MultiLayerSearch/WuHu/MultiLayerSearchWidget-roadAndPoi.xml"
+				url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+		
+		<widget label="应急事件搜索"
+				icon="assets/images/i_search.png"
+				config="widgets/MultiLayerSearch/WuHu/MultiLayerSearchWidget-YingJiShiJian.xml"
+				url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
 			
 		<widget label="测距" 
-			icon="assets/images/i_draw2.png" 
-			config="widgets/Draw/DrawWidget.xml"
-			url="widgets/Draw/DrawWidget.swf" />
+				icon="assets/images/i_draw2.png" 
+				config="widgets/Draw/DrawWidget.xml"
+				url="widgets/Draw/DrawWidget.swf" />
 	</widgetcontainer>
 </configuration>

@@ -382,7 +382,7 @@
 							 borderStyle="none">
 				<s:NavigatorContent width="100%" height="100%" label="操  作" icon="{starIcon}">
 					<s:HGroup id="buttonContainer" width="100%" height="100%" 
-							  verticalAlign="middle" paddingLeft="5" gap="15"/>
+							  verticalAlign="middle" paddingLeft="10" gap="30"/>
 				</s:NavigatorContent>
 			</mx:TabNavigator>
 		</s:Group>

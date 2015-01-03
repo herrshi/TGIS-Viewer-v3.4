@@ -19,15 +19,12 @@
 		<![CDATA[
 			import com.esri.ags.FeatureSet;
 			import com.esri.ags.Graphic;
-			import com.esri.ags.components.supportClasses.InfoPlacement;
-			import com.esri.ags.geometry.MapPoint;
 			import com.esri.ags.layers.GraphicsLayer;
 			import com.esri.ags.renderers.ClassBreaksRenderer;
 			import com.esri.ags.renderers.supportClasses.ClassBreakInfo;
 			import com.esri.ags.symbols.InfoSymbol;
 			import com.esri.ags.symbols.SimpleFillSymbol;
 			import com.esri.ags.symbols.SimpleLineSymbol;
-			import com.esri.ags.symbols.TextSymbol;
 			import com.esri.ags.tasks.GeometryService;
 			import com.esri.ags.tasks.GeometryServiceSingleton;
 			import com.esri.ags.tasks.QueryTask;
@@ -40,8 +37,12 @@
 			import mx.rpc.AsyncResponder;
 			import mx.rpc.Fault;
 			
+			import spark.collections.Sort;
+			import spark.collections.SortField;
+			
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.skins.InfoSymbol.HuanBaoJu.XinFangDianCountSymbol;
+			import cn.seisys.TGISViewer.utils.Hashtable;
 			
 			
 			
@@ -69,8 +70,13 @@
 			 * 用于geometryService.relation的Polygon数组（不是graphic，是graphic.geometry）
 			 * */
 			private var _polygonGeometryArray:Array;
+			
 			/**
-			 * 保存图层query结果
+			 * 保存point图层query结果
+			 * */
+			private var _pointGraphicAC:ArrayCollection;
+			/**
+			 * 保存polygon图层query结果
 			 * */
 			private var _polygonGraphicAC:ArrayCollection;
 			
@@ -87,6 +93,8 @@
 			 * */
 			private var _polygonLayer:GraphicsLayer;
 			
+			private var _polygonNameField:String;
+			
 			/**
 			 * 标注点图层中的名称字段，和面图层中的名称字段对应
 			 * */
@@ -96,18 +104,27 @@
 			 * */
 			private var _polygonLayerNameField:String;
 			
+			
 			private var _labelPointGraphicAC:ArrayCollection;
 			/**
 			 * 显示文字标注的图层
 			 * */
 			private var _labelLayer:GraphicsLayer;
 			
-			private var _countSymbol:InfoSymbol;
+			/**
+			 * 标注放置位置
+			 * */
+			private var _labelPlacementField:String;
+			
+			private var _typeField:String;
+			private var _typeValue:Array;
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
-				AppEvent.addListener( AppEvent.HUANBAOJU_QUERYEXPRESSION_TIME, appevent_queryExpressionTimeHandler );
-				AppEvent.addListener( AppEvent.HUANBAOJU_QUERYEXPRESSION_TYPE, appevent_queryExpressionTypeHandler );
+				AppEvent.addListener( AppEvent.HUANBAOJU_QUERYEXPRESSION_TIME, 
+					appevent_queryExpressionTimeHandler );
+				AppEvent.addListener( AppEvent.HUANBAOJU_QUERYEXPRESSION_TYPE, 
+					appevent_queryExpressionTypeHandler );
 				
 				_geometryService = new GeometryService( GeometryServiceSingleton.instance.url );
 				_geometryService.token = GeometryServiceSingleton.instance.token;
@@ -118,6 +135,7 @@
 				
 				_gradientColorArray = [];
 				
+				_pointGraphicAC = new ArrayCollection();
 				_polygonGraphicAC = new ArrayCollection();
 				
 				_labelPointGraphicAC = new ArrayCollection();
@@ -126,11 +144,8 @@
 				_polygonLayer.id = "colorRendererPolygonLayer";
 				map.addLayer( _polygonLayer );
 				//面图层放在标线和标注下方
-				map.reorderLayer( "colorRendererPolygonLayer", 1 );
+				map.reorderLayer( "colorRendererPolygonLayer", 3 );
 				
-				_countSymbol = new InfoSymbol();
-				_countSymbol.infoRenderer = new ClassFactory( XinFangDianCountSymbol );
-				_countSymbol.infoPlacement = InfoPlacement.CENTER;
 				_labelLayer = new GraphicsLayer();
 				map.addLayer( _labelLayer );
 			}
@@ -140,10 +155,15 @@
 				if ( configXML )
 				{
 					var pointLayerUrl:String = configXML.pointlayer.url;
+					_typeField = configXML.pointlayer.typefield;
+					var typeValues:String = configXML.pointlayer.typevalue;
+					_typeValue = typeValues.split( "," );
+					
 					if ( pointLayerUrl )
 					{
 						pointLayerUrl = pointLayerUrl.replace( "{serverip}", configData.arcgisServerIP );
 						_pointQueryTask = new QueryTask( pointLayerUrl );
+						_pointQueryTask.disableClientCaching = true;
 						queryPoints();
 					}
 					
@@ -152,6 +172,7 @@
 					{
 						polygonLayerUrl = polygonLayerUrl.replace( "{serverip}", configData.arcgisServerIP );
 						_polygonQueryTask = new QueryTask( polygonLayerUrl );
+						_polygonQueryTask.disableClientCaching = true;
 						queryPolygons();
 					}
 					
@@ -159,8 +180,9 @@
 					var labelLayerUrl:String = configXML.labellayer.url;
 					if ( labelLayerUrl )
 					{
-						_labelPointLayerNameField = configXML.labellayer.pointnamefield;
-						_polygonLayerNameField = configXML.labellayer.polygonnamefield;
+						_labelPointLayerNameField = configXML.labellayer.labelpointnamefield;
+						_polygonLayerNameField = configXML.polygonlayer.labelpolygonnamefield;
+						_labelPlacementField = configXML.labellayer.labelplacementfield;
 						
 						labelLayerUrl = labelLayerUrl.replace( "{serverip}", configData.arcgisServerIP );
 						_labelQueryTask = new QueryTask( labelLayerUrl );
@@ -204,14 +226,17 @@
 				query.returnGeometry = true;
 				query.where = expr;
 				query.outSpatialReference = map.spatialReference;
+				query.outFields = [_typeField];
 				_pointQueryTask.execute( query, new AsyncResponder( onResult, onFault ) );
 				
 				function onResult( featureSet:FeatureSet, token:Object = null ):void
 				{
 					_pointGeometryArray = [];
+					_pointGraphicAC.removeAll();
 					
 					for each ( var graphic:Graphic in featureSet.features )
 					{
+						_pointGraphicAC.addItem( graphic );
 						_pointGeometryArray.push( graphic.geometry );
 					}
 					_pointQueryTaskFinish = true;
@@ -238,6 +263,7 @@
 				query.returnGeometry = true;
 				query.where = "1=1";
 				query.outSpatialReference = map.spatialReference;
+				query.outFields = [_polygonLayerNameField]
 				_polygonQueryTask.execute( query, new AsyncResponder( onResult, onFault ) );
 				
 				function onResult( featureSet:FeatureSet, token:Object = null ):void
@@ -275,18 +301,25 @@
 						var polygonIndex:int = resultObj.geometry2Index;
 						var polygonGraphic:Graphic = _polygonGraphicAC.getItemAt( polygonIndex ) as Graphic;
 						polygonGraphic.attributes.count++;
+						
+						//在点图层中保存所属polygon的名字
+						var pointIndex:int = resultObj.geometry1Index;
+						var pointGraphic:Graphic = _pointGraphicAC.getItemAt( pointIndex ) as Graphic;
+						pointGraphic.attributes.DistrictName = polygonGraphic.attributes[_polygonLayerNameField];
 					}
 					
 					_polygonLayer.graphicProvider = _polygonGraphicAC;
 					_polygonLayer.renderer = generateClassBreakRenderer();
 					
-					_labelLayer.clear();
+					statisticPointsByType();
+					
+					/*_labelLayer.clear();
 					for each ( var graphic:Graphic in _polygonGraphicAC )
 					{
 						var centerPt:MapPoint = graphic.geometry.extent.center;
-						var textSymbol:TextSymbol = new TextSymbol( graphic.attributes["名称"] + ":" + graphic.attributes["count"] );
+						var textSymbol:TextSymbol = new TextSymbol( graphic.attributes[_polygonLayerNameField] + ":" + graphic.attributes["count"] );
 						_labelLayer.add( new Graphic( centerPt, textSymbol ) );
-					}
+					}*/
 					
 					generateLabels();
 					
@@ -345,6 +378,7 @@
 				query.returnGeometry = true;
 				query.where = "1=1";
 				query.outSpatialReference = map.spatialReference;
+				query.outFields = [ "labelDirec", _labelPointLayerNameField ]
 				_labelQueryTask.execute( query, new AsyncResponder( onResult, onFault ) );
 				
 				function onResult( featureSet:FeatureSet, token:Object = null ):void
@@ -368,6 +402,8 @@
 			
 			private function generateLabels():void
 			{
+				_labelLayer.clear();
+				
 				for each ( var labelGraphic:Graphic in _labelPointGraphicAC )
 				{
 					var labelPointLayerName:String = labelGraphic.attributes[ _labelPointLayerNameField ];
@@ -376,24 +412,151 @@
 						var polygonLayerName:String = polygonGraphic.attributes[ _polygonLayerNameField ];
 						if ( labelPointLayerName == polygonLayerName )
 						{
-							labelGraphic.symbol = _countSymbol;
-//							_labelLayer.add( labelGraphic );
+							var countAC:ArrayCollection = _districtCountTable.find( labelPointLayerName );
+							if ( countAC )
+							{
+								labelGraphic.attributes.countAC = countAC;
+								labelGraphic.attributes.DistrictName = labelPointLayerName;
+								
+								var placement:String = labelGraphic.attributes["labelDirec"];
+								var countSymbol:InfoSymbol = new InfoSymbol();
+								countSymbol.infoRenderer = new ClassFactory( XinFangDianCountSymbol );
+								countSymbol.infoPlacement = placement;
+								labelGraphic.symbol = countSymbol;
+								
+								_labelLayer.add( labelGraphic );
+							}
+							
 							break;
 						}
 					}
 				}
 			}
 			
+			private var _timeExpr:String = "";
+			private var _typeExpr:String = "";
+			
+			private function getQueryExpr():String
+			{
+				var result:String = "";
+				if ( _timeExpr == "" && _typeExpr != "" )
+				{
+					result = _typeExpr;
+				}
+				else if ( _timeExpr != "" && _typeExpr == "" )
+				{
+					result = _timeExpr;
+				}
+				else if ( _timeExpr != "" && _typeExpr != "" )
+				{
+					result = _timeExpr + " AND " + _typeExpr;
+				}
+				else
+				{
+					result = "1=1";
+				}
+				return result;
+			}
+			
 			private function appevent_queryExpressionTimeHandler( event:AppEvent ):void
 			{
-				var timeExpr:String = event.data as String;
-				queryPoints( timeExpr );
+				_timeExpr = event.data as String;
+				queryPoints( getQueryExpr() );
 			}
 			
 			private function appevent_queryExpressionTypeHandler( event:AppEvent ):void
 			{
-				var typeExpr:String = event.data as String;
+				_typeExpr = event.data as String;
+				queryPoints( getQueryExpr() );
+			}
+			
+			private var _districtCountTable:Hashtable;
+			
+			/**
+			 * 统计点位中每个类型的数量
+			 * 全部点位统计和每个区的点位统计
+			 * */
+			private function statisticPointsByType():void
+			{
+				_districtCountTable = new Hashtable();
 				
+				for each ( var graphic:Graphic in _pointGraphicAC )
+				{
+					var districtName:String = graphic.attributes.DistrictName;
+					var pointType:String = graphic.attributes[_typeField];
+					
+					if ( !_districtCountTable.containsKey( districtName ) )
+					{
+						//初始化每个区的类型统计
+						var countAC:ArrayCollection = new ArrayCollection();
+						for each ( var typeName:String in _typeValue )
+						{
+							//图层中的类型字段值可能包含多个类型，所以用indexOf
+							countAC.addItem( 
+								{ 
+									name: typeName, 
+									count: pointType.indexOf( typeName ) == -1 ? 0 : 1
+								} 
+							);
+						}
+						countAC.addItem( 
+							{ 
+								name: "其他", 
+								count: 0 
+							} 
+						);
+						_districtCountTable.add( districtName, countAC );
+					}
+					else
+					{
+						countAC = _districtCountTable.find( districtName );
+						var found:Boolean = false;
+						for each ( typeName in _typeValue )
+						{
+							if ( pointType.indexOf( typeName ) >= 0 )
+							{
+								for each ( var countObj:Object in countAC )
+								{
+									if ( countObj.name == typeName )
+									{
+										countObj.count++;
+										break;
+									}
+								}
+								found = true;
+								break;
+							}
+						}
+						//不在预先设置好的类型中都算在其他
+						if ( !found )
+						{
+							for each ( countObj in countAC )
+							{
+								if ( countObj.name == "其他" )
+								{
+									countObj.count++;
+									break;
+								}
+							}
+						}
+					}
+				}
+				
+				//按照数量排序
+				var sort:Sort = new Sort();
+				sort.fields = [ new SortField( "count", true ) ];
+				for each ( districtName in _districtCountTable.getKeySet() )
+				{
+					countAC = _districtCountTable.find( districtName );
+					countAC.sort = sort;
+					countAC.refresh();
+					/*trace( districtName );
+					for each ( countObj in countAC )
+					{
+						trace( countObj.name, countObj.count );
+					}
+					trace( "\n" );*/
+				}
 			}
 		]]>
 	</fx:Script>

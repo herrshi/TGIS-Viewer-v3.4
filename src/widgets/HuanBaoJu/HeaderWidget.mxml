@@ -14,6 +14,8 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			
+			import spark.events.IndexChangeEvent;
+			
 			import cn.seisys.TGISViewer.AppEvent;
 			
 			/**
@@ -76,15 +78,23 @@
 				//多月选择时时间范围为初始年月-monthCount
 				for ( var i:int = 0; i < _monthCount; i++ )
 				{
-					var month:Date = new Date( _selectedMonth.fullYear, _selectedMonth.month - i );
-					var monthString:String = dateTimeFormatterDisplay.format( month );
-					var monthObj:Object = 
+					var firstDayOfMonth:Date = new Date( _selectedMonth.fullYear, _selectedMonth.month - i, 1 );
+					var lastDayOfMonth:Date = new Date( firstDayOfMonth.fullYear, firstDayOfMonth.month, 
+						getLastDateOfMonth( firstDayOfMonth.fullYear, firstDayOfMonth.month + 1 )  );
+					
+					var startDateObj:Object = 
 						{ 
-							month: month, 
-							monthString: monthString 
+							date: firstDayOfMonth, 
+							formattedDate: dateTimeFormatterDisplay.format( firstDayOfMonth ) 
 						};
-					_startMonthAC.addItem( monthObj );
-					_endMonthAC.addItem( monthObj );
+					_startMonthAC.addItem( startDateObj );
+					
+					var endDateObj:Object = 
+						{
+							date: lastDayOfMonth,
+							formattedDate: dateTimeFormatterDisplay.format( lastDayOfMonth )
+						}
+					_endMonthAC.addItem( endDateObj );
 				}
 				
 				_timeFieldName = configXML.timefieldname;
@@ -237,6 +247,26 @@
 				btnMonthForward.enabled = false;
 			}
 			
+			protected function dplstStartMonth_changeHandler(event:IndexChangeEvent):void
+			{
+				timeSequenceQuery();
+			}
+			
+			protected function dplstEndMonth_changeHandler(event:IndexChangeEvent):void
+			{
+				timeSequenceQuery();
+			}
+			
+			private function timeSequenceQuery():void
+			{
+				var startDate:Date = dplstStartMonth.selectedItem.date;
+				var endDate:Date = dplstEndMonth.selectedItem.date;
+				var queryExpr:String = 
+					_timeFieldName + " >= date '" + dateTimeFormatterQuery.format( startDate ) + "' AND " + 
+					_timeFieldName + " <= date '" + dateTimeFormatterQuery.format( endDate ) + "'";
+				AppEvent.dispatch( AppEvent.HUANBAOJU_QUERYEXPRESSION_TIME, queryExpr );
+			}
+			
 			private function getLastDateOfMonth( year:int, month:int ):int
 			{
 				switch(month)
@@ -271,6 +301,7 @@
 						return 0;
 				}
 			}
+			
 		]]>
 	</fx:Script>
 	
@@ -315,16 +346,18 @@
 							width="125" 
 							requireSelection="true"
 							dataProvider="{_startMonthAC}" 
-							labelField="monthString"
-							skinClass="widgets.HuanBaoJu.skins.CustomDropDownListSkin"/>
+							labelField="formattedDate"
+							skinClass="widgets.HuanBaoJu.skins.CustomDropDownListSkin" 
+							change="dplstStartMonth_changeHandler(event)"/>
 			<s:Label text="至"
 					 color="0xffffff"/>
 			<s:DropDownList id="dplstEndMonth" 
 							width="125" 
 							requireSelection="true"
 							dataProvider="{_endMonthAC}"
-							labelField="monthString"
-							skinClass="widgets.HuanBaoJu.skins.CustomDropDownListSkin"/>
+							labelField="formattedDate"
+							skinClass="widgets.HuanBaoJu.skins.CustomDropDownListSkin" 
+							change="dplstEndMonth_changeHandler(event)"/>
 		</s:HGroup>
 		
 		<s:HGroup height="100%" verticalAlign="middle" paddingLeft="15" gap="0">

@@ -51,6 +51,7 @@
 				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_widgetCloseHandler );
 				
 				_cursorId = map.cursorManager.setCursor( _crossCursor, CursorManagerPriority.MEDIUM, -8, -8 );
+				map.doubleClickZoomEnabled = false;
 				map.addEventListener( MouseEvent.DOUBLE_CLICK, map_doubleClickHandler );
 			}
 			
@@ -153,6 +154,7 @@
 				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
 				{
 					_cursorId = map.cursorManager.setCursor(_crossCursor, CursorManagerPriority.MEDIUM, -8, -8);
+					map.doubleClickZoomEnabled = false;
 					map.addEventListener( MouseEvent.DOUBLE_CLICK, map_doubleClickHandler );
 //					setMapAction( _drawAction, null, _drawSymbol, map_drawEndHandler );
 				}
@@ -163,6 +165,7 @@
 				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
 				{
 					map.cursorManager.removeCursor( _cursorId );
+					map.doubleClickZoomEnabled = true;
 					map.removeEventListener( MouseEvent.DOUBLE_CLICK, map_doubleClickHandler );
 //					setMapAction( null, null, null, null );
 				}
@@ -326,6 +329,9 @@
 				var dataString:String;
 				
 				var point:MapPoint = _lastDrawGraphic.geometry as MapPoint;
+				var pointObj:Object = point.toJSON();
+				delete pointObj.spatialReference;
+				
 				if ( _showBuffer )
 				{
 					//老版本接口
@@ -336,7 +342,7 @@
 						} 
 					);
 					//新版本接口需要的数据
-					dataObj = { type: _type, bufferDistance: _bufferDistance, geometry: point };
+					dataObj = { type: _type, bufferDistance: _bufferDistance, geometry: pointObj };
 				}
 				else
 				{
@@ -348,7 +354,7 @@
 						} 
 					);
 					//新版本接口需要的数据
-					dataObj = { type: _type, geometry: point };
+					dataObj = { type: _type, geometry: pointObj };
 				}
 				
 				//新版本接口
