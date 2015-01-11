@@ -30,14 +30,14 @@
 	</popup>
 	
 	<uniquevaluerenderer field="stateColor">
-		<picturemarkersymbol url="assets/images/mapIcons/JingChe-grey.png" yoffset="13"/>
+		<picturemarkersymbol url="assets/images/mapIcons/WuHu/JingChe-grey.png" yoffset="18"/>
 		
 		<uniquevalueinfo value="1">
-			<picturemarkersymbol url="assets/images/mapIcons/JingChe-blue.png" yoffset="13" />
+			<picturemarkersymbol url="assets/images/mapIcons/WuHu/JingChe-blue.png" yoffset="18" />
 		</uniquevalueinfo>
 		
 		<uniquevalueinfo value="2">
-			<picturemarkersymbol url="assets/images/mapIcons/JingChe-yellow.png" yoffset="13" />
+			<picturemarkersymbol url="assets/images/mapIcons/WuHu/JingChe-yellow.png" yoffset="18" />
 		</uniquevalueinfo>
 	</uniquevaluerenderer>	
 	

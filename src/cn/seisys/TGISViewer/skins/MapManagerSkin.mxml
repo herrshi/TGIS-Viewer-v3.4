@@ -33,6 +33,7 @@
 			
 			protected function btnTest1_clickHandler(event:MouseEvent):void
 			{
+				trace( "\n\n" );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"importantClient","points":[{"id":"55","x":106.5848028,"y":29.56924,"fields":{"name":"重庆市规划展览馆","unitType":"直供直管","area":"渝中区","profession":"公共事业","accessPoint":"朝天门开闭所614,朝天门开闭所621"}},{"id":"56","x":106.5478472,"y":29.56554,"fields":{"name":"重庆市委","unitType":"直供直管","area":"渝中区","profession":"党政机关","accessPoint":"市委开闭所614开关,市委开闭所623开关"}}]}' );
 //				AppEvent.dispatch( AppEvent.LOCATOR_MAP_BY_NAME, "渝中区" );
 				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
@@ -219,11 +220,12 @@
 						visible: true
 					}
 				);*/
-//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"2272","x":"118.4040699","y":"31.387664","fields":{"cameraDesc":"麒麟路北口东侧车道","cameraIp":"52.123.34.43","cameraState":"连接"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"CAM01","x":"110.407656","y":"35.355133","fields":{"cameraDesc":"CAM01","cameraIp":"52.123.16.29","cameraState":"连接"}},{"id":"CAM02","x":"118.407656","y":"31.355133","fields":{"cameraDesc":"CAM02","cameraIp":"52.123.16.71","cameraState":"连接"}},{"id":"CAM03","x":null,"y":null,"fields":{"cameraDesc":"CAM03","cameraIp":"52.123.16.157","cameraState":"连接"}},{"id":"CAM04","x":null,"y":null,"fields":{"cameraDesc":"CAM04","cameraIp":"52.123.20.170","cameraState":"连接"}},{"id":"CAM05","x":null,"y":null,"fields":{"cameraDesc":"CAM05","cameraIp":"52.123.34.108","cameraState":"连接"}},{"id":"CAM06","x":null,"y":null,"fields":{"cameraDesc":"CAM06","cameraIp":"52.123.34.102","cameraState":"连接"}},{"id":"CAM07","x":null,"y":null,"fields":{"cameraDesc":"CAM07","cameraIp":"52.123.20.175","cameraState":"连接"}},{"id":"CAM08","x":null,"y":null,"fields":{"cameraDesc":"CAM08","cameraIp":"52.123.20.176","cameraState":"连接"}},{"id":"CAM09","x":null,"y":null,"fields":{"cameraDesc":"CAM09","cameraIp":"52.123.20.177","cameraState":"连接"}},{"id":"CAM10","x":null,"y":null,"fields":{"cameraDesc":"CAM10","cameraIp":"52.123.20.178","cameraState":"连接"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"KaKou","points":[{"id":"KK001","x":118.39563496200003 ,"y":31.342197578000082 ,"fields":{"desc":"坦克山路(天网)"}}]}' );
-				AppEvent.dispatch( AppEvent.OPEN_MENU, "道路气象菜单" );
-				AppEvent.dispatch( AppEvent.WIDGET_RUN, "道路气象菜单" );
+				AppEvent.dispatch( AppEvent.OPEN_MENU, "应急事件菜单" );
+				AppEvent.dispatch( AppEvent.WIDGET_RUN, "应急事件菜单" );
 //				AppEvent.dispatch( AppEvent.WIDGET_RUN, "添加点位" );
+				
 				
 				//松江测试
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingSaoChe","points":[{"id":"INFRASTUR20140806171206000475","x":121.18147143974035,"y":31.022590610539257,"title":"北桥孔监控","fields":{"名称":"北桥孔监控","原模版描述":"摄像头","原模版别名":"SXT","原设备实体描述":"北桥孔监控","维护单位":"不限","设备详细描述":"北桥孔监控"},"showZoomButton": true,"showDetailButton": true,"showMoveButton": true,"showDeleteButton": true}]}' );
@@ -260,6 +262,7 @@
 			
 			protected function btnTest2_clickHandler(event:MouseEvent):void
 			{
+				trace( "\n\n" );
 				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 
 						serviceName: "设施设备",
@@ -313,10 +316,12 @@
 //				AppEvent.dispatch( AppEvent.SET_POLICE_EVENT_DATA ,'[ {"id": "event001","title": "交通警情-道路交通警情-机动车与非机动车","image": " ", "level": 1,"time": "2014-07-22 15:35","interaction119":"联动119", "interaction110":"联动110", "interaction120":"联动120", "interactionContent":"有危险品", "source": "122电话报警","content": "小汽车驶入非机动车道撞上电动车，发生擦挂事件","location": "锦江区锦华路100号万特欢乐世界正门口","deatCount": 0,"injuredCount": 3,"trappedCount": 5,"fields": {"报警人": "李四 男 138 8888 8888","涉案人": "张三 男 137 7777 7777"},"actions": "上报,回退,派警,结案,回访","logs": "2014-07-22 15: 35一分局刘某进行三快处理并结案；2014-07-22 15: 35一分局刘某电话核实；2014-07-22 15: 35交管局下发至一分局；"}]');
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":118.419,"y":31.334,"fields":{"gpsState":"离岗"}}]}' );
 //				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "police", id: "712" } );
-				AppEvent.dispatch( AppEvent.OPEN_MENU, "首页菜单" );
-				AppEvent.dispatch( AppEvent.WIDGET_RUN, "首页菜单" );
-//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"YingJiShiJian","points":[{"x":118.566158,"y":31.146213,"id":"1111","fields":{"occurTime":"2014-12-17 17:19:39","sceneDesc":"南北高架中环立交入口","yjType":"机动车碰撞","sjLevel":"一级(重大)","brief":"中环共和立交入口辆车相撞"}}]}' );
+//				AppEvent.dispatch( AppEvent.OPEN_MENU, "首页菜单" );
+//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "首页菜单" );
+				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"YingJiShiJian","points":[{"x":118.419,"y":31.334,"id":"1111","fields":{"occurTime":"2014-12-17 17:19:39","sceneDesc":"南北高架中环立交入口","yjType":"机动车碰撞","sjLevel":"一级(重大)","brief":"中环共和立交入口辆车相撞","hasYuan":"1","hasWuzi":"1"}}]}' );
+				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"YingJiSheShi","points":[{"x":118.429,"y":31.344,"id":"1111","fields":{"brief":"2014-12-17 17:19:39","facType":"南北高架中环立交入口","facName":"机动车碰撞","contactWay":"一级(重大)","contactNumber":"中环共和立交入口辆车相撞"}}]}' );
 //				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "添加点位" );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"JCBK","points":[{"id":"皖BK8135","x":118.3913,"y":31.3633,"fields":{"hphm":"皖BK8135","ms":"人民路-凤池路","jgsj":"2014-5-16 9:18:00","img":"ftp://test:123456@128.64.151.158/310227PDDEVICE0000001_140610150107_hc1.jpg"}}]}' );
 				
 				//浦东测试
 				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
@@ -340,6 +345,7 @@
 			
 			protected function btnTest3_clickHandler(event:MouseEvent):void
 			{
+				trace( "\n\n" );
 //				AppEvent.dispatch( AppEvent.SIM_MOVE_POINT_STOP, "1" );
 				//AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "信号机" );
 				
@@ -376,9 +382,9 @@
 				  top.resized="{hostComponent.mapTop}" bottom.resized="{hostComponent.mapBottom}"/>
     </s:Group>
 	<s:HGroup visible="true" right="10" bottom="10">
-		<s:Button id="btnTest1" label="道路气象" click="btnTest1_clickHandler(event)"/>
-		<s:Button id="btnTest2" label="首页" click="btnTest2_clickHandler(event)"/>
-		<s:Button id="btnTest3" label="勤务" click="btnTest3_clickHandler(event)"/>
+		<s:Button id="btnTest1" label="test1" click="btnTest1_clickHandler(event)"/>
+		<s:Button id="btnTest2" label="test2" click="btnTest2_clickHandler(event)"/>
+		<s:Button id="btnTest3" label="test3" click="btnTest3_clickHandler(event)"/>
 	</s:HGroup>
 	
 </s:Skin>

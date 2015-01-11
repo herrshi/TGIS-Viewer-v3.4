@@ -31,7 +31,6 @@
 
 	<fx:Script>
 		<![CDATA[
-			
 			protected function this_rollOutHandler(event:MouseEvent):void
 			{
 				if ( Capabilities.hasIME )

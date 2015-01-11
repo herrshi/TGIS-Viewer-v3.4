@@ -233,6 +233,8 @@
 //					wTemplate.addTitlebarButton( "assets/images/i_table.png", "搜索结果", showStateResults);
 					fade.targets = [ bufferlInput, graphicalInput, textInput, resultsList ];
 				}
+				
+				AppEvent.dispatch( AppEvent.WIDGET_CREATED, widgetTitle );
 			}
 			
 			/**
@@ -1108,6 +1110,8 @@
 				{
 					map.addLayer( _searchResultLayer );
 				}
+				
+				AppEvent.dispatch( AppEvent.WIDGET_CREATED, widgetTitle );
 			}
 			
 			protected function wTemplate_closedHandler(event:Event):void

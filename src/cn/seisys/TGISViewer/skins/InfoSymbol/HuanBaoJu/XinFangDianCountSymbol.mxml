@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx" 
-		  width="150" height="150"
-		  implements="mx.core.IDataRenderer">
+		  width="100" height="100"
+		  implements="mx.core.IDataRenderer" 
+		  fontFamily="微软雅黑">
 	
 	<fx:Script>
 		<![CDATA[
@@ -37,7 +38,8 @@
 				{
 					total += countObj.count;
 				}
-				lblDistrictName.text = _data.DistrictName + " 共" + total + "件";
+				lblName.text = _data.DistrictName;
+				lblCount.text = total.toString();
 			}
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
@@ -63,37 +65,48 @@
 			}
 		]]>
 	</fx:Script>
-	<s:backgroundFill> 
-		<s:SolidColor color="0xffffff" alpha="0.5"/> 
-	</s:backgroundFill>
 	
-	<s:VGroup width="100%" height="100%" 
-			  paddingTop="5">
-		<s:Label id="lblDistrictName" 
-				 textAlign="center" width="100%"
-				 fontSize="16" fontWeight="bold"/>
+	<fx:Declarations>
 		
-		<s:VGroup width="100%" height="100%">
-			<mx:PieChart id="pieChart" 
-						 width="100%" height="100%" 
-						 dataProvider="{_pieDataAC}" 
-						 showDataTips="true"
-						 itemClick="pieChart_itemClickHandler(event)">
-				<mx:series>
-					<mx:PieSeries id="pieSeries" 
-								  field="count" 
-								  nameField="name">
-						<mx:showDataEffect>
-							<mx:SeriesInterpolate duration="1500"
-												  easingFunction="{Elastic.easeOut}" />
-						</mx:showDataEffect>
-					</mx:PieSeries>
-				</mx:series>
-			</mx:PieChart>
-			
-			<!--<mx:Legend width="100%" dataProvider="{pieChart}" direction="horizontal" />-->
-		</s:VGroup>
-		
-	</s:VGroup>
+	</fx:Declarations>
 	
-</s:BorderContainer>
+	<mx:PieChart id="pieChart" 
+				 width="100%" height="100%" 
+				 dataProvider="{_pieDataAC}" 
+				 showDataTips="true" 
+				 innerRadius="0.5"
+				 itemClick="pieChart_itemClickHandler(event)">
+		<mx:series>
+			<mx:PieSeries id="pieSeries" 
+						  field="count" 
+						  nameField="name">
+				<mx:showDataEffect>
+					<mx:SeriesInterpolate duration="1500"
+										  easingFunction="{Elastic.easeOut}" />
+				</mx:showDataEffect>
+			</mx:PieSeries>
+		</mx:series>
+	</mx:PieChart>
+		
+	<s:Label id="lblName" 
+			 alpha="0.8"
+			 color="0xffffff" fontWeight="bold" 
+			 horizontalCenter="0" verticalCenter="-8">
+		<s:filters>
+			<s:GlowFilter color="0x000000" 
+						  alpha="0.6" 
+						  blurX="4" blurY="4" strength="5"/>
+		</s:filters>
+	</s:Label>
+	
+	<s:Label id="lblCount"
+			 alpha="0.8"
+			 color="0xffffff" fontWeight="bold"
+			 horizontalCenter="0" verticalCenter="8">
+		<s:filters>
+			<s:GlowFilter color="0x000000" 
+						  alpha="0.6" 
+						  blurX="4" blurY="4" strength="5"/>
+		</s:filters>
+	</s:Label>
+</s:Group>

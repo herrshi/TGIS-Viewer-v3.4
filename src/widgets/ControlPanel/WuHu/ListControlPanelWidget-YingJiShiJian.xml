@@ -1,37 +1,41 @@
 <?xml version="1.0" ?>
 <configuration>
 	<menu>
-		<item label="应急事件" initenable="true">
-			<clickfunctions>
-				<clickfunction name="ChangeOverlayVisible">
-					<params>
-						<param name="WidgetName" value="应急事件Overlay"/>
-						<param name="OverlayType" value="YingJiShiJian" />
-					</params>
-				</clickfunction>
-			</clickfunctions>
-		</item>
+		<itemgroup label="应急事件">
+			<item label="应急事件" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="应急事件Overlay"/>
+							<param name="OverlayType" value="YingJiShiJian" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="应急设施" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="应急设施Overlay"/>
+							<param name="OverlayType" value="YingJiSheShi" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+		</itemgroup>
 		
-		<item label="应急设施" initenable="true">
+		<item label="事件周边搜索" initenable="true">
 			<clickfunctions>
-				<clickfunction name="ChangeOverlayVisible">
+				<clickfunction name="ChangeWidget">
 					<params>
-						<param name="WidgetName" value="应急设施Overlay"/>
-						<param name="OverlayType" value="YingJiSheShi" />
+						<param name="WidgetName" value="应急事件搜索"/>
 					</params>
 				</clickfunction>
 			</clickfunctions>
 		</item>
 	</menu>
 	
-	<item label="事件周边搜索" initenable="true">
-		<clickfunctions>
-			<clickfunction name="ChangeWidget">
-				<params>
-					<param name="WidgetName" value="应急事件搜索"/>
-				</params>
-			</clickfunction>
-		</clickfunctions>
-	</item>
+	
 </configuration>
 	

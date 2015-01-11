@@ -172,13 +172,25 @@
 				config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiSheShi.xml"
 				url="widgets/Overlay/PointOverlayWidget.swf" />
 		
+		<widget label="稽查布控Overlay"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-JiChaBuKong.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="抓拍事件Overlay"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-ZhuaPaiShiJian.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="事件检测Overlay"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-ShiJianJianCe.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
 		<widget label="添加点位" 
 				config="widgets/SendMapClickCoordinate/SendMapClickCoordinate-general.xml"
 				url="widgets/SendMapClickCoordinate/SendMapClickCoordinateWidget.swf"/>
 	</widgetcontainer>
 	
 	<widgetcontainer layout="fix">
-		<widget label="首页菜单" right="20" top="50"
+		<widget label="首页菜单" right="20" top="50" preload="open"
 				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-main.xml"
 				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 		
@@ -197,14 +209,27 @@
 		<widget label="应急事件菜单" right="20" top="50"
 				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-YingJiShiJian.xml"
 				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="稽查布控菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-JiChaBuKong.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="视频事件菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-ShiPinShiJian.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="视频巡检菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-ShiPinXunJian.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
 	</widgetcontainer>
 	
 	<widgetcontainer layout="horizontal">
-		<widget label="搜索" preload="minimized" 
+		<widget label="搜索"
 				icon="assets/images/i_search.png"
 				config="widgets/MultiLayerSearch/WuHu/MultiLayerSearchWidget-roadAndPoi.xml"
 				url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
-		
+				
 		<widget label="应急事件搜索"
 				icon="assets/images/i_search.png"
 				config="widgets/MultiLayerSearch/WuHu/MultiLayerSearchWidget-YingJiShiJian.xml"

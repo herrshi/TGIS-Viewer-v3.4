@@ -27,8 +27,10 @@
 			import spark.components.RichEditableText;
 			
 			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.WidgetStates;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
 			import cn.seisys.TGISViewer.skins.btSkin;
+			import cn.seisys.TGISViewer.utils.MapServiceUtil;
 			
 			import flashx.textLayout.conversion.TextConverter;
 			import flashx.textLayout.elements.Configuration;
@@ -167,6 +169,28 @@
 						}
 					}
 					
+					if ( formattedAttributes.hasYuan && formattedAttributes.hasYuan == "1" )
+					{
+						lblYuAnState.text = "已启动预案";
+						lblCheckYuAn.visible = true;
+					}
+					else
+					{
+						lblYuAnState.text = "未启动预案";
+						lblCheckYuAn.visible = false;
+					}
+					
+					if ( formattedAttributes.hasWuzi && formattedAttributes.hasWuzi == "1" )
+					{
+						lblWuZiState.text = "已调拨物资";
+						lblCheckWuZi.visible = true;
+					}
+					else
+					{
+						lblWuZiState.text = "未调拨物资";
+						lblCheckWuZi.visible = false;
+					}
+					
 					_buttonArray = popUpInfo.buttonArray;
 					if ( _buttonArray && _buttonArray.length > 0 )
 					{
@@ -203,6 +227,10 @@
 								case "opendevice":
 									button.addEventListener( MouseEvent.CLICK, openDevice_clickHandler );
 									break;
+								
+								case "buffersearch":
+									button.addEventListener( MouseEvent.CLICK, bufferSearch_clickHandler );
+									break;
 							}
 							buttonContainer.addElement( button );
 						}
@@ -223,6 +251,37 @@
 							{
 								functionName: "openDevice",
 								params: [ buttonObj.type, button.id ]
+							} 
+						);
+						break;
+					}
+				}
+			}
+			
+			private function bufferSearch_clickHandler( event:MouseEvent ):void
+			{
+				var button:Button = event.currentTarget as Button;
+				var buttonLabel:String = button.label;
+				for each ( var buttonObj:Object in _buttonArray )
+				{
+					if ( buttonObj.label == buttonLabel )
+					{
+						var widgetName:String = buttonObj.widgetName;
+						//打开搜索组件
+						AppEvent.dispatch( AppEvent.WIDGET_CHANGE_STATE, 
+							{ 
+								label: widgetName, 
+								state:WidgetStates.WIDGET_OPENED 
+							} 
+						);
+						
+						var type:String = buttonObj.type;
+						var centerPoint:MapPoint = MapServiceUtil.getGeomCenter( hostComponent.graphic );
+						AppEvent.dispatch( AppEvent.BUFFER_SEARCH, 
+							{ 
+								type: type, 
+								id: button.id,
+								point: centerPoint
 							} 
 						);
 						break;
@@ -418,14 +477,14 @@
 		</s:HGroup>
 		
 		<s:HGroup width="100%" gap="15">
-			<s:Label text="已启动预案"/>
+			<s:Label id="lblYuAnState" text="已启动预案"/>
 			<s:Label id="lblCheckYuAn" text="查看预案" 
 					 color="0x5185b5" buttonMode="true" 
 					 click="lblCheckYuAn_clickHandler(event)"/>
 		</s:HGroup>
 		
 		<s:HGroup width="100%" gap="15">
-			<s:Label text="已调拨物资"/>
+			<s:Label id="lblWuZiState" text="已调拨物资"/>
 			<s:Label id="lblCheckWuZi" text="查看物资" 
 					 color="0x5185b5" buttonMode="true" 
 					 click="lblCheckWuZi_clickHandler(event)"/>

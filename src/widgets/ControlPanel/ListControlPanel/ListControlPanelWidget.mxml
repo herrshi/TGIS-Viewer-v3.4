@@ -56,8 +56,8 @@
 				
 				AppEvent.addListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
 				
-//				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
-//				AppEvent.addListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
+				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
+				AppEvent.addListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
 			}
 			
 			protected function this_widgetConfigLoadedHandler(event:Event):void
@@ -164,11 +164,19 @@
 									_preloadWidgetArray.push( widgetName );
 									_savedPreloadWidgetArray.push( widgetName );
 									
+									//如果initenable=true则graphicsLayer.visible=true
 									if ( open )
 									{
 										var overlayType:String = paramTable.find( "OverlayType" );
 										_presetOverlayVisibleArray.push( overlayType );
 									}
+								}
+								//如果是普通的widget，则initenable=true时自动启动组件
+								else if ( functionName == "ChangeWidget" && open )
+								{
+									widgetName = paramTable.find( "WidgetName" );
+									_preloadWidgetArray.push( widgetName );
+									_savedPreloadWidgetArray.push( widgetName );
 								}
 							}
 							
@@ -218,6 +226,7 @@
 			{
 				for each ( var overlayType:String in _presetOverlayVisibleArray )
 				{
+					trace( overlayType, true );
 					AppEvent.dispatch( AppEvent.CHANGE_OVERLAY_VISIBLE, 
 						{ 
 							type: overlayType, 
@@ -232,6 +241,7 @@
 				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
 				{
 					AppEvent.addListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
+					AppEvent.addListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
 					//还原预加载组件
 					for each ( var widgetName:String in _savedPreloadWidgetArray )
 					{
@@ -249,6 +259,7 @@
 				if ( menuName != widgetTitle )
 				{
 					AppEvent.removeListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
+					AppEvent.removeListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
 					//关闭所有自动打开的组件
 					for each ( var widgetName:String in _savedPreloadWidgetArray )
 					{
@@ -256,7 +267,8 @@
 					}
 					
 					//把自身关闭
-					AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetTitle );
+					trace( widgetTitle + " closed" );
+					setState( WidgetStates.WIDGET_CLOSED );
 				}
 			}
 			

@@ -816,6 +816,6 @@
 		
 		<esri:InfoSymbol id="arrowSymbol" containerStyleName="arrowInfoSymbolStyle"
 						 infoPlacement="center"
-						 infoRenderer="cn.seisys.TGISViewer.components.ArrowSymbol"/>
+						 infoRenderer="cn.seisys.TGISViewer.skins.InfoSymbol.ArrowSymbol"/>
 	</fx:Declarations>
 </TGISViewer:BaseWidget>

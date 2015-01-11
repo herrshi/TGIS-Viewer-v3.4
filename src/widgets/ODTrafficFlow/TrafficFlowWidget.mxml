@@ -1063,7 +1063,7 @@
 		
 		<esri:InfoSymbol id="arrowSymbol" containerStyleName="arrowInfoSymbolStyle"
 						 infoPlacement="center"
-						 infoRenderer="cn.seisys.TGISViewer.components.ArrowSymbol"/>
+						 infoRenderer="cn.seisys.TGISViewer.skins.InfoSymbol.ArrowSymbol"/>
 		<esri:InfoSymbol id="arrLeftSymbol" containerStyleName="arrowInfoSymbolStyle"
 						 infoPlacement="center"
 						 infoRenderer="cn.seisys.TGISViewer.components.ArrowLeftSymbol"/>

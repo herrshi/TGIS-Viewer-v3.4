@@ -95,7 +95,7 @@ public class BaseWidget extends Module implements IBaseWidget
     /**
      * The default widget icon.
      */
-    private var _widgetIcon:String = "assets/images/i_widget.png";
+    [Bindable] private var _widgetIcon:String = "assets/images/i_widget.png";
 
     private var _widgetTitle:String = "";
 

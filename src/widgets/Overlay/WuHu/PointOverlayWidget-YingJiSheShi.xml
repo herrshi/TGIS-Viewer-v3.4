@@ -3,9 +3,9 @@
 <configuration>
 	<type>YingJiSheShi</type>
 	<!-- 组件打开时通知页面 -->
-	<widgetrunnotify>onYingJiZiYuanOverlayRun</widgetrunnotify>
+	<widgetrunnotify></widgetrunnotify>
 	<!-- 组件关闭时通知页面 -->
-	<widgetclosenotify>onYingJiZiYuanOverlayClose</widgetclosenotify>
+	<widgetclosenotify></widgetclosenotify>
 	
 	<initvisible>false</initvisible>
 	
@@ -26,7 +26,7 @@
 	</popup>
 	
 	<simplerenderer>
-		<picturemarkersymbol url="assets/images/mapIcons/GangDian-blue.png" yoffset="13" />
+		<picturemarkersymbol url="assets/images/mapIcons/WuHu/YingJiSheShi-blue.png" yoffset="18" />
 	</simplerenderer>
 	
 	<clickfunction>

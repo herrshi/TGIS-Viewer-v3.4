@@ -3,7 +3,7 @@
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   xmlns:mx="library://ns.adobe.com/flex/mx" 
 					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
-					   layout="absolute" >
+					   layout="absolute" xmlns:components="cn.seisys.TGISViewer.components.*" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -16,143 +16,33 @@
 				var typeExpr:String = ( type == "所有类型" ? "" : _typeFieldName + " LIKE '%" + type + "%'" );
 				AppEvent.dispatch( AppEvent.HUANBAOJU_QUERYEXPRESSION_TYPE, typeExpr );
 			}
-			
-			protected function hgrpAll_clickHandler(event:MouseEvent):void
-			{
-				rdbtnAll.selected = true;
-				dispatchTypeExpression( String( rdbtnAll.value ) );
-			}
-			
-			protected function hgrpWater_clickHandler(event:MouseEvent):void
-			{
-				rdbtnWater.selected = true;
-				dispatchTypeExpression( String( rdbtnWater.value ) );
-			}
-			
-			protected function hgrpAir_clickHandler(event:MouseEvent):void
-			{
-				rdbtnAir.selected = true;
-				dispatchTypeExpression( String( rdbtnAir.value ) );
-			}
-			
-			protected function hgrpSound_clickHandler(event:MouseEvent):void
-			{
-				rdbtnSound.selected = true;
-				dispatchTypeExpression( String( rdbtnSound.value ) );
-			}
-			
-			protected function hgrpSolid_clickHandler(event:MouseEvent):void
-			{
-				rdbtnSolid.selected = true;
-				dispatchTypeExpression( String( rdbtnSolid.value ) );
-			}
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
-		<s:RadioButtonGroup id="radioButtonGroup"/>
+		<s:Fade id="rollOverFade" alphaTo="1" target="{imgIcon}"/>
+		<s:Fade id="rollOutFade" alphaTo="0.4" target="{imgIcon}"/>
 	</fx:Declarations>
 	
-	<TGISViewer:WidgetTemplateLargeIcon id="wTemplate" 
-										width="200" height="320">
-		<s:VGroup width="100%"
-				  paddingTop="20" gap="0">
-			<s:HGroup id="hgrpAll" 
-					  width="100%" height="50"
-					  paddingLeft="10" paddingRight="10" 
-					  verticalAlign="middle" 
-					  gap="10" 
-					  buttonMode="true"
-					  click="hgrpAll_clickHandler(event)">
-				<s:Image source="assets/images/HuanBaoJu/center/i_total.png"/>
-				<s:Label text="所有类型" width="100%" 
-						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
-						 color="0x444444"/>
-				<s:RadioButton id="rdbtnAll" 
-							   groupName="radioButtonGroup" 
-							   selected="true" 
-							   value="所有类型"/>
-			</s:HGroup>
+	<s:Image id="imgIcon" 
+			 source="{widgetIcon}" 
+			 alpha="0.4" 
+			 rollOut="{rollOutFade.play()}"
+			 rollOver="{rollOverFade.play()}">
+		<s:filters>
+			<s:DropShadowFilter blurX="10" blurY="10"/>
+		</s:filters>
+	</s:Image>
+	
+	<s:VGroup left="80" width="100">
+		<s:BorderContainer width="100%">
+			<s:backgroundFill>
+				<s:SolidColor color="0x0080bd"/>
+			</s:backgroundFill>
 			
-			<s:Image width="100%" 
-					 fillMode="scale" scaleMode="stretch"
-					 source="assets/images/HuanBaoJu/center/dot_line.png"/>
-			
-			<s:HGroup id="hgrpWater" 
-					  width="100%" height="50"
-					  paddingLeft="10" paddingRight="10" 
-					  verticalAlign="middle" 
-					  gap="10" 
-					  buttonMode="true" 
-					  click="hgrpWater_clickHandler(event)">
-				<s:Image source="assets/images/HuanBaoJu/center/i_swr.png"/>
-				<s:Label text="水污染" width="100%" 
-						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
-						 color="0x444444"/>
-				<s:RadioButton id="rdbtnWater" 
-							   groupName="radioButtonGroup" 
-							   value="水污染"/>
-			</s:HGroup>
-			
-			<s:Image width="100%" 
-					 fillMode="scale" scaleMode="stretch"
-					 source="assets/images/HuanBaoJu/center/dot_line.png"/>
-			
-			<s:HGroup id="hgrpAir" 
-					  width="100%" height="50"
-					  paddingLeft="10" paddingRight="10" 
-					  verticalAlign="middle" 
-					  gap="10" 
-					  buttonMode="true"
-					  click="hgrpAir_clickHandler(event)">
-				<s:Image source="assets/images/HuanBaoJu/center/i_dqwr.png"/>
-				<s:Label text="大气污染" width="100%" 
-						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
-						 color="0x444444"/>
-				<s:RadioButton id="rdbtnAir" 
-							   groupName="radioButtonGroup" 
-							   value="大气污染"/>
-			</s:HGroup>
-			
-			<s:Image width="100%" 
-					 fillMode="scale" scaleMode="stretch"
-					 source="assets/images/HuanBaoJu/center/dot_line.png"/>
-			
-			<s:HGroup id="hgrpSound" 
-					  width="100%" height="50"
-					  paddingLeft="10" paddingRight="10" 
-					  verticalAlign="middle" 
-					  gap="10"
-					  buttonMode="true"
-					  click="hgrpSound_clickHandler(event)">
-				<s:Image source="assets/images/HuanBaoJu/center/i_zswr.png"/>
-				<s:Label text="噪声污染" width="100%" 
-						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
-						 color="0x444444"/>
-				<s:RadioButton id="rdbtnSound" 
-							   groupName="radioButtonGroup" 
-							   value="噪声污染"/>
-			</s:HGroup>
-			
-			<s:Image width="100%" 
-					 fillMode="scale" scaleMode="stretch"
-					 source="assets/images/HuanBaoJu/center/dot_line.png"/>
-			
-			<s:HGroup id="hgrpSolid" 
-					  width="100%" height="50"
-					  paddingLeft="10" paddingRight="10" 
-					  verticalAlign="middle" 
-					  gap="10"
-					  buttonMode="true"
-					  click="hgrpSolid_clickHandler(event)">
-				<s:Image source="assets/images/HuanBaoJu/center/i_gtfwwr.png"/>
-				<s:Label text="固体废物污染" width="100%" 
-						 fontFamily="宋体" fontSize="14" fontWeight="bold" 
-						 color="0x444444"/>
-				<s:RadioButton id="rdbtnSolid" 
-							   groupName="radioButtonGroup" 
-							   value="固体废物"/>
-			</s:HGroup>
-		</s:VGroup>
-	</TGISViewer:WidgetTemplateLargeIcon>
+			<s:Label color="0xffffff" 
+					 text="选择污染源" 
+					 verticalCenter="0"/>
+		</s:BorderContainer>
+	</s:VGroup>
 </TGISViewer:BaseWidget>

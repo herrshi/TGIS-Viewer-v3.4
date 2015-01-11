@@ -1,21 +1,24 @@
 <?xml version="1.0" ?>
 <configuration>
-	<pointlayer>
+	<!-- 信访点图层相关配置 -->
+	<xfdlayer>
 		<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1</url>
 		<typefield>问题类别</typefield>
 		<typevalue>噪声污染,固体废物,大气污染,水污染</typevalue>
-	</pointlayer>
+		<districtnamefield>DistrictName</districtnamefield>
+	</xfdlayer>
 	
-	<polygonlayer>
+	<!-- 区县图层相关配置 -->
+	<districtlayer>
 		<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/0</url>
-		<labelpolygonnamefield>名称</labelpolygonnamefield>
+		<districtnamefield>名称</districtnamefield>
 <!-- 		<gradient> -->
 <!-- 			<color1>0x00ff00</color1> -->
 <!-- 			<color2>0xff0000</color2> -->
 <!-- 			<count>10</count> -->
 <!-- 		</gradient> -->
 		<gradientcolor>0x006100,0x3c8000,0x6ba100,0xa4c400,0xdfeb00,0xffea00,0xffbb00,0xff9100,0xff6200,0xff2200</gradientcolor>
-	</polygonlayer>
+	</districtlayer>
 	
 	<labellayer>
 		<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/LabelLine/MapServer/0</url>

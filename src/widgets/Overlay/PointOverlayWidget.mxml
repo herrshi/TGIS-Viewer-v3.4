@@ -370,6 +370,7 @@
 			 * */
 			private function notifyPageWidgetOpen():void
 			{
+				//先派发WIDGET_CREATED，通知菜单组件，再通知页面
 				AppEvent.dispatch( AppEvent.WIDGET_CREATED, widgetTitle );
 				
 				//老版函数

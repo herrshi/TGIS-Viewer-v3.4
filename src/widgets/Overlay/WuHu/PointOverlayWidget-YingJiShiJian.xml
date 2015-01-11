@@ -23,7 +23,7 @@
 		<showdetaillink>true</showdetaillink>
 		<buttons>
 			<button label="预案" action="openDevice" type="YingJiShiJian_YuAn"/>
-			<button label="物资" action="openDevice" type="YingJiShiJian_WuZi"/>
+			<button label="物资" action="buffersearch" type="YingJiShiJian"/>
 			<button label="处置记录" action="openDevice" type="YingJiShiJian_ChuZhiJiLu"/>
 			<button label="结束" action="openDevice" type="YingJiShiJian_Close"/>
 		</buttons>
