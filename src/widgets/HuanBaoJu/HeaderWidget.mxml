@@ -107,13 +107,7 @@
 				btnDianWeiTu.source = "assets/images/HuanBaoJu/center/b_dwt.png";
 				btnReDianTu.source = "assets/images/HuanBaoJu/center/b_rdt.png";
 				
-				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
-					{ 
-						serviceName: "标注线", 
-						layerIds: "", 
-						visible: true 
-					} 
-				);
+				openWidget( "区域分布图" );
 				
 				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 
@@ -138,13 +132,7 @@
 				btnDianWeiTu.source = "assets/images/HuanBaoJu/center/b_dwt_d.png";
 				btnReDianTu.source = "assets/images/HuanBaoJu/center/b_rdt.png";
 				
-				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
-					{ 
-						serviceName: "标注线", 
-						layerIds: "", 
-						visible: false 
-					} 
-				);
+				closeWidget( "区域分布图" );
 				
 				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 
@@ -169,13 +157,7 @@
 				btnDianWeiTu.source = "assets/images/HuanBaoJu/center/b_dwt.png";
 				btnReDianTu.source = "assets/images/HuanBaoJu/center/b_rdt_d.png";
 				
-				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
-					{ 
-						serviceName: "标注线", 
-						layerIds: "", 
-						visible: false 
-					} 
-				);
+				closeWidget( "区域分布图" );
 				
 				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 

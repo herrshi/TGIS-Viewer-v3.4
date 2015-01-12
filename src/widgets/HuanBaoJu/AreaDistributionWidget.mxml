@@ -157,6 +157,9 @@
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
+				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
+				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_WidgetCloseHandler );
+				
 				AppEvent.addListener( AppEvent.HUANBAOJU_QUERYEXPRESSION_TIME, 
 					appevent_queryExpressionTimeHandler );
 				AppEvent.addListener( AppEvent.HUANBAOJU_QUERYEXPRESSION_TYPE, 
@@ -173,7 +176,7 @@
 				_districtLayer.id = "colorRendererPolygonLayer";
 				map.addLayer( _districtLayer );
 				//面图层放在标线和标注下方
-				map.reorderLayer( "colorRendererPolygonLayer", 3 );
+//				map.reorderLayer( "colorRendererPolygonLayer", 3 );
 				
 				_labelLayer = new GraphicsLayer();
 				map.addLayer( _labelLayer );
@@ -227,6 +230,24 @@
 				}
 			}
 			
+			private function appevent_WidgetRunHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					map.addLayer( _districtLayer );
+					map.addLayer( _labelLayer );
+				}
+			}
+			
+			private function appevent_WidgetCloseHandler( event:AppEvent ):void
+			{
+				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
+				{
+					map.removeLayer( _districtLayer );
+					map.removeLayer( _labelLayer );
+				}
+			}
+			
 			private function queryXFD( expr:String = "1=1" ):void
 			{
 				var query:Query = new Query();
@@ -241,6 +262,7 @@
 					_xfdGeometryArray = [];
 					_xfdGraphicAC.removeAll();
 					_districtTotalCountAC.removeAll();
+					_xfdTable.clear();
 					
 					for each ( var graphic:Graphic in featureSet.features )
 					{
@@ -563,7 +585,9 @@
 	
 	<mx:ColumnChart id="chartDistrictTotalCount"
 					width="100%" height="100%" 
-					dataProvider="{_districtTotalCountAC}">
+					dataProvider="{_districtTotalCountAC}" 
+					showDataTips="true" 
+					fontSize="16">
 		<mx:horizontalAxis>
 			<mx:CategoryAxis categoryField="districtName"/>
 		</mx:horizontalAxis>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				buttonMode="true" useHandCursor="true"
+				width="100%" height="100%" click="this_clickHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			protected function this_clickHandler(event:MouseEvent):void
+			{
+				checkBox.selected = !checkBox.selected;
+				data.selected = checkBox.selected;
+				
+				dispatchEvent( new Event( "itemClick", true ) );
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<s:Label text="{data.label}" 
+			 verticalCenter="0" left="10"/>
+	
+	<s:CheckBox id="checkBox" selected="{data.selected}" 
+				verticalCenter="0" right="10"/>
+	
+	<s:Image width="100%" 
+			 bottom="0"
+			 fillMode="scale" scaleMode="stretch"
+			 source="assets/images/HuanBaoJu/center/dot_line.png"/>
+</s:ItemRenderer>

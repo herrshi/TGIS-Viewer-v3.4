@@ -3,46 +3,206 @@
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   xmlns:mx="library://ns.adobe.com/flex/mx" 
 					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
-					   layout="absolute" xmlns:components="cn.seisys.TGISViewer.components.*" >
+					   xmlns:skins="widgets.HuanBaoJu.skins.*"
+					   width="75" height="90"
+					   horizontalScrollPolicy="off"
+					   verticalScrollPolicy="off"
+					   layout="absolute" 
+					   creationComplete="this_creationCompleteHandler(event)" 
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" >
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
 			import cn.seisys.TGISViewer.AppEvent;
 			
+			
 			private var _typeFieldName:String = "问题类别";
+			
+			/**
+			 * 信访点的所有类型，从配置文件中读取
+			 * 包括一个显示名称(label)和实际字段值(name)
+			 * */
+			[Bindable] private var _xfdTypeAC:ArrayCollection;
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				_xfdTypeAC = new ArrayCollection();
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					if ( configXML.types[0] )
+					{
+						var typeXMLList:XMLList = configXML.types..type;
+						for each ( var typeXML:XML in typeXMLList )
+						{
+							var typeLabel:String = typeXML.@label;
+							var typeName:String = typeXML.@name;
+							var selected:Boolean = ( typeXML.@selected == "true" ? true : false );
+							_xfdTypeAC.addItem( 
+								{ 
+									label: typeLabel, 
+									name: typeName,
+									selected: selected
+								} 
+							);
+						}
+					}
+				}
+			}
+			
+			protected function imgIcon_rollOverHandler(event:MouseEvent):void
+			{
+				rollOverFade.play( [imgIcon] );
+				contentRollOverResize.play( [this] );
+			}
+			
+			protected function grpContent_rollOutHandler(event:MouseEvent):void
+			{
+//				contentRollOutFade.play( [grpContent] );
+				imageRollOutFade.play( [imgIcon] );
+				contentRollOutResize.play( [this] );
+			}
+			
+			protected function btnClose_clickHandler(event:MouseEvent):void
+			{
+				imageRollOutFade.play( [imgIcon] );
+				contentRollOutResize.play( [this] );
+			}
+			
+			protected function typeListDG_itemClickHandler(event:Event):void
+			{
+				/*var typeData:Object = ItemRenderer( event.target ).data;
+				var typeName:String = typeData.name;
+				var selected:Boolean = typeData.selected;
+				trace( typeName, selected );*/
+				
+				var typeExpr:String = "";
+				for each ( var typeObj:Object in _xfdTypeAC )
+				{
+					var selected:Boolean = typeObj.selected;
+					if ( selected )
+					{
+						typeExpr += _typeFieldName + " LIKE '%" + typeObj.name + "%' OR ";
+					}
+				}
+				//删掉最后的or
+				typeExpr = typeExpr.substr( 0, typeExpr.length - 4 );
+				AppEvent.dispatch( AppEvent.HUANBAOJU_QUERYEXPRESSION_TYPE, typeExpr );
+			}
 			
 			private function dispatchTypeExpression( type:String ):void
 			{
 				var typeExpr:String = ( type == "所有类型" ? "" : _typeFieldName + " LIKE '%" + type + "%'" );
 				AppEvent.dispatch( AppEvent.HUANBAOJU_QUERYEXPRESSION_TYPE, typeExpr );
 			}
+			
+			protected function btnBack_clickHandler(event:MouseEvent):void
+			{
+				for each ( var typeObj:Object in _xfdTypeAC )
+				{
+					typeObj.selected = false;
+				}
+				AppEvent.dispatch( AppEvent.HUANBAOJU_QUERYEXPRESSION_TYPE, "" );
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
-		<s:Fade id="rollOverFade" alphaTo="1" target="{imgIcon}"/>
-		<s:Fade id="rollOutFade" alphaTo="0.4" target="{imgIcon}"/>
+		<s:Fade id="rollOverFade" alphaTo="1" duration="100"/>
+		<s:Fade id="imageRollOutFade" alphaTo="0.4" duration="100"/>
+		<s:Fade id="contentRollOutFade" alphaTo="0"/>
+		
+		<mx:Resize id="contentRollOverResize" widthTo="300" heightTo="400" duration="500"/>
+		<mx:Resize id="contentRollOutResize" widthTo="75" heightTo="90" duration="500"/>
 	</fx:Declarations>
 	
+	<!--<TGISViewer:states>
+		<s:State name="open"/>
+		<s:State name="minimized"/>
+	</TGISViewer:states>-->
+	
+	<!--<TGISViewer:transitions>
+		<s:Transition fromState="minimized" toState="open">
+			<s:Sequence>
+				<s:Fade duration="100" target="{imgIcon}"/>
+				<s:Fade duration="100" target="{grpContent}"/>
+			</s:Sequence>
+		</s:Transition>
+		
+		<s:Transition fromState="open" toState="minimized">
+			<s:Sequence>
+				<s:Fade duration="100" target="{grpContent}"/>
+				<s:Fade duration="100" target="{imgIcon}"/>
+			</s:Sequence>
+		</s:Transition>
+	</TGISViewer:transitions>-->
+	
 	<s:Image id="imgIcon" 
-			 source="{widgetIcon}" 
-			 alpha="0.4" 
-			 rollOut="{rollOutFade.play()}"
-			 rollOver="{rollOverFade.play()}">
-		<s:filters>
+			 left="0" top="0"
+			 source="assets/images/HuanBaoJu/center/b_dqwr.png" 
+			 alpha="0.4"
+			 rollOver="imgIcon_rollOverHandler(event)">
+		<!--<s:filters>
 			<s:DropShadowFilter blurX="10" blurY="10"/>
-		</s:filters>
+		</s:filters>-->
 	</s:Image>
 	
-	<s:VGroup left="80" width="100">
-		<s:BorderContainer width="100%">
-			<s:backgroundFill>
-				<s:SolidColor color="0x0080bd"/>
-			</s:backgroundFill>
+	<s:Group left="76" right="1" top="1" bottom="1" 
+			 rollOut="grpContent_rollOutHandler(event)">
+		<s:Image top="30" left="0"
+				 source="assets/images/arrow-blue-right.png"/>
+		
+		<s:VGroup top="0" left="15"
+				  gap="0"
+				  width="100%">
+			<s:BorderContainer width="100%" height="30" 
+							   borderVisible="false">
+				<s:backgroundFill>
+					<s:SolidColor color="0x0080bd"/>
+				</s:backgroundFill>
+				
+				<s:Label color="0xffffff" 
+						 text="选择污染源" 
+						 left="5"
+						 verticalCenter="0"/>
+				
+				<s:Image id="btnBack" 
+						 toolTip="还原"
+						 right="25"
+						 verticalCenter="0"
+						 source="assets/images/back.jpg" 
+						 buttonMode="true" useHandCursor="true" 
+						 click="btnBack_clickHandler(event)"/>
+				
+				<s:Button id="btnClose"
+						  toolTip="关闭"
+						  right="5"
+						  verticalCenter="0"
+						  buttonMode="true" useHandCursor="true"
+						  skinClass="widgets.HuanBaoJu.skins.CloseButton"
+						  click="btnClose_clickHandler(event)"/>
+			</s:BorderContainer>
 			
-			<s:Label color="0xffffff" 
-					 text="选择污染源" 
-					 verticalCenter="0"/>
-		</s:BorderContainer>
-	</s:VGroup>
+			<s:BorderContainer width="100%" cornerRadius="3">
+				<skins:XFDTypeDataGroup id="typeListDG" width="100%" 
+										dataProvider="{_xfdTypeAC}" 
+										itemRenderer="widgets.HuanBaoJu.skins.XFDTypeDataGroupRenderer" 
+										itemClick="typeListDG_itemClickHandler(event)">
+					<skins:layout>
+						<s:VerticalLayout/>
+					</skins:layout>
+				</skins:XFDTypeDataGroup>
+			</s:BorderContainer>
+			
+		</s:VGroup>
+	</s:Group>
+	
+	
 </TGISViewer:BaseWidget>

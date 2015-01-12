@@ -8,7 +8,7 @@
 		<font name="微软雅黑" size="14" />
 	</style>
 
-	<arcgisserverip>localhost:6080</arcgisserverip>
+	<arcgisserverip>128.64.151.12:8399</arcgisserverip>
 
 <!-- 	<geometryservice url="http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/Geometry/GeometryServer"/> -->
 <!-- 	<geometryservice url="http://localhost:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer"/> -->
@@ -53,14 +53,30 @@
 <!-- 			<layer label="插值图" type="dynamic" visible="false" alpha="0.6"  -->
 <!-- 				   url="http://{serverip}/arcgis/rest/services/shanghai/shanghai_idw/MapServer"/> -->
 			
-<!-- 		    <layer label="信访点" type="feature" visible="false"  -->
-<!-- 				   url="http://{serverip}/arcgis/rest/services/shanghai/points/MapServer/2" -->
-<!-- 				   popupconfig="popups/HuanBaoJu/PopUp-XinFangDian.xml"> -->
+		    <layer label="信访点" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1"
+				   popupconfig="popups/HuanBaoJu/PopUp-XinFangDian.xml">
 				
-<!-- 				<simplerenderer> -->
-<!-- 					<picturemarkersymbol url="assets/images/i_pin.png" xoffset="20" yoffset="20"/> -->
-<!-- 				</simplerenderer> -->
-<!-- 			</layer> -->
+				<uniquevaluerenderer field="问题类别">
+					<picturemarkersymbol url="assets/images/i_pin_small.png"/>
+					
+					<uniquevalueinfo value="大气污染|">
+						<picturemarkersymbol url="assets/images/HuanBaoJu/center/i_dqwr_small.png"/>
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="固体废物|">
+						<picturemarkersymbol url="assets/images/HuanBaoJu/center/i_gtfwwr_small.png"/>
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="水污染|">
+						<picturemarkersymbol url="assets/images/HuanBaoJu/center/i_swr_small.png"/>
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="噪声污染|">
+						<picturemarkersymbol url="assets/images/HuanBaoJu/center/i_zswr_small.png"/>
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
 		</operationallayers>
 	</map>
 	
@@ -110,6 +126,7 @@
 				
 		<widget label="污染类型" left="80" top="150" preload="open"
 				icon="assets/images/HuanBaoJu/center/b_dqwr.png"
+				config="widgets/HuanBaoJu/PollutionTypeWidget.xml"
 				url="widgets/HuanBaoJu/PollutionTypeWidget.swf"/>
 				
 		<widget label="图层" right="10" top="500" preload="open"
