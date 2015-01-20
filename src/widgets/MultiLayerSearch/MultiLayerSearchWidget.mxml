@@ -234,7 +234,7 @@
 					fade.targets = [ bufferlInput, graphicalInput, textInput, resultsList ];
 				}
 				
-				AppEvent.dispatch( AppEvent.WIDGET_CREATED, widgetTitle );
+//				AppEvent.dispatch( AppEvent.WIDGET_CREATED, widgetTitle );
 			}
 			
 			/**

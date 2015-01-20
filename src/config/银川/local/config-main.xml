@@ -29,6 +29,28 @@
 				<sublayer id="0" popupconfig="popups/YinChuan/Popup-fbd.xml"/>	   
 			</layer>
 			
+			<layer label="情报板" type="feature" visible="false"
+					   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_device/FeatureServer/0"
+					   popupconfig="popups/YinChuan/PopUp-qbb.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-grey.png" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-red.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-yellow.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
 			<layer label="车检器" type="feature" visible="false"
 				   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_device/FeatureServer/1"
 				   popupconfig="popups/YinChuan/PopUp-cjq.xml">
@@ -51,24 +73,46 @@
 				</uniquevaluerenderer>
 			</layer>
 			
-			<layer label="情报板" type="feature" visible="false"
-					   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_device/FeatureServer/0"
-					   popupconfig="popups/YinChuan/PopUp-qbb.xml">
+			<layer label="卡口" type="feature" visible="false"
+					   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_device/FeatureServer/2"
+					   popupconfig="popups/YinChuan/PopUp-kk.xml">
 
 				<uniquevaluerenderer field="STATE">
 					<defaultlabel>未知</defaultlabel>
-					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-grey.png" yoffset="13" />
+					<picturemarkersymbol url="assets/images/mapIcons/KaKou-grey.png" yoffset="13" />
 
 					<uniquevalueinfo value="connect" label="连接">
-						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-blue.png" yoffset="13" />
+						<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13" />
 					</uniquevalueinfo>
 
 					<uniquevalueinfo value="disconnect" label="中断">
-						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-red.png" yoffset="13" />
+						<picturemarkersymbol url="assets/images/mapIcons/KaKou-red.png" yoffset="13" />
 					</uniquevalueinfo>
 
 					<uniquevalueinfo value="malfunction" label="异常">
-						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBan-yellow.png" yoffset="13" />
+						<picturemarkersymbol url="assets/images/mapIcons/KaKou-yellow.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="摄像机" type="feature" visible="false"
+					   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_device/FeatureServer/3"
+					   popupconfig="popups/YinChuan/PopUp-sxj.xml">
+
+				<uniquevaluerenderer field="STATE">
+					<defaultlabel>未知</defaultlabel>
+					<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-grey.png" yoffset="13" />
+
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-red.png" yoffset="13" />
+					</uniquevalueinfo>
+
+					<uniquevalueinfo value="malfunction" label="异常">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-yellow.png" yoffset="13" />
 					</uniquevalueinfo>
 				</uniquevaluerenderer>
 			</layer>

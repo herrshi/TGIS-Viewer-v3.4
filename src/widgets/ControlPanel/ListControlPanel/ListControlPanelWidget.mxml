@@ -32,12 +32,27 @@
 			 * 启动一个组件删掉一个
 			 * */
 			private var _preloadWidgetArray:Array;
+			/**
+			 * _preloadWidgetArray启动一个删掉一个，所以要留一个备份
+			 * */
+			private var _preloadWidgetBackupArray:Array;
 			
 			/**
-			 * 和_preloadWidgetArray内容一样，但组件加载完以后_preloadWidgetArray会清空
-			 * 需要保留一个副本，用于关闭菜单时关闭关联的组件
+			 * 此菜单下的所有widget
+			 * 关闭菜单时关闭所有widget
 			 * */
-			private var _savedPreloadWidgetArray:Array;
+			private var _allWidgetArray:Array;
+			
+			/**
+			 * 启动时要显示的图层
+			 * clickfunction.@name="ChangeLayer" && initenable=true的组件
+			 * */
+			private var _preloadLayerArray:Array;
+			/**
+			 * 此菜单下的所有图层
+			 * 关闭菜单时隐藏所有图层
+			 * */
+			private var _allLayerArray:Array;
 			
 			/**
 			 * 需要预先设置GraphicsLayer.visible=true的Overlay
@@ -51,8 +66,12 @@
 				_menuListItemAC = new ArrayCollection();
 				
 				_preloadWidgetArray = [];
-				_savedPreloadWidgetArray = [];
+				_preloadWidgetBackupArray = [];
+				_allWidgetArray = [];
 				_presetOverlayVisibleArray = [];
+				
+				_preloadLayerArray = [];
+				_allLayerArray = [];
 				
 				AppEvent.addListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
 				
@@ -162,7 +181,8 @@
 								{
 									var widgetName:String = paramTable.find( "WidgetName" );
 									_preloadWidgetArray.push( widgetName );
-									_savedPreloadWidgetArray.push( widgetName );
+									_preloadWidgetBackupArray.push( widgetName );
+									_allWidgetArray.push( widgetName );
 									
 									//如果initenable=true则graphicsLayer.visible=true
 									if ( open )
@@ -172,11 +192,40 @@
 									}
 								}
 								//如果是普通的widget，则initenable=true时自动启动组件
-								else if ( functionName == "ChangeWidget" && open )
+								else if ( functionName == "ChangeWidget" )
 								{
 									widgetName = paramTable.find( "WidgetName" );
-									_preloadWidgetArray.push( widgetName );
-									_savedPreloadWidgetArray.push( widgetName );
+									if ( open )
+									{
+										_preloadWidgetArray.push( widgetName );
+										_preloadWidgetBackupArray.push( widgetName );
+									}
+									_allWidgetArray.push( widgetName );
+								}
+								else if ( functionName == "ChangeLayer" )
+								{
+									var serviceName:String = paramTable.find( "ServiceName" );
+									var idString:String = paramTable.find( "LayerId" );
+									var layerObj:Object = 
+										{ 
+											serviceName: serviceName, 
+											layerIds: idString 
+										}
+									_allLayerArray.push( layerObj );
+									
+									if ( open )
+									{
+										_preloadLayerArray.push( layerObj );
+										
+										AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+											{ 
+												serviceName: serviceName,
+												layerIds: idString,
+												visible: true
+											} 
+										);
+									}
+									
 								}
 							}
 							
@@ -209,11 +258,36 @@
 				}
 			}
 			
+			private function preloadLayer():void
+			{
+				for each ( var layerObj:Object in _preloadLayerArray )
+				{
+					var serviceName:String = layerObj.serviceName;
+					var layerIds:String = layerObj.layerIds;
+					
+					AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+						{ 
+							serviceName: serviceName,
+							layerIds: layerIds,
+							visible: true
+						} 
+					);
+				}
+			}
+			
 			private function appevent_widgetCreatedHandler( event:AppEvent ):void
 			{
+				var createdWidgetTitle:String = event.data as String;
+				
 				if ( _preloadWidgetArray.length == 0 )
 				{
 					presetOverlayVisible();
+					AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+						{ 
+							functionName: "mapMenuStateChanged", 
+							params: [ widgetTitle, "open" ] 
+						} 
+					);
 				}
 				else
 				{
@@ -226,7 +300,6 @@
 			{
 				for each ( var overlayType:String in _presetOverlayVisibleArray )
 				{
-					trace( overlayType, true );
 					AppEvent.dispatch( AppEvent.CHANGE_OVERLAY_VISIBLE, 
 						{ 
 							type: overlayType, 
@@ -243,11 +316,13 @@
 					AppEvent.addListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
 					AppEvent.addListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
 					//还原预加载组件
-					for each ( var widgetName:String in _savedPreloadWidgetArray )
+					for each ( var widgetName:String in _preloadWidgetBackupArray )
 					{
 						_preloadWidgetArray.push( widgetName );
 					}
 					preloadNextWidget();
+					
+					preloadLayer();
 				}
 			}
 			
@@ -261,9 +336,23 @@
 					AppEvent.removeListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
 					AppEvent.removeListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
 					//关闭所有自动打开的组件
-					for each ( var widgetName:String in _savedPreloadWidgetArray )
+					for each ( var widgetName:String in _allWidgetArray )
 					{
 						AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+					}
+					
+					for each ( var layerObj:Object in _allLayerArray )
+					{
+						var serviceName:String = layerObj.serviceName;
+						var layerIds:String = layerObj.layerIds;
+						
+						AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+							{ 
+								serviceName: serviceName,
+								layerIds: layerIds,
+								visible: false
+							} 
+						);
 					}
 					
 					//把自身关闭
@@ -473,7 +562,7 @@
 						   visible="false" includeInLayout="false" 
 						   rollOut="menuListContainer_rollOutHandler(event)">
 			<ListControlPanel:MenuListDataGroup id="menuListDG" 
-												width="100"
+												width="96"
 												dataProvider="{_menuListItemAC}"
 												focusEnabled="false" tabChildren="true" 
 												menuListItemClick="menuListDG_menuListItemClickHandler(event)">

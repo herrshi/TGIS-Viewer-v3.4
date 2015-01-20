@@ -18,7 +18,6 @@
 	</socketinfo>
 
 	<arcgisserverip>128.64.151.220:6080</arcgisserverip>
-<!-- 	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip> -->
 	
 	<geometryservice url="http://{serverip}/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
 
@@ -35,69 +34,93 @@
 			config="widgets/MapSwitcher/MapSwitcherWidget.xml"
 			url="widgets/MapSwitcher/MapSwitcherWidget.swf"/>
 			
-	<map top="0"  center="118.417947 31.337093" scale="48000"
+	<map top="0" center="118.417947 31.337093" scale="48000"
 		 scalebarvisible="false" esrilogovisible="false">
-<!-- 	<map top="0" center="112.9894 28.185" scale="96000" -->
-<!-- 		scalebarvisible="false" esrilogovisible="false"> -->
 		<basemaps>
-<!-- 			<layer label="矢量图" type="tiled" visible="true" -->
-<!-- 				url="http://{serverip}/arcgis/rest/services/changsha/changsha_base_GHY/MapServer" /> -->
 			<layer label="矢量图" type="tiled" visible="true"
-				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base_new/MapServer" />
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base2015/MapServer" />
 			<layer label="卫星图" type="tiled" visible="false"
 				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" />
 		</basemaps>
 		
 		<operationallayers>
 			<layer label="发布段" type="dynamic" visible="true" autorefresh="0" 
-				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_fbd/MapServer">
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_fbd/MapServer">
 				<sublayer id="0" popupconfig="popups/WuHu/PopUp-FBD.xml"/>	
 			</layer>
 			
-<!-- 			<layer label="信号机" type="feature" visible="false" autorefresh="0" -->
-<!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/0" -->
-<!-- 				popupconfig="popups/WuHu/PopUp-XHJ.xml"> -->
-
-<!-- 				<uniquevaluerenderer field="STATE"> -->
-<!-- 					<defaultlabel>未知</defaultlabel> -->
-<!-- 					<picturemarkersymbol url="assets/images/mapIcons/WuHu/XinHaoJi-grey.png" yoffset="18" /> -->
-
-<!-- 					<uniquevalueinfo value="connect" label="连接"> -->
-<!-- 						<picturemarkersymbol url="assets/images/mapIcons/XinHaoJi-blue.png" yoffset="18" /> -->
-<!-- 					</uniquevalueinfo> -->
-<!-- 				</uniquevaluerenderer> -->
-<!-- 			</layer> -->
+			<!-- 点位数量巨大时使用dynamic，不使用feature -->
+			<layer label="海量点" type="dynamic" visible="true" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer">
+				<sublayer id="0" popupconfig="popups/WuHu/PopUp-LuDeng.xml"/>
+				<sublayer id="1" popupconfig="popups/WuHu/PopUp-JiaoTongBiaoZhi.xml"/>
+				<sublayer id="14" popupconfig="popups/WuHu/PopUp-LongMenJia.xml"/>
+				<sublayer id="15" popupconfig="popups/WuHu/PopUp-JiaoTongBiaoZhi.xml"/>
+			</layer>
 			
-<!-- 			<layer label="摄像机" type="feature" visible="false" autorefresh="0" -->
-<!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/1" -->
-<!-- 				popupconfig="popups/WuHu/PopUp-XHJ.xml"> -->
-
-<!-- 				<uniquevaluerenderer field="STATE"> -->
-<!-- 					<defaultlabel>未知</defaultlabel> -->
-<!-- 					<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" /> -->
-
-<!-- 					<uniquevalueinfo value="connect" label="连接"> -->
-<!-- 						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" /> -->
-<!-- 					</uniquevalueinfo> -->
-
-<!-- 					<uniquevalueinfo value="disconnect" label="中断"> -->
-<!-- 						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-red.png" yoffset="13" /> -->
-<!-- 					</uniquevalueinfo> -->
-
-<!-- 					<uniquevalueinfo value="malfunction" label="异常"> -->
-<!-- 						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-yellow.png" yoffset="13" /> -->
-<!-- 					</uniquevalueinfo> -->
-<!-- 				</uniquevaluerenderer> -->
-<!-- 			</layer> -->
+			<layer label="电子警察" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/2"
+				   popupconfig="popups/WuHu/PopUp-DianZiJingCha.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/WuHu/DianZiJingCha-blue.png" 
+										 yoffset="18"/>
+				</simplerenderer>				
+			</layer>
 			
-<!-- 			<layer label="卡口" type="feature" visible="false" autorefresh="0" -->
-<!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device/MapServer/2" -->
-<!-- 				popupconfig="popups/WuHu/PopUp-KaKou.xml"> -->
-				
-<!-- 				<simplerenderer> -->
-<!-- 					<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13" /> -->
-<!-- 				</simplerenderer> -->
-<!-- 			</layer> -->
+			<layer label="公交车站" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/3"
+				   popupconfig="popups/WuHu/PopUp-GongJiaoCheZhan.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/TianJin/GongJiao/GongJiaoZhanDian.png" 
+										 yoffset="11"/>
+				</simplerenderer>				
+			</layer>
+			
+			<layer label="信号机" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/4"
+				   popupconfig="popups/WuHu/PopUp-XinHaoJi.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/WuHu/XinHaoJi-blue.png" 
+										 yoffset="18"/>
+				</simplerenderer>				
+			</layer>
+			
+			<layer label="诱导板" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/5"
+				   popupconfig="popups/WuHu/PopUp-YouDaoBan.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/WuHu/QingBaoBan-blue.png" 
+										 yoffset="18"/>
+				</simplerenderer>				
+			</layer>
+			
+			<layer label="卡口" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/6"
+				   popupconfig="popups/WuHu/PopUp-KaKou.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" 
+										 yoffset="11"/>
+				</simplerenderer>				
+			</layer>
+			
+			<layer label="气象站" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/7"
+				   popupconfig="popups/WuHu/PopUp-QiXiangZhan.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/WuHu/QiXiangZhan-blue.png" 
+										 yoffset="18"/>
+				</simplerenderer>				
+			</layer>
+			
+			<layer label="路口" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/13"
+				   popupconfig="popups/WuHu/PopUp-LuKou.xml">
+				<simplerenderer>
+					<simplemarkersymbol color="0x3E6FBC" size="10">
+						<line width="3"/>
+					</simplemarkersymbol>
+				</simplerenderer>				
+			</layer>
 		</operationallayers>
 	</map>
 
@@ -184,9 +207,25 @@
 				config="widgets/Overlay/WuHu/PointOverlayWidget-ShiJianJianCe.xml"
 				url="widgets/Overlay/PointOverlayWidget.swf" />
 		
+		<widget label="车检器Overlay"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-CheJianQi.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="能见度仪Overlay"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-NengJianDuYi.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="视频检测器Overlay"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-ShiPinJianCeQi.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
 		<widget label="添加点位" 
 				config="widgets/SendMapClickCoordinate/SendMapClickCoordinate-general.xml"
 				url="widgets/SendMapClickCoordinate/SendMapClickCoordinateWidget.swf"/>
+		
+		<widget label="设备定位" preload="open"
+				config="widgets/GetDeviceCoordinate/WuHu/GetDeviceCoordinateWidget.xml"
+				url="widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.swf"/>
 	</widgetcontainer>
 	
 	<widgetcontainer layout="fix">
@@ -222,6 +261,29 @@
 				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-ShiPinXunJian.xml"
 				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 		
+		<widget label="诱导发布菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-YouDaoFaBu.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="发布段菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-FaBuDuan.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="信号控制菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-XinHaoKongZhi.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="设施设备菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-SheShiSheBei.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="车检器菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-CheJianQi.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="接处警菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-JieChuJing.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 	</widgetcontainer>
 	
 	<widgetcontainer layout="horizontal">

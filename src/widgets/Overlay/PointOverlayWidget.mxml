@@ -67,7 +67,7 @@
 			
 			
 
-			private var  _infoClass:Class;
+			private var _infoClass:Class;
 			private var _pointOverlayLayer:GraphicsLayer;
 			private var _pointType:String;
 			

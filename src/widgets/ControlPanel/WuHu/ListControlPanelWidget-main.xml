@@ -1,36 +1,7 @@
 <?xml version="1.0" ?>
 <configuration>
 	<menu>
-		<itemgroup label="设施设备">
-			<item label="发布段" initenable="true">
-				<clickfunctions>
-					<clickfunction name="ChangeLayer">
-						<params>
-							<param name="ServiceName" value="发布段" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-			<item label="气象站" initenable="true">
-				<clickfunctions>
-					<clickfunction name="ChangeOverlayVisible">
-						<params>
-							<param name="WidgetName" value="气象站Overlay"/>
-							<param name="OverlayType" value="QiXiangZhan" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-			<item label="电子警察">
-				<clickfunctions>
-					<clickfunction name="ChangeOverlayVisible">
-						<params>
-							<param name="WidgetName" value="电子警察Overlay"/>
-							<param name="OverlayType" value="DianZiJingCha" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
+		<itemgroup label="设备图层">
 			<item label="摄像机">
 				<clickfunctions>
 					<clickfunction name="ChangeOverlayVisible">
@@ -41,77 +12,127 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
-			<item label="占道施工">
+			
+			<item label="诱导板">
 				<clickfunctions>
 					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="占道施工Overlay"/>
-							<param name="OverlayType" value="ZhanDaoShiGong" />
+							<param name="WidgetName" value="诱导板Overlay"/>
+							<param name="OverlayType" value="QingBaoBan" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="信号机">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="信号机"/>
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="能见度仪">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="能见度仪Overlay"/>
+							<param name="OverlayType" value="NengJianDuYi" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="气象站">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="气象站Overlay"/>
+							<param name="OverlayType" value="QiXiangZhan"/>
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="视频检测器">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="视频检测器Overlay"/>
+							<param name="OverlayType" value="ShiPinJianCeQi" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="卡口">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="卡口Overlay"/>
+							<param name="OverlayType" value="KaKou" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="电子警察">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="电子警察" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="车检器">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="车检器Overlay"/>
+							<param name="OverlayType" value="CheJianQi" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
 			</item>
 		</itemgroup>
 		
-<!-- 		<itemgroup label="勤务"> -->
-<!-- 			<item label="岗点" initenable="true"> -->
-<!-- 				<clickfunctions> -->
-<!-- 					<clickfunction name="ChangeOverlayVisible"> -->
-<!-- 						<params> -->
-<!-- 							<param name="OverlayType" value="policeSentry" /> -->
-<!-- 						</params> -->
-<!-- 					</clickfunction> -->
-<!-- 				</clickfunctions> -->
-<!-- 			</item> -->
-<!-- 			<item label="警车" initenable="true"> -->
-<!-- 				<clickfunctions> -->
-<!-- 					<clickfunction name="ChangeOverlayVisible"> -->
-<!-- 						<params> -->
-<!-- 							<param name="OverlayType" value="policeCar" /> -->
-<!-- 						</params> -->
-<!-- 					</clickfunction> -->
-<!-- 				</clickfunctions> -->
-<!-- 			</item> -->
-<!-- 			<item label="警员" initenable="true"> -->
-<!-- 				<clickfunctions> -->
-<!-- 					<clickfunction name="ChangeOverlayVisible"> -->
-<!-- 						<params> -->
-<!-- 							<param name="OverlayType" value="police" /> -->
-<!-- 						</params> -->
-<!-- 					</clickfunction> -->
-<!-- 				</clickfunctions> -->
-<!-- 			</item> -->
-<!-- 		</itemgroup> -->
-		
-<!-- 		<itemgroup label="重点车辆"> -->
-<!-- 			<item label="重点车辆" initenable="true"> -->
-<!-- 				<clickfunctions> -->
-<!-- 					<clickfunction name="ChangeWidget"> -->
-<!-- 						<params> -->
-<!-- 							<param name="WidgetName" value="重点车辆" /> -->
-<!-- 						</params> -->
-<!-- 					</clickfunction> -->
-<!-- 				</clickfunctions> -->
-<!-- 			</item> -->
-<!-- 			<item label="应急资源" initenable="true"> -->
-<!-- 				<clickfunctions> -->
-<!-- 					<clickfunction name="ChangeWidget"> -->
-<!-- 						<params> -->
-<!-- 							<param name="WidgetName" value="应急资源" /> -->
-<!-- 						</params> -->
-<!-- 					</clickfunction> -->
-<!-- 				</clickfunctions> -->
-<!-- 			</item> -->
-<!-- 			<item label="应急单位" initenable="true"> -->
-<!-- 				<clickfunctions> -->
-<!-- 					<clickfunction name="ChangeWidget"> -->
-<!-- 						<params> -->
-<!-- 							<param name="WidgetName" value="应急单位" /> -->
-<!-- 						</params> -->
-<!-- 					</clickfunction> -->
-<!-- 				</clickfunctions> -->
-<!-- 			</item> -->
-<!-- 		</itemgroup> -->
+		<itemgroup label="业务图层">
+			<item label="发布段" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="发布段" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="警员信息">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="警员Overlay"/>
+							<param name="OverlayType" value="police" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="警车信息">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="警车Overlay"/>
+							<param name="OverlayType" value="policeCar" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+		</itemgroup>
 		
 		<itemgroup label="功能">
 			<item label="测距">

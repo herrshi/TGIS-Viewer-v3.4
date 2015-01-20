@@ -12,8 +12,10 @@
 		<![CDATA[
 			import com.esri.ags.FeatureSet;
 			import com.esri.ags.Graphic;
+			import com.esri.ags.geometry.Geometry;
 			import com.esri.ags.geometry.MapPoint;
 			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.portal.PopUpRenderer;
 			import com.esri.ags.symbols.Symbol;
 			
 			import mx.events.FlexEvent;
@@ -21,13 +23,17 @@
 			import mx.rpc.Fault;
 			
 			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
+			import cn.seisys.TGISViewer.skins.PopUpRenderer.ClassicPopUpRendererSkinWithButtons;
 			import cn.seisys.TGISViewer.utils.Hashtable;
 			import cn.seisys.TGISViewer.utils.MapServiceUtil;
+			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
 			import cn.seisys.TGISViewer.utils.SymbolParser;
 			
 			private var _layerTable:Hashtable = new Hashtable();
 			
 			private var _showResultInMap:Boolean;
+			private var _needZoom:Boolean;
 			private var _resultLayer:GraphicsLayer;
 			
 			protected function widgetConfigLoadedHandler(event:Event):void
@@ -35,6 +41,7 @@
 				if ( configXML )
 				{
 					_showResultInMap = ( configXML.showresult == "true" ? true : false );
+					_needZoom = ( configXML.needzoom == "true" ? true : false );
 					
 					var symbolParser:SymbolParser = new SymbolParser();
 					for each ( var layerXML:XML in configXML.layers[0].layer )
@@ -43,13 +50,26 @@
 						var url:String = layerXML.url;
 						url = url.replace( "{serverip}", configData.arcgisServerIP );
 						var idField:String = layerXML.idfield;
+						var zoomScale:Number = layerXML.zoomscale || 24000;
 						var symbol:Symbol = symbolParser.parseSymbol( layerXML );
+						
+						//弹出框配置
+						var popupInfo:PopUpInfoWithButtons;
+						if ( layerXML.popup[0] )
+						{
+							var popupXML:XML = layerXML.popup[0];
+							popupInfo = PopUpInfoParser.parsePopUpInfo( popupXML );
+							
+						}
+						
 						_layerTable.add(  
 							type, 
 							{ 
 								url: url, 
 								idField: idField,
-								symbol: symbol
+								symbol: symbol,
+								zoomScale: zoomScale,
+								popupInfo: popupInfo
 							} 
 						);
 					}
@@ -89,9 +109,11 @@
 				var where:String = idField + "='" + id + "'";
 				
 				query.where = where;
+				query.outFields = ["*"];
 				queryTask.url = url;
 				queryTask.execute( query, 
-					new AsyncResponder( queryTask_findDevice_executeCompleteHandler, queryTask_faultHandler, type ) );
+					new AsyncResponder( queryTask_findDevice_executeCompleteHandler, 
+						queryTask_faultHandler, type ) );
 			}
 			
 			private function appevent_GetDeviceCoordinateHandler( event:AppEvent ):void
@@ -138,16 +160,13 @@
 				var graphicArray:Array = [];
 				for each ( var graphic:Graphic in featureSet.features )
 				{
+					var layerConfigObj:Object = _layerTable.find( type );
 					//显示结果
-					if ( _showResultInMap )
+					if ( layerConfigObj.symbol )
 					{
-						var layerConfigObj:Object = _layerTable.find( type );
-						if ( layerConfigObj )
-						{
-							var symbol:Symbol = layerConfigObj.symbol;
-							graphic.symbol = symbol;
-							_resultLayer.add( graphic );
-						}
+						var symbol:Symbol = layerConfigObj.symbol;
+						graphic.symbol = symbol;
+						_resultLayer.add( graphic );
 					}
 					
 					//保存结果
@@ -157,6 +176,12 @@
 						attributes: graphic.attributes 
 					};
 					graphicArray.push( graphicObj );
+					
+					if ( _needZoom )
+					{
+						map.centerAt( centerPoint );
+						map.scale = layerConfigObj.zoomScale;
+					}
 				}
 				
 				var dataObj:Object = { type:type, points:graphicArray };				
@@ -177,7 +202,48 @@
 				
 				for each ( var graphic:Graphic in featureSet.features )
 				{
+					var layerConfigObj:Object = _layerTable.find( type );
+					//高亮显示
+					if ( layerConfigObj.symbol )
+					{
+						var symbol:Symbol = layerConfigObj.symbol;
+						graphic.symbol = symbol;
+						_resultLayer.add( graphic );
+					}
 					
+					//中心点
+					var centerPoint:MapPoint = MapServiceUtil.getGeomCenter( graphic );
+					map.centerAt( centerPoint );
+					
+					//缩放
+					switch( graphic.geometry.type )
+					{
+						case Geometry.MAPPOINT:
+						{
+							map.scale = layerConfigObj.zoomScale;
+							break;
+						}
+							
+						case Geometry.POLYGON:
+						case Geometry.EXTENT:
+						case Geometry.POLYLINE:
+						{
+							map.extent = graphic.geometry.extent;
+							break;
+						}
+					}
+					
+					//弹出框
+					if ( layerConfigObj.popupInfo )
+					{
+						var popupRenderer:PopUpRenderer = new PopUpRenderer();
+						popupRenderer.graphic = graphic;
+						popupRenderer.popUpInfo = layerConfigObj.popupInfo;
+						popupRenderer.setStyle( "skinClass", Class( ClassicPopUpRendererSkinWithButtons ) );
+						map.infoWindow.content = popupRenderer;
+						map.infoWindow.contentOwner = popupRenderer.graphic;
+						map.infoWindow.show( centerPoint );
+					}
 				}
 			}
 			

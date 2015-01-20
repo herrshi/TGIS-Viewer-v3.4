@@ -10,17 +10,28 @@
 	<initvisible>false</initvisible>
 	
 	<popup>
-		<title>{name}</title>
-		<fields/>
+		<title>{qbbDesc}</title>
+		<fields>
+			<field name="qbbDesc"/>
+			<field name="qbbState"/>
+		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<buttons>
 			<button label="详细信息" action="openDevice" type="QingBaoBan"/>
 		</buttons>
 	</popup>
 	
-	<simplerenderer>
-		<picturemarkersymbol url="assets/images/mapIcons/WuHu/QingBaoBan-blue.png" yoffset="18"/>
-	</simplerenderer>
+	<uniquevaluerenderer field="qbbState">
+		<picturemarkersymbol url="assets/images/mapIcons/WuHu/QingBaoBan-grey.png" yoffset="18"/>
+		
+		<uniquevalueinfo value="通信连接">
+			<picturemarkersymbol url="assets/images/mapIcons/WuHu/QingBaoBan-blue.png" yoffset="18" />
+		</uniquevalueinfo>
+		
+		<uniquevalueinfo value="通信中断">
+			<picturemarkersymbol url="assets/images/mapIcons/WuHu/QingBaoBan-red.png" yoffset="18" />
+		</uniquevalueinfo>
+	</uniquevaluerenderer>
 	
 	<clickfunction>
 		<action>showInfoWindow</action>

@@ -23,6 +23,7 @@
 		<![CDATA[
 			import com.esri.ags.FeatureSet;
 			import com.esri.ags.Graphic;
+			import com.esri.ags.events.ZoomEvent;
 			import com.esri.ags.layers.GraphicsLayer;
 			import com.esri.ags.renderers.ClassBreaksRenderer;
 			import com.esri.ags.renderers.supportClasses.ClassBreakInfo;
@@ -42,10 +43,6 @@
 			
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.utils.Hashtable;
-			
-			
-			
-			
 			
 			
 			/**
@@ -145,18 +142,33 @@
 			
 			/**
 			* 每个区信访点总数
-			* 用于显示BarChart
 			* */
-			[Bindable] private var _districtTotalCountAC:ArrayCollection;
+			private var _districtTotalCountAC:ArrayCollection;
 			
 			/**
 			 * 渐变色
 			 * */
 			private var _gradientColorArray:Array;
 			
+			/**
+			 * flex的bug，在module里使用chart需要 从主程序复制styleDeclaration
+			 * */
+			protected function this_preinitializeHandler(event:FlexEvent):void
+			{
+				var styleObjects:Array = FlexGlobals.topLevelApplication.styleManager.selectors;
+				for each(var styleObj:String in styleObjects)  {
+					var style:CSSStyleDeclaration = 
+						FlexGlobals.topLevelApplication.styleManager.getStyleDeclaration(styleObj);
+					styleManager.setStyleDeclaration(styleObj, style, true);
+				}
+				
+			}
+			
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
+				map.addEventListener( ZoomEvent.ZOOM_END, map_zoomEndHandler );
+				
 				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
 				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_WidgetCloseHandler );
 				
@@ -175,8 +187,7 @@
 				_districtLayer = new GraphicsLayer();
 				_districtLayer.id = "colorRendererPolygonLayer";
 				map.addLayer( _districtLayer );
-				//面图层放在标线和标注下方
-//				map.reorderLayer( "colorRendererPolygonLayer", 3 );
+				map.reorderLayer( "colorRendererPolygonLayer", 3 );
 				
 				_labelLayer = new GraphicsLayer();
 				map.addLayer( _labelLayer );
@@ -199,7 +210,7 @@
 						
 						_xfdQueryTask = new QueryTask( xfdLayerUrl );
 						_xfdQueryTask.disableClientCaching = true;
-						queryXFD();
+						queryXFD( "信访日期  >= date '2013-12-01' AND 信访日期  <= date '2013-12-31'" );
 					}
 					
 					var districtLayerUrl:String = configXML.districtlayer.url;
@@ -234,6 +245,7 @@
 			{
 				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
 				{
+					map.addEventListener( ZoomEvent.ZOOM_END, map_zoomEndHandler );
 					map.addLayer( _districtLayer );
 					map.addLayer( _labelLayer );
 				}
@@ -243,13 +255,38 @@
 			{
 				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
 				{
+					map.removeEventListener( ZoomEvent.ZOOM_END, map_zoomEndHandler );
 					map.removeLayer( _districtLayer );
 					map.removeLayer( _labelLayer );
 				}
 			}
 			
+			private function map_zoomEndHandler( event:ZoomEvent ):void
+			{
+				_districtLayer.visible = _labelLayer.visible = ( map.scale > 96000 );
+				
+				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+					{ 
+						serviceName: "街道",
+						layerIds: "",
+						visible: (map.scale <= 96000)
+					} 
+				);
+			}
+			
 			private function queryXFD( expr:String = "1=1" ):void
 			{
+				cursorManager.setBusyCursor();
+				
+				//过滤信访点图层
+				AppEvent.dispatch( AppEvent.SET_LAYER_FILTER_DEFINITION, 
+					{ 
+						serviceName: "信访点",
+						layerIds: "",
+						whereClause: expr
+					} 
+				);
+				
 				var query:Query = new Query();
 				query.returnGeometry = true;
 				query.where = expr;
@@ -285,19 +322,19 @@
 					{
 						xfdGraphicArray = _xfdTable.find( districtName );
 						var totalCount:int = xfdGraphicArray.length;
-						_districtTotalCountAC.addItem( 
-							{ 
-								districtName: districtName, 
-								totalCount: totalCount 
-							} 
-						);
+						var districtCount:DistrictCount = new DistrictCount();
+						districtCount.districtName = districtName;
+						districtCount.count = totalCount;
+						_districtTotalCountAC.addItem( districtCount );
 					}
 					
 					//信访点从多到少排序
 					var sort:Sort = new Sort();
-					sort.fields = [ new SortField( "totalCount", true ) ];
+					sort.fields = [ new SortField( "count", true ) ];
 					_districtTotalCountAC.sort = sort;
 					_districtTotalCountAC.refresh();
+					AppEvent.dispatch( AppEvent.HUANBAOJU_DISTRICT_COUNT, _districtTotalCountAC );
+					
 					queryDistrict();
 				}
 			}
@@ -324,6 +361,8 @@
 							graphic.attributes.count = xfdCount;
 							_districtGraphicAC.addItem( graphic );
 						}
+						
+//						graphic.addEventListener( MouseEvent.DOUBLE_CLICK, districtLayerGraphic_doubleClickHandler );
 						
 					}
 					_districtLayer.graphicProvider = _districtGraphicAC;
@@ -436,6 +475,8 @@
 						}
 					}
 				}
+				
+				cursorManager.removeBusyCursor();
 			}
 			
 			private var _timeExpr:String = "";
@@ -466,6 +507,7 @@
 			private function appevent_queryExpressionTimeHandler( event:AppEvent ):void
 			{
 				_timeExpr = event.data as String;
+				trace(_timeExpr);
 				queryXFD( getQueryExpr() );
 			}
 			
@@ -552,23 +594,27 @@
 				for each ( districtName in _districtTypeCountTable.getKeySet() )
 				{
 					countAC = _districtTypeCountTable.find( districtName );
+					//去掉数量为0的分类
+					for ( var i:int = 0; i < countAC.length; i++ )
+					{
+						countObj = countAC.getItemAt( i );
+						if ( countObj.count == 0 )
+						{
+							countAC.removeItemAt( i );
+							i--;
+						}
+					}
 					countAC.sort = sort;
 					countAC.refresh();
 				}
+				
+				AppEvent.dispatch( AppEvent.HUANBAOJU_DISTRICT_TYPE_COUNT, _districtTypeCountTable );
 			}
 			
-			/**
-			 * flex的bug，在module里使用chart需要 从主程序复制styleDeclaration
-			 * */
-			protected function this_preinitializeHandler(event:FlexEvent):void
+			private function districtLayerGraphic_doubleClickHandler( event:MouseEvent ):void
 			{
-				var styleObjects:Array = FlexGlobals.topLevelApplication.styleManager.selectors;
-				for each(var styleObj:String in styleObjects)  {
-					var style:CSSStyleDeclaration = 
-						FlexGlobals.topLevelApplication.styleManager.getStyleDeclaration(styleObj);
-					styleManager.setStyleDeclaration(styleObj, style, true);
-				}
-				
+				var graphic:Graphic = event.currentTarget as Graphic;
+				map.extent = graphic.geometry.extent;
 			}
 			
 		]]>
@@ -583,7 +629,7 @@
 		<mx:SeriesInterpolate id="interpolateIn" duration="1000"/>
 	</fx:Declarations>
 	
-	<mx:ColumnChart id="chartDistrictTotalCount"
+	<!--<mx:ColumnChart id="chartDistrictTotalCount"
 					width="100%" height="100%" 
 					dataProvider="{_districtTotalCountAC}" 
 					showDataTips="true" 
@@ -596,5 +642,5 @@
 			<mx:ColumnSeries xField="districtName" yField="totalCount" 
 							 showDataEffect="{interpolateIn}" />
 		</mx:series>
-	</mx:ColumnChart >
+	</mx:ColumnChart >-->
 </TGISViewer:BaseWidget>

@@ -4,7 +4,7 @@
 	<xfdlayer>
 		<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1</url>
 		<typefield>问题类别</typefield>
-		<typevalue>大气污染,固体废物,水污染,噪声污染</typevalue>
+		<typevalue>大气污染,固体废物,水污染,噪声污染,油烟气污染,电磁辐射,危险化学品,新建项目</typevalue>
 		<districtnamefield>DistrictName</districtnamefield>
 	</xfdlayer>
 	

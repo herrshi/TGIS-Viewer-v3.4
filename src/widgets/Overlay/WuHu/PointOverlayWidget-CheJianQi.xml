@@ -1,0 +1,32 @@
+<!-- 车检器 -->
+<?xml version="1.0" ?>
+<configuration>
+	<type>CheJianQi</type>
+	<!-- 组件打开时通知页面 -->
+	<widgetrunnotify></widgetrunnotify>
+	<!-- 组件关闭时通知页面 -->
+	<widgetclosenotify></widgetclosenotify>
+	
+	<initvisible>false</initvisible>
+	
+	<popup>
+		<title>{devDesc}</title>
+		<fields>
+			<field name="devDesc"/>
+			<field name="typedesc" alias="设备类型：" visible="true"/>
+			<field name="status" alias="通信状态：" visible="true"/>
+		</fields>
+		<showzoomtobutton>false</showzoomtobutton>
+		<buttons>
+			<button label="流量统计" action="openDevice" type="CheJianQiLiuLiangTongJi"/>
+		</buttons>
+	</popup>
+	
+	<simplerenderer>
+		<picturemarkersymbol url="assets/images/mapIcons/FaBuDuan-blue.png" yoffset="13"/>
+	</simplerenderer>
+	
+	<clickfunction>
+		<action>showInfoWindow</action>
+	</clickfunction>
+</configuration>

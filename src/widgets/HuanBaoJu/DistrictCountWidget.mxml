@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   xmlns:skins="widgets.HuanBaoJu.skins.*"
+					   layout="absolute" 
+					   width="100%" height="100%" 
+					   creationComplete="this_creationCompleteHandler(event)" 
+					   preinitialize="this_preinitializeHandler(event)" 
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" >
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			import spark.components.supportClasses.ItemRenderer;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			
+			
+			/**九宫格缩放*/
+			[Embed(source="assets/images/HuanBaoJu/center/content_background.png", 
+                scaleGridTop="4", scaleGridBottom="187", 
+                scaleGridLeft="4", scaleGridRight="188"
+            )]
+			
+			[Bindable] private var _contentBackground:Class;
+			
+			[Bindable] private var _districtCountAC:ArrayCollection;
+			
+			/**
+			 * 每个区信访点分类统计
+			 * */
+			private var _districtTypeCountTable:Hashtable;
+			
+			/**
+			 * 每个区信访点分月统计
+			 * */
+			private var _districtMonthCountTable:Hashtable;
+			
+			private var _selectedDistrictName:String;
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				_districtMonthCountTable = new Hashtable();
+				
+				AppEvent.addListener( AppEvent.HUANBAOJU_DISTRICT_COUNT, appevent_districtCountHandler );
+				AppEvent.addListener( AppEvent.HUANBAOJU_DISTRICT_TYPE_COUNT, appevent_districtTypeCountHandler );
+			}
+			
+			/**
+			 * flex的bug，在module里使用chart需要 从主程序复制styleDeclaration
+			 * */
+			protected function this_preinitializeHandler(event:FlexEvent):void
+			{
+				var styleObjects:Array = FlexGlobals.topLevelApplication.styleManager.selectors;
+				for each(var styleObj:String in styleObjects)  {
+					var style:CSSStyleDeclaration = 
+						FlexGlobals.topLevelApplication.styleManager.getStyleDeclaration(styleObj);
+					styleManager.setStyleDeclaration(styleObj, style, true);
+				}
+				
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					if ( configXML.monthcounts[0] )
+					{
+						var monthCountXMLList:XMLList = configXML.monthcounts..monthcount;
+						for each ( var monthCountXML:XML in monthCountXMLList )
+						{
+							var monthCountAC:ArrayCollection = new ArrayCollection();
+							
+							var districtName:String = monthCountXML.@name;
+							var monthCount:String = monthCountXML.@count;
+							var monthCountArray:Array = monthCount.split( "," );
+							for ( var i:int = 1; i <= monthCountArray.length; i++ )
+							{
+								monthCountAC.addItem( 
+									{ 
+										month: i + "月", 
+										count: monthCountArray[i-1] 
+									} 
+								);
+							}
+							_districtMonthCountTable.add( districtName, monthCountAC );
+						}
+					}
+				}
+			}
+			
+			private function appevent_districtCountHandler( event:AppEvent ):void
+			{
+				_districtCountAC = event.data as ArrayCollection;
+				//初始化时选中数量最多的一个区
+				if ( !_selectedDistrictName )
+				{
+					_selectedDistrictName = _districtCountAC.getItemAt( 0 ).districtName;
+				}
+			}
+			
+			private function appevent_districtTypeCountHandler( event:AppEvent ):void
+			{
+				_districtTypeCountTable = event.data as Hashtable;
+				if ( !_selectedDistrictName )
+				{
+					_selectedDistrictName = _districtCountAC.getItemAt( 0 ).districtName;
+				}
+				drawCharts();
+			}
+			
+			protected function districtCountDG_itemClickHandler(event:Event):void
+			{
+//				var districtCount:DistrictCount = ItemRenderer( event.target ).data as DistrictCount;
+				_selectedDistrictName = ItemRenderer( event.target ).data.districtName;
+				drawCharts();
+			}
+			
+			private function drawCharts():void
+			{
+				if ( _districtTypeCountTable.containsKey( _selectedDistrictName ) )
+				{
+					var typeCountAC:ArrayCollection = _districtTypeCountTable.find( _selectedDistrictName );
+					typeCountChart.dataProvider = typeCountAC;
+				}
+				
+				if ( _districtMonthCountTable.containsKey( _selectedDistrictName ) )
+				{
+					var monthCountAC:ArrayCollection = _districtMonthCountTable.find( _selectedDistrictName );
+					monthCountChart.dataProvider = monthCountAC
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<mx:SeriesInterpolate id="interpolateIn" duration="1000"/>
+		
+		<mx:SolidColor id="sc1" color="0x339de7" alpha=".3"/>
+		
+		<mx:SolidColorStroke id="s1" color="0x339de7" weight="2"/>
+	</fx:Declarations>
+	
+	<s:Image id="contentBackground" 
+			 width="100%" height="100%" 
+			 fillMode="scale" scaleMode="stretch"
+			 source="{_contentBackground}"/>
+	
+	<s:VGroup width="100%" height="100%" 
+			  horizontalAlign="center">
+		<skins:DistrictCountDataGroup id="districtCountDG" 
+									  dataProvider="{_districtCountAC}" 
+									  itemClick="districtCountDG_itemClickHandler(event)">
+			<skins:layout>
+				<s:HorizontalLayout paddingLeft="5" paddingTop="5"/>
+			</skins:layout>
+		</skins:DistrictCountDataGroup>
+		
+		<s:HGroup width="100%" height="100%">
+			<mx:ColumnChart id="typeCountChart" 
+							width="50%" height="100%"
+							showDataTips="true" 
+							fontSize="16">
+				<!--<mx:filters>
+					<s:DropShadowFilter 
+						distance="10" 
+						color="0x666666"
+						alpha=".8"/>
+				</mx:filters>-->
+				
+				<mx:horizontalAxis>
+					<mx:CategoryAxis categoryField="name"/>
+				</mx:horizontalAxis>
+				
+				<mx:series>
+					<mx:ColumnSeries xField="name" yField="count" 
+									 showDataEffect="{interpolateIn}" 
+									 stroke="{s1}" 
+									 fill="{sc1}" />
+				</mx:series>
+			</mx:ColumnChart>
+			
+			<mx:AreaChart id="monthCountChart"
+						  width="50%" height="100%"
+						  showDataTips="true" 
+						  fontSize="16">
+				<mx:horizontalAxis>
+					<mx:CategoryAxis categoryField="month"/>
+				</mx:horizontalAxis>
+				
+				<mx:series>
+					<mx:AreaSeries yField="count" 
+								   areaStroke="{s1}" 
+								   areaFill="{sc1}"/>
+				</mx:series>
+			</mx:AreaChart>
+		</s:HGroup>
+	</s:VGroup>
+	
+</TGISViewer:BaseWidget>

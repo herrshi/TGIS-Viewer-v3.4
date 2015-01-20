@@ -2,12 +2,14 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				autoDrawBackground="true"
+				autoDrawBackground="false"
 				buttonMode="true" useHandCursor="true"
-				width="100%" height="100%" click="this_clickHandler(event)">
+				width="100%" height="100%" 
+				click="this_clickHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
+			import widgets.HuanBaoJu.PollutionType;
 			protected function this_clickHandler(event:MouseEvent):void
 			{
 				checkBox.selected = !checkBox.selected;
@@ -19,10 +21,10 @@
 	</fx:Script>
 	
 	
-	<s:Label text="{data.label}" 
+	<s:Label text="{(data as PollutionType).label}" 
 			 verticalCenter="0" left="10"/>
 	
-	<s:CheckBox id="checkBox" selected="{data.selected}" 
+	<s:CheckBox id="checkBox" selected="{(data as PollutionType).selected}" 
 				verticalCenter="0" right="10"/>
 	
 	<s:Image width="100%" 

@@ -3,7 +3,7 @@
 	<title>{主线发布段_5级.DES}</title>
 	<fields>
 		<field name="主线发布段_5级.DES" />
-		<field name="主线发布段_5级.SECTIONID" alias="发布段编号：" visible="true" />
+		<field name="主线发布段_5级.SECTIONID" alias="路段编号：" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>

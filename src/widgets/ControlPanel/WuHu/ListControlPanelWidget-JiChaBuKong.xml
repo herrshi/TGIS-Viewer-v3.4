@@ -12,6 +12,16 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
+			<item label="卡口" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="卡口Overlay"/>
+							<param name="OverlayType" value="KaKou" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
 		</itemgroup>
 	</menu>
 </configuration>

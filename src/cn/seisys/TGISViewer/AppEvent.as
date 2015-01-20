@@ -708,9 +708,21 @@ public class AppEvent extends Event
 	 * */
 	 public static const OPEN_MENU:String = "openMenu";
 	 
+	 
+	 
 	 public static const HUANBAOJU_QUERYEXPRESSION_TIME:String = "HuanBaoJuQueryExpressionTime";
 	 
 	 public static const HUANBAOJU_QUERYEXPRESSION_TYPE:String = "HuanBaoJuQueryExpressionType";
+	 
+	 /**
+	 * 每个区的信访总数量
+	 * */
+	 public static const HUANBAOJU_DISTRICT_COUNT:String = "HuanBaoJuDistrictCount";
+	 
+	 /**
+	 * 每个区的分类信访数量
+	 * */
+	 public static const HUANBAOJU_DISTRICT_TYPE_COUNT:String = "HuanBaoJuDistrictTypeCount";
 	 
     //--------------------------------------------------------------------------
     //

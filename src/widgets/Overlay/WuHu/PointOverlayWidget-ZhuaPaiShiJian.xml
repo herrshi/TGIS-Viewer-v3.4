@@ -19,7 +19,8 @@
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<buttons>
-			<button label="查看录像" action="openDevice" type="ZPSJ_ChaKanLuXiang"/>
+			<button label="详细信息" action="openDevice" type="ZPSJ"/>
+			<button label="实时视频" action="openDevice" type="ZPSJ_ShiShiShiPin"/>
 		</buttons>
 	</popup>
 	

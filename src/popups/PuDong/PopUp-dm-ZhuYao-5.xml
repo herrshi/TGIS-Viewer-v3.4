@@ -3,7 +3,7 @@
 	<title>{NAME}</title>
 	<fields>
 		<field name="NAME" />
-		<field name="SECTIONID" alias="设备编号：" visible="true" />
+		<field name="SECTIONID" alias="路段编号：" visible="true" />
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 	<buttons>

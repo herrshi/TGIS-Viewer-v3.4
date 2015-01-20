@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<configuration>
+	<menu>
+		<itemgroup label="接处警">
+			<item label="警员" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="警情Overlay"/>
+							<param name="OverlayType" value="policeEvent" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item label="警情" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="警员Overlay"/>
+							<param name="OverlayType" value="police" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+		</itemgroup>
+	</menu>
+</configuration>
+	

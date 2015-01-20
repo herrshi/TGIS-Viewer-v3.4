@@ -35,7 +35,7 @@
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	
 	<widgetcontainer layout="horizontal">
-		<widget label="警卫任务" preload="open"
+		<widget label="新增新车路线" preload="open"
 				icon="assets/images/i_police.png"
 				config="widgets/GuardJob/WuHu/GuardJobWidget-add.xml"
 				url="widgets/GuardJob/GuardJobWidget.swf"/>

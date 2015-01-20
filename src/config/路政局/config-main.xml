@@ -1,0 +1,256 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>180.166.184.126:8399</arcgisserverip>
+
+	<geometryservice url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" 
+			config="widgets/Navigation/NavigationWidget.xml"
+		   	url="widgets/Navigation/NavigationWidget.swf" />
+		    
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" scale="384000" center="0,-20000" scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="基础图层" type="tiled" visible="true"
+				   url="http://{serverip}/arcgis/rest/services/ksl_base/MapServer" />
+		</basemaps>
+		<operationallayers>
+			<layer label="A型情报板" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/0"
+				   popupconfig="popups/LuZhengJu/PopUp-QinBaoBanA.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanA-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanA-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanA-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>	
+			</layer>
+			
+			<layer label="车检器" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/1"
+				   popupconfig="popups/LuZhengJu/PopUp-CheJianQi.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/DuanMian-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/DuanMian-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/DuanMian-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>		
+			</layer>
+			
+			<layer label="C型情报板" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/2"
+				   popupconfig="popups/LuZhengJu/PopUp-QinBaoBanC.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanC-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanC-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanC-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>		
+			</layer>
+			
+			<layer label="F型情报板" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/3"
+				   popupconfig="popups/LuZhengJu/PopUp-QinBaoBanF.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanF-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanF-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanF-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>	
+			</layer>
+			
+			<layer label="区域控制器" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/4"
+				   popupconfig="popups/LuZhengJu/PopUp-QuKong.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/FaBuDuan-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/FaBuDuan-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/FaBuDuan-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>	
+			</layer>
+			
+			<layer label="L型情报板" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/5"
+				   popupconfig="popups/LuZhengJu/PopUp-QinBaoBanL.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanL-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanL-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanL-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="M型情报板" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/6"
+				   popupconfig="popups/LuZhengJu/PopUp-QinBaoBanM.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanM-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanM-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanM-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="S型情报板" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/7"
+				   popupconfig="popups/LuZhengJu/PopUp-QinBaoBanS.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanS-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanS-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanS-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>	
+			</layer>
+	
+			<layer label="摄像机" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/8"
+				   popupconfig="popups/LuZhengJu/PopUp-SheXiangJi.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/SheXiangJi-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>		
+			</layer>
+			
+			<layer label="匝道文字板" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/9"
+				   popupconfig="popups/LuZhengJu/PopUp-ZaDaoQinBaoBanA.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanA-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanA-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanA-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>		
+			</layer>
+			
+			<layer label="匝道灯" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/10"
+				   popupconfig="popups/LuZhengJu/PopUp-ZaDaoDeng.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/ZaDao-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/ZaDao-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/ZaDao-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>	
+			</layer>
+			
+			<layer label="匝道M板" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/ksl_live/MapServer/11"
+				   popupconfig="popups/LuZhengJu/PopUp-ZaDaoQinBaoBanM.xml">
+				<uniquevaluerenderer field="FSTR_STATE">
+					<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanM-grey.png" yoffset="13" />
+					
+					<uniquevalueinfo value="connect" label="连接">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanM-blue.png" yoffset="13" />
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="disconnect" label="中断">
+						<picturemarkersymbol url="assets/images/mapIcons/QingBaoBanM-red.png" yoffset="13" />
+					</uniquevalueinfo>
+				</uniquevaluerenderer>	
+			</layer>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="周边搜索"  preload="open"
+			config="widgets/MultiLayerSearch/WuXi/BackgroundMultiLayerSearchWidget-roadAndCross.xml"
+			url="widgets/MultiLayerSearch/BackgroundMultiLayerSearchWidget.swf"/>
+		
+		<widget label="新增要素工具栏" preload="open" left="80" top="10"
+			config="widgets/EditorToolbar/WuXi/AddNewGeometryToolbarWidget.xml"
+			url="widgets/EditorToolbar/AddNewGeometryToolbarWidget.swf"/>
+		
+		<widget label="编辑工具栏" left="250" top="10"
+			url="widgets/EditorToolbar/EditorToolbarWidget.swf"/>
+					  
+		<widget label="Device" preload="open"
+			config="widgets/Overlay/WuXi/PointOverlayByPageWidget.xml" 
+			url="widgets/Overlay/PointOverlayByPageWidget.swf" />
+			
+		<widget label="图层过滤" preload="open" 
+			url="widgets/LayerSymbolFilter/LayerSymbolFilterWidget.swf"/>
+		
+		<widget label="设备定位"  preload="open"
+			config="widgets/GetDeviceCoordinate/WuXi/GetDeviceCoordinateWidget.xml" 
+			url="widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.swf"/>
+	</widgetcontainer>
+	
+	<widgetcontainer layout="horizontal">
+		<widget label="搜索" preload="minimized" 
+			icon="assets/images/i_search.png"
+			config="widgets/MultiLayerSearch/WuXi/MultiLayerSearchWidget-poi.xml"
+			url="widgets/MultiLayerSearch/MultiLayerSearchWidget.swf"/>
+	</widgetcontainer>
+</configuration>

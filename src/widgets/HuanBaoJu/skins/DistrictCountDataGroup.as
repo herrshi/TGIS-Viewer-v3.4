@@ -6,13 +6,13 @@ package widgets.HuanBaoJu.skins
 	
 	[Event(name="itemClick", type="flash.events.Event")]
 	
-	public class XFDTypeDataGroup extends DataGroup
+	public class DistrictCountDataGroup extends DataGroup
 	{
-		public function XFDTypeDataGroup()
+		public function DistrictCountDataGroup()
 		{
 			super();
 			
-			this.itemRenderer = new ClassFactory( XFDTypeDataGroupRenderer );
+			this.itemRenderer = new ClassFactory( DistrictCountDataGroupRenderer );
 		}
 	}
 }
