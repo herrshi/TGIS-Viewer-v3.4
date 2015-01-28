@@ -20,6 +20,13 @@
 		<gradientcolor>0x006100,0x3c8000,0x6ba100,0xa4c400,0xdfeb00,0xffea00,0xffbb00,0xff9100,0xff6200,0xff2200</gradientcolor>
 	</districtlayer>
 	
+	<!-- 街道图层相关配置 -->
+	<blocklayer>
+		<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/2</url>
+		<blocknamefield>XZQM</blocknamefield>
+		<gradientcolor>0x006100,0x3c8000,0x6ba100,0xa4c400,0xdfeb00,0xffea00,0xffbb00,0xff9100,0xff6200,0xff2200</gradientcolor>
+	</blocklayer>
+	
 	<labellayer>
 		<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/LabelLine/MapServer/0</url>
 		<labelpointnamefield>name</labelpointnamefield>

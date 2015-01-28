@@ -224,8 +224,8 @@
 				);*/
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"CAM01","x":"110.407656","y":"35.355133","fields":{"cameraDesc":"CAM01","cameraIp":"52.123.16.29","cameraState":"连接"}},{"id":"CAM02","x":"118.407656","y":"31.355133","fields":{"cameraDesc":"CAM02","cameraIp":"52.123.16.71","cameraState":"连接"}},{"id":"CAM03","x":null,"y":null,"fields":{"cameraDesc":"CAM03","cameraIp":"52.123.16.157","cameraState":"连接"}},{"id":"CAM04","x":null,"y":null,"fields":{"cameraDesc":"CAM04","cameraIp":"52.123.20.170","cameraState":"连接"}},{"id":"CAM05","x":null,"y":null,"fields":{"cameraDesc":"CAM05","cameraIp":"52.123.34.108","cameraState":"连接"}},{"id":"CAM06","x":null,"y":null,"fields":{"cameraDesc":"CAM06","cameraIp":"52.123.34.102","cameraState":"连接"}},{"id":"CAM07","x":null,"y":null,"fields":{"cameraDesc":"CAM07","cameraIp":"52.123.20.175","cameraState":"连接"}},{"id":"CAM08","x":null,"y":null,"fields":{"cameraDesc":"CAM08","cameraIp":"52.123.20.176","cameraState":"连接"}},{"id":"CAM09","x":null,"y":null,"fields":{"cameraDesc":"CAM09","cameraIp":"52.123.20.177","cameraState":"连接"}},{"id":"CAM10","x":null,"y":null,"fields":{"cameraDesc":"CAM10","cameraIp":"52.123.20.178","cameraState":"连接"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"KaKou","points":[{"id":"KK001","x":118.39563496200003 ,"y":31.342197578000082 ,"fields":{"desc":"坦克山路(天网)"}}]}' );
-				AppEvent.dispatch( AppEvent.OPEN_MENU, "设施设备菜单" );
-				AppEvent.dispatch( AppEvent.WIDGET_RUN, "设施设备菜单" );
+				AppEvent.dispatch( AppEvent.OPEN_MENU, "信号控制菜单" );
+				AppEvent.dispatch( AppEvent.WIDGET_RUN, "信号控制菜单" );
 //				AppEvent.dispatch( AppEvent.WIDGET_RUN, "添加点位" );
 				
 				

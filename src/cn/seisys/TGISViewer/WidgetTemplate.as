@@ -16,10 +16,6 @@
 package cn.seisys.TGISViewer
 {
 
-import cn.seisys.TGISViewer.components.FocusableImage;
-import cn.seisys.TGISViewer.components.TitlebarButton;
-import cn.seisys.TGISViewer.utils.LocalizationUtil;
-
 import flash.events.Event;
 import flash.events.MouseEvent;
 
@@ -33,6 +29,10 @@ import mx.managers.DragManager;
 import spark.components.Application;
 import spark.components.Group;
 import spark.components.SkinnableContainer;
+
+import cn.seisys.TGISViewer.components.FocusableImage;
+import cn.seisys.TGISViewer.components.TitlebarButton;
+import cn.seisys.TGISViewer.utils.LocalizationUtil;
 
 [Event(name="open", type="flash.events.Event")]
 [Event(name="minimized", type="flash.events.Event")]

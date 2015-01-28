@@ -55,8 +55,8 @@
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
 			import cn.seisys.TGISViewer.skins.PopUpRenderer.AdvancedPopUpRendererSkin;
 			import cn.seisys.TGISViewer.skins.PopUpRenderer.ClassicPopUpRendererSkinWithButtons;
-			import cn.seisys.TGISViewer.skins.PopUpRenderer.PoliceEventPopUpRendererSkin;
-			import cn.seisys.TGISViewer.skins.PopUpRenderer.PoliceSentryPopUpRendererSkin;
+			import cn.seisys.TGISViewer.skins.PopUpRenderer.JingQingPopUpRendererSkin;
+			import cn.seisys.TGISViewer.skins.PopUpRenderer.GangDianPopUpRendererSkin;
 			import cn.seisys.TGISViewer.skins.PopUpRenderer.YingJiShiJianPopUpRendererSkin;
 			import cn.seisys.TGISViewer.utils.Hashtable;
 			import cn.seisys.TGISViewer.utils.MapServiceUtil;
@@ -269,12 +269,12 @@
 								_popUpSkinClass = Class( AdvancedPopUpRendererSkin );
 								break;
 							
-							case "policeSentry":
-								_popUpSkinClass = Class( PoliceSentryPopUpRendererSkin );
+							case "GangDian":
+								_popUpSkinClass = Class( GangDianPopUpRendererSkin );
 								break;
 							
-							case "policeEvent":
-								_popUpSkinClass = Class( PoliceEventPopUpRendererSkin );
+							case "JingQing":
+								_popUpSkinClass = Class( JingQingPopUpRendererSkin );
 								break;
 							
 							case "YingJiShiJian":
@@ -1270,26 +1270,6 @@
 							popupRenderer.graphic = graphic;
 							popupRenderer.popUpInfo = _popUpInfo;
 							popupRenderer.setStyle( "skinClass", _popUpSkinClass );
-							/*switch( _popUpSkinClass )
-							{
-								case "advanced":
-									popupRenderer.setStyle( "skinClass", Class( AdvancedPopUpRendererSkin ) );
-									break;
-								
-								case "policeSentry":
-									popupRenderer.setStyle( "skinClass", Class( PoliceSentryPopUpRendererSkin ) );
-									break;
-								
-								case "YingJiShiJian":
-									popupRenderer.setStyle( "skinClass", Class( YingJiShiJianPopUpRendererSkin ) );
-									break;
-								
-								default:
-								{
-									popupRenderer.setStyle( "skinClass", Class( ClassicPopUpRendererSkinWithButtons ) );
-									break;
-								}
-							}*/
 							map.infoWindow.content = popupRenderer;
 							map.infoWindow.contentOwner = popupRenderer.graphic;
 							map.infoWindow.show( graphic.geometry as MapPoint );

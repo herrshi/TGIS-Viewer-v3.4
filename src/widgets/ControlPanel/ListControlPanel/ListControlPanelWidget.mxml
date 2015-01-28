@@ -43,6 +43,8 @@
 			 * */
 			private var _allWidgetArray:Array;
 			
+			private var _allWidgetBackupArray:Array;
+			
 			/**
 			 * 启动时要显示的图层
 			 * clickfunction.@name="ChangeLayer" && initenable=true的组件
@@ -68,6 +70,7 @@
 				_preloadWidgetArray = [];
 				_preloadWidgetBackupArray = [];
 				_allWidgetArray = [];
+				_allWidgetBackupArray = [];
 				_presetOverlayVisibleArray = [];
 				
 				_preloadLayerArray = [];
@@ -182,7 +185,8 @@
 									var widgetName:String = paramTable.find( "WidgetName" );
 									_preloadWidgetArray.push( widgetName );
 									_preloadWidgetBackupArray.push( widgetName );
-									_allWidgetArray.push( widgetName );
+//									_allWidgetArray.push( widgetName );
+									_allWidgetBackupArray.push( widgetName );
 									
 									//如果initenable=true则graphicsLayer.visible=true
 									if ( open )
@@ -200,7 +204,8 @@
 										_preloadWidgetArray.push( widgetName );
 										_preloadWidgetBackupArray.push( widgetName );
 									}
-									_allWidgetArray.push( widgetName );
+//									_allWidgetArray.push( widgetName );
+									_allWidgetBackupArray.push( widgetName );
 								}
 								else if ( functionName == "ChangeLayer" )
 								{
@@ -258,6 +263,16 @@
 				}
 			}
 			
+			private function closeNextWidget():void
+			{
+				if ( _allWidgetArray.length > 0 )
+				{
+					var widgetName:String = _allWidgetArray[0];
+					_allWidgetArray.splice( 0, 1 );
+					AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+				}
+			}
+			
 			private function preloadLayer():void
 			{
 				for each ( var layerObj:Object in _preloadLayerArray )
@@ -277,10 +292,12 @@
 			
 			private function appevent_widgetCreatedHandler( event:AppEvent ):void
 			{
-				var createdWidgetTitle:String = event.data as String;
+//				var createdWidgetTitle:String = event.data as String;
 				
+				//所有组件都已创建完成
 				if ( _preloadWidgetArray.length == 0 )
 				{
+					//初始启动的Overlay改为可见
 					presetOverlayVisible();
 					AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
 						{ 
@@ -295,6 +312,23 @@
 				}
 			}
 			
+			private function appevent_widgetStateChangedHandler( event:AppEvent ):void
+			{
+				var data:Object = event.data;
+				
+				if ( data.state as String == WidgetStates.WIDGET_CLOSED )
+				{
+					//所有组件都已关闭
+					if ( _allLayerArray.length == 0 )
+					{
+						AppEvent.removeListener( AppEvent.WIDGET_STATE_CHANGED, appevent_widgetStateChangedHandler );
+					}
+					else
+					{
+						closeNextWidget();
+					}
+				}
+			}
 			
 			private function presetOverlayVisible():void
 			{
@@ -335,11 +369,15 @@
 				{
 					AppEvent.removeListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
 					AppEvent.removeListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
-					//关闭所有自动打开的组件
-					for each ( var widgetName:String in _allWidgetArray )
+					
+					AppEvent.addListener( AppEvent.WIDGET_STATE_CHANGED, appevent_widgetStateChangedHandler );
+					//关闭所有组件
+					//和打开组件一样，必须依次关闭，一个关闭以后再关闭下一个。
+					for each ( var widgetName:String in _allWidgetBackupArray )
 					{
-						AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+						_allWidgetArray.push( widgetName );
 					}
+					closeNextWidget();
 					
 					for each ( var layerObj:Object in _allLayerArray )
 					{

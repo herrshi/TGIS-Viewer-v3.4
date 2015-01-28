@@ -22,7 +22,7 @@
 			 scalebarvisible="false" esrilogovisible="false">
 		<basemaps>
 			<layer label="矢量图" type="tiled" visible="true"
-				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base_new/MapServer" />
+				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base2015/MapServer" />
 <!-- 			<layer label="卫星图" type="tiled" visible="false" -->
 <!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" /> -->
 		</basemaps>
@@ -35,7 +35,7 @@
 	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
 	
 	<widgetcontainer layout="horizontal">
-		<widget label="新增新车路线" preload="open"
+		<widget label="新增行车路线" preload="open"
 				icon="assets/images/i_police.png"
 				config="widgets/GuardJob/WuHu/GuardJobWidget-add.xml"
 				url="widgets/GuardJob/GuardJobWidget.swf"/>
@@ -43,7 +43,7 @@
 	
 	<widgetcontainer layout="fix">
 		<widget label="编辑工具栏" left="100" top="10"
-					  url="widgets/EditorToolbar/EditorToolbarWidget.swf"/>
+				url="widgets/EditorToolbar/EditorToolbarWidget.swf"/>
 					  
 		<widget label="岗点" preload="open"
 				config="widgets/Overlay/WuHu/PointOverlayWidget-policeSentry.xml"

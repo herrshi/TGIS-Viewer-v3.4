@@ -1,4 +1,5 @@
 <?xml version="1.0" ?>
+<!-- 岗点 -->
 <configuration>
 	<type>policeSentry</type>
 	<!-- 组件打开时通知页面 -->
@@ -8,7 +9,7 @@
 	
 	<initvisible>false</initvisible>
 	
-	<popupskinclass>policeSentry</popupskinclass>
+	<popupskinclass>GangDian</popupskinclass>
 	<popup>
 		<title>{spotName}({spotStatus})</title>
 		<fields>

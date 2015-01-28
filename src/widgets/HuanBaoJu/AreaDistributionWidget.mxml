@@ -51,11 +51,6 @@
 			private var _xfdQueryTask:QueryTask;
 			
 			/**
-			 * 用于geometryService.relation的MapPoint数组（不是graphic，是graphic.geometry）
-			 * */
-			private var _xfdGeometryArray:Array;
-			
-			/**
 			 * 保存信访点图层的query结果(graphic)
 			 * */
 			private var _xfdGraphicAC:ArrayCollection;
@@ -95,20 +90,29 @@
 			private var _districtLayer:GraphicsLayer;
 			
 			/**
-			 * 用于geometryService.relation的Polygon数组（不是graphic，是graphic.geometry）
-			 * */
-			private var _districtGeometryArray:Array;
-			
-			/**
 			 * 保存区县图层query结果(graphic)
 			 * */
 			private var _districtGraphicAC:ArrayCollection;
-			
 			
 			/**
 			 * 区县图层中的名称字段，和标注点图层中的名称字段(_labelPointLayerNameField)对应
 			 * */
 			private var _districtLayerNameField:String;
+			
+			/**
+			 * 每个区信访点分类统计
+			 * */
+			private var _districtTypeCountTable:Hashtable;
+			
+			/**
+			 * 每个区信访点总数
+			 * */
+			private var _districtTotalCountAC:ArrayCollection;
+			
+			/**
+			 * 区县渐变色
+			 * */
+			private var _districtGradientColorArray:Array;
 			
 			/**
 			 * 查询标注点图层
@@ -136,19 +140,34 @@
 			private var _labelPlacementField:String;
 			
 			/**
-			 * 每个区信访点分类统计
+			 * 查询街道图层
 			 * */
-			private var _districtTypeCountTable:Hashtable;
+			private var _blockQueryTask:QueryTask;
 			
 			/**
-			* 每个区信访点总数
-			* */
-			private var _districtTotalCountAC:ArrayCollection;
+			 * 显示不同颜色街道的GraphicsLayer
+			 * */
+			private var _blockLayer:GraphicsLayer;
 			
 			/**
-			 * 渐变色
+			 * 用于geometryService.relation的Polygon数组（不是graphic，是graphic.geometry）
 			 * */
-			private var _gradientColorArray:Array;
+			private var _blockGeometryArray:Array;
+			
+			/**
+			 * 保存区县图层query结果(graphic)
+			 * */
+			private var _blockGraphicAC:ArrayCollection;
+			
+			/**
+			 * 区县图层中的名称字段，和标注点图层中的名称字段(_labelPointLayerNameField)对应
+			 * */
+			private var _blockLayerNameField:String;
+			
+			/**
+			 * 街道渐变色
+			 * */
+			private var _blockGradientColorArray:Array;
 			
 			/**
 			 * flex的bug，在module里使用chart需要 从主程序复制styleDeclaration
@@ -161,13 +180,12 @@
 						FlexGlobals.topLevelApplication.styleManager.getStyleDeclaration(styleObj);
 					styleManager.setStyleDeclaration(styleObj, style, true);
 				}
-				
 			}
 			
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
-				map.addEventListener( ZoomEvent.ZOOM_END, map_zoomEndHandler );
+//				map.addEventListener( ZoomEvent.ZOOM_END, map_zoomEndHandler );
 				
 				AppEvent.addListener( AppEvent.WIDGET_RUN, appevent_WidgetRunHandler );
 				AppEvent.addListener( AppEvent.WIDGET_CLOSE, appevent_WidgetCloseHandler );
@@ -191,12 +209,16 @@
 				
 				_labelLayer = new GraphicsLayer();
 				map.addLayer( _labelLayer );
+				
+				_blockLayer = new GraphicsLayer();
+				map.addLayer( _blockLayer );
 			}
 			
 			protected function this_widgetConfigLoadedHandler(event:Event):void
 			{
 				if ( configXML )
 				{
+					//信访点配置
 					var xfdLayerUrl:String = configXML.xfdlayer.url;
 					if ( xfdLayerUrl )
 					{
@@ -213,6 +235,7 @@
 						queryXFD( "信访日期  >= date '2013-12-01' AND 信访日期  <= date '2013-12-31'" );
 					}
 					
+					//区县配置
 					var districtLayerUrl:String = configXML.districtlayer.url;
 					if ( districtLayerUrl )
 					{
@@ -222,9 +245,13 @@
 						
 						_districtQueryTask = new QueryTask( districtLayerUrl );
 						_districtQueryTask.disableClientCaching = true;
+						
+						//渐变色
+						var gradientColorString:String = configXML.districtlayer.gradientcolor;
+						_districtGradientColorArray = gradientColorString.split( "," );
 					}
 					
-					
+					//标注点配置
 					var labelLayerUrl:String = configXML.labellayer.url;
 					if ( labelLayerUrl )
 					{
@@ -235,9 +262,21 @@
 						_labelPointQueryTask = new QueryTask( labelLayerUrl );
 						queryLabels();
 					}
-					//渐变色
-					var gradientColorString:String = configXML.districtlayer.gradientcolor;
-					_gradientColorArray = gradientColorString.split( "," );
+					
+					//街道配置
+					var blockLayerUrl:String = configXML.blocklayer.url;
+					if ( blockLayerUrl )
+					{
+						_blockLayerNameField = configXML.blocklayer.blocknamefield;
+						
+						blockLayerUrl = blockLayerUrl.replace( "{serverip}", configData.arcgisServerIP );
+						
+						_blockQueryTask = new QueryTask( blockLayerUrl );
+						_blockQueryTask.disableClientCaching = true;
+						
+						gradientColorString = configXML.blocklayer.gradientcolor;
+						_blockGradientColorArray = gradientColorString.split( "," );
+					}
 				}
 			}
 			
@@ -296,7 +335,6 @@
 				
 				function onResult( featureSet:FeatureSet, token:Object = null ):void
 				{
-					_xfdGeometryArray = [];
 					_xfdGraphicAC.removeAll();
 					_districtTotalCountAC.removeAll();
 					_xfdTable.clear();
@@ -304,7 +342,6 @@
 					for each ( var graphic:Graphic in featureSet.features )
 					{
 						_xfdGraphicAC.addItem( graphic );
-						_xfdGeometryArray.push( graphic.geometry );
 						
 						var districtName:String = graphic.attributes[ _xfdDistrictNameField ];
 						if ( _xfdTable.containsKey( districtName ) )
@@ -336,6 +373,7 @@
 					AppEvent.dispatch( AppEvent.HUANBAOJU_DISTRICT_COUNT, _districtTotalCountAC );
 					
 					queryDistrict();
+					queryBlock();
 				}
 			}
 			
@@ -350,7 +388,6 @@
 				
 				function onResult( featureSet:FeatureSet, token:Object = null ):void
 				{
-					_districtGeometryArray = [];
 					_districtGraphicAC.removeAll();
 					for each ( var graphic:Graphic in featureSet.features )
 					{
@@ -362,14 +399,33 @@
 							_districtGraphicAC.addItem( graphic );
 						}
 						
-//						graphic.addEventListener( MouseEvent.DOUBLE_CLICK, districtLayerGraphic_doubleClickHandler );
+						graphic.addEventListener( MouseEvent.DOUBLE_CLICK, districtLayerGraphic_doubleClickHandler );
 						
 					}
 					_districtLayer.graphicProvider = _districtGraphicAC;
-					_districtLayer.renderer = generateClassBreakRenderer();
+					_districtLayer.renderer = generateClassBreakRenderer( _districtGraphicAC, 
+						_districtGradientColorArray );
 					
 					statisticXFDCountByType();
 					generateLabels();
+				}
+			}
+			
+			private function queryBlock():void
+			{
+				var query:Query = new Query();
+				query.returnGeometry = true;
+				query.outFields = [ _blockLayerNameField ];
+				query.where = "1=1";
+				query.outSpatialReference = map.spatialReference;
+				_blockQueryTask.execute( query, new AsyncResponder( onResult, onFault ) );
+				
+				function onResult( featureSet:FeatureSet, token:Object = null ):void
+				{
+					for each ( var graphic:Graphic in featureSet.features )
+					{
+						
+					}
 				}
 			}
 			
@@ -382,26 +438,27 @@
 				showError( strInfo );
 			}
 			
-			private function generateClassBreakRenderer():ClassBreaksRenderer
+			private function generateClassBreakRenderer( graphicAC:ArrayCollection, 
+														 colorArray:Array ):ClassBreaksRenderer
 			{
 				//得到数量的最大值和最小值
 				var maxValue:Number = Number.MIN_VALUE;
 				var minValue:Number = Number.MAX_VALUE;
-				for each ( var graphic:Graphic in _districtGraphicAC )
+				for each ( var graphic:Graphic in graphicAC )
 				{
 					var count:int = graphic.attributes.count;
 					maxValue = Number.max( maxValue, count );
 					minValue = Number.min( minValue, count );
 				}
 				
-				var classCount:int = _gradientColorArray.length;
+				var classCount:int = colorArray.length;
 				var classMinValue:Number = int( minValue );
 				var classBreakInfoArray:Array = [];
 				
 				for ( var i:int = 1; i <= classCount; i++ )
 				{
 					var classMaxValue:Number = int( minValue + ( maxValue - minValue ) * i / classCount );
-					var classColor:Number = _gradientColorArray[i-1];
+					var classColor:Number = colorArray[i-1];
 					var symbol:SimpleFillSymbol = new SimpleFillSymbol( "solid", classColor, 0.8, 
 						new SimpleLineSymbol( "solid", classColor, 1, 2 ) );
 					var classBreakInfo:ClassBreakInfo = new ClassBreakInfo( symbol, 

@@ -53,9 +53,6 @@
 <!-- 			<layer label="插值图" type="dynamic" visible="false" alpha="0.6"  -->
 <!-- 				   url="http://{serverip}/arcgis/rest/services/shanghai/shanghai_idw/MapServer"/> -->
 			
-			<layer lable="街道" type="dynamic" visible="false" 
-				   url="http://{serverip}/arcgis/rest/services/HuanBaoJu/Block/MapServer"/>
-				   
 		    <layer label="信访点" type="feature" visible="false" 
 				   url="http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1"
 				   popupconfig="popups/HuanBaoJu/PopUp-XinFangDian.xml">

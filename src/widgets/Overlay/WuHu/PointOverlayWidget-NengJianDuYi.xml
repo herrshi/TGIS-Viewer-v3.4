@@ -10,9 +10,9 @@
 	<initvisible>false</initvisible>
 	
 	<popup>
-		<title>{fstrDeviceaddress}</title>
+		<title>{name}</title>
 		<fields>
-			<field name="fstrDeviceaddress"/>
+			<field name="name"/>
 			<field name="fintVisibility" alias="能见度：" visible="true"/>
 			<field name="fstrState"/>
 		</fields>

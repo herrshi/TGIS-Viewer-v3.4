@@ -1241,7 +1241,7 @@
 	
 	<TGISViewer:WidgetTemplate id="wTemplate"
 							   width="430" height="400"
-							   enableCloseButton="false"
+							   enableCloseButton="true"
 							   open="wTemplate_openHandler(event)" 
 							   closed="wTemplate_closedHandler(event)" 
 							   minimized="wTemplate_minimizedHandler(event)">

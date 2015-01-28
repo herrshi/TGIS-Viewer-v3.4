@@ -24,16 +24,6 @@
 				</clickfunctions>
 			</item>
 			
-			<item label="信号机">
-				<clickfunctions>
-					<clickfunction name="ChangeLayer">
-						<params>
-							<param name="ServiceName" value="信号机"/>
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-			
 			<item label="能见度仪">
 				<clickfunctions>
 					<clickfunction name="ChangeOverlayVisible">
@@ -128,6 +118,17 @@
 						<params>
 							<param name="WidgetName" value="警车Overlay"/>
 							<param name="OverlayType" value="policeCar" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="警情信息">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="警情Overlay"/>
+							<param name="OverlayType" value="JingQing" />
 						</params>
 					</clickfunction>
 				</clickfunctions>

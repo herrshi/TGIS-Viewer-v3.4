@@ -24,7 +24,7 @@
 				   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_base/MapServer" />
 		</basemaps>
 		<operationallayers>
-			<layer label="发布段" type="dynamic" visible="true"
+			<layer label="发布段" type="dynamic" visible="true" autorefresh="30"
 				   url="http://{serverip}/arcgis/rest/services/YinChuan/YinChuan_fbd/MapServer">
 				<sublayer id="0" popupconfig="popups/YinChuan/Popup-fbd.xml"/>	   
 			</layer>
