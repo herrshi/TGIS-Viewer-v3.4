@@ -5,7 +5,7 @@
 		<layer>
 			<type>LuDeng</type>
 			<url>http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/0</url>
-			<idfield>OBJECTID</idfield>
+			<idfield>DEVICEID</idfield>
 			<zoomscale>12000</zoomscale>
 			<popup>
 				<title>{ROAD_NAME}</title>
@@ -19,8 +19,8 @@
 		<layer>
 			<type>JiaoTongBiaoZhi</type>
 			<url>http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/1</url>
-			<idfield>OBJECTID</idfield>
-			<zoomscale>6000</zoomscale>
+			<idfield>DEVICEID</idfield>
+			<zoomscale>1000</zoomscale>
 			<popup>
 				<title>{ROAD_NAME}</title>
 				<fields>
@@ -34,7 +34,7 @@
 		<layer>
 			<type>DianZiJingCha</type>
 			<url>http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/2</url>
-			<idfield>OBJECTID</idfield>
+			<idfield>DEVICEID</idfield>
 			<zoomscale>12000</zoomscale>
 			<popup>
 				<title>{ROAD_NAME}</title>
@@ -47,7 +47,7 @@
 		<layer>
 			<type>GongJiaoCheZhan</type>
 			<url>http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/3</url>
-			<idfield>OBJECTID</idfield>
+			<idfield>DEVICEID</idfield>
 			<zoomscale>12000</zoomscale>
 			<popup>
 				<title>{ROAD_NAME}-{NAME}</title>
@@ -63,7 +63,7 @@
 		<layer>
 			<type>XinHaoJi</type>
 			<url>http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/4</url>
-			<idfield>OBJECTID</idfield>
+			<idfield>DEVICEID</idfield>
 			<zoomscale>12000</zoomscale>
 			<popup>
 				<title>{ROAD_NAME}</title>
@@ -78,7 +78,7 @@
 		<layer>
 			<type>YouDaoBan</type>
 			<url>http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/5</url>
-			<idfield>OBJECTID</idfield>
+			<idfield>DEVICEID</idfield>
 			<zoomscale>12000</zoomscale>
 			<popup>
 				<title>{ROAD_NAME}</title>
@@ -92,7 +92,7 @@
 		<layer>
 			<type>KaKouLayer</type>
 			<url>http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/6</url>
-			<idfield>OBJECTID</idfield>
+			<idfield>DEVICEID</idfield>
 			<zoomscale>12000</zoomscale>
 			<popup>
 				<title>{ROAD_NAME}</title>
@@ -106,7 +106,7 @@
 		<layer>
 			<type>QiXiangZhanLayer</type>
 			<url>http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/7</url>
-			<idfield>OBJECTID</idfield>
+			<idfield>DEVICEID</idfield>
 			<zoomscale>12000</zoomscale>
 			<popup>
 				<title>{ROAD_NAME}</title>

@@ -17,7 +17,7 @@
 			<gradientfill linecolor="0x000000" linewidth="1">
 					<gradiententry color="0x006bcf" alpha="0.8"/>
 					<gradiententry color="0x0084ff" alpha="0.8"/>
-				</gradientfill>
+			</gradientfill>
 		</simplerenderer>
 	</arrow>
 </configuration>

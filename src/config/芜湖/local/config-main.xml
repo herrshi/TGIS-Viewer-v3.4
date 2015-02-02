@@ -62,8 +62,7 @@
 				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/2"
 				   popupconfig="popups/WuHu/PopUp-DianZiJingCha.xml">
 				<simplerenderer>
-					<picturemarkersymbol url="assets/images/mapIcons/WuHu/DianZiJingCha-blue.png" 
-										 yoffset="18"/>
+					<picturemarkersymbol url="assets/images/mapIcons/WuHu/DianZiJingCha-blue.png" yoffset="18"/>
 				</simplerenderer>				
 			</layer>
 			
@@ -71,8 +70,7 @@
 				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/3"
 				   popupconfig="popups/WuHu/PopUp-GongJiaoCheZhan.xml">
 				<simplerenderer>
-					<picturemarkersymbol url="assets/images/mapIcons/TianJin/GongJiao/GongJiaoZhanDian.png" 
-										 yoffset="11"/>
+					<picturemarkersymbol url="assets/images/mapIcons/TianJin/GongJiao/GongJiaoZhanDian.png" yoffset="13"/>
 				</simplerenderer>				
 			</layer>
 			
@@ -80,8 +78,7 @@
 				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/4"
 				   popupconfig="popups/WuHu/PopUp-XinHaoJi.xml">
 				<simplerenderer>
-					<picturemarkersymbol url="assets/images/mapIcons/WuHu/XinHaoJi-blue.png" 
-										 yoffset="18"/>
+					<picturemarkersymbol url="assets/images/mapIcons/WuHu/XinHaoJi-blue.png" yoffset="18"/>
 				</simplerenderer>				
 			</layer>
 			
@@ -89,8 +86,7 @@
 				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/5"
 				   popupconfig="popups/WuHu/PopUp-YouDaoBan.xml">
 				<simplerenderer>
-					<picturemarkersymbol url="assets/images/mapIcons/WuHu/QingBaoBan-blue.png" 
-										 yoffset="18"/>
+					<picturemarkersymbol url="assets/images/mapIcons/WuHu/QingBaoBan-blue.png" yoffset="18"/>
 				</simplerenderer>				
 			</layer>
 			
@@ -98,8 +94,7 @@
 				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/6"
 				   popupconfig="popups/WuHu/PopUp-KaKou.xml">
 				<simplerenderer>
-					<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" 
-										 yoffset="13"/>
+					<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13"/>
 				</simplerenderer>				
 			</layer>
 			
@@ -107,8 +102,7 @@
 				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/7"
 				   popupconfig="popups/WuHu/PopUp-QiXiangZhan.xml">
 				<simplerenderer>
-					<picturemarkersymbol url="assets/images/mapIcons/WuHu/QiXiangZhan-blue.png" 
-										 yoffset="18"/>
+					<picturemarkersymbol url="assets/images/mapIcons/WuHu/QiXiangZhan-blue.png" yoffset="18"/>
 				</simplerenderer>				
 			</layer>
 			
@@ -118,6 +112,14 @@
 				<simplerenderer>
 					<simplemarkersymbol color="0x3E6FBC" size="10"/>
 				</simplerenderer>				
+			</layer>
+			
+			<layer label="信号灯" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/16"
+				   popupconfig="popups/WuHu/PopUp-XinHaoDeng.xml">
+				<simplerenderer>
+					<simplemarkersymbol color="0x3E6FBC" size="10"/>
+				</simplerenderer>			
 			</layer>
 		</operationallayers>
 	</map>

@@ -14,10 +14,9 @@
 			</item>
 			<item label="卡口" initenable="true">
 				<clickfunctions>
-					<clickfunction name="ChangeOverlayVisible">
+					<clickfunction name="ChangeLayer">
 						<params>
-							<param name="WidgetName" value="卡口Overlay"/>
-							<param name="OverlayType" value="KaKou" />
+							<param name="ServiceName" value="卡口"/>
 						</params>
 					</clickfunction>
 				</clickfunctions>

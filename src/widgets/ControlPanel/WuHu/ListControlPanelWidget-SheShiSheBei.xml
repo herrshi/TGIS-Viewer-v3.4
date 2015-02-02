@@ -27,6 +27,16 @@
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
 						<params>
+							<param name="ServiceName" value="信号灯" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="信号机">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
 							<param name="ServiceName" value="信号机" />
 						</params>
 					</clickfunction>
