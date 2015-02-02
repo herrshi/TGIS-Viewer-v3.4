@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<configuration>
+	<style>
+		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
+		<colors>0x000000,0xFFFFFF,0xDDDDDD,0x3E6FBC,0x3E6FBC</colors>
+		<navigationcolors>0xFFFFFF,0x3E6FBC,0xDDDDDD,0x3E6FBC,0xFFFFFF</navigationcolors>
+		<alpha>0.8</alpha>
+		<font name="微软雅黑" size="14" />
+	</style>
+
+	<arcgisserverip>128.64.151.220:6080</arcgisserverip>
+
+	<geometryservice
+		url="http://{serverip}/arcgis/rest/services/Geometry/GeometryServer" />
+
+	<!-- UI elements -->
+	<widget left="10" top="10" config="widgets/Navigation/NavigationWidget.xml"
+			url="widgets/Navigation/NavigationWidget.swf" />
+<!-- 	<widget left="3" bottom="3" -->
+<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
+<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+
+	<map top="0" center="118.417947 31.337093" scale="24000"
+		 scalebarvisible="false" esrilogovisible="false">
+		<basemaps>
+			<layer label="矢量图" type="tiled" visible="true"
+				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base2015/MapServer" />
+<!-- 			<layer label="卫星图" type="tiled" visible="false" -->
+<!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" /> -->
+		</basemaps>
+		<operationallayers>
+			<layer label="卡口" type="feature" visible="true" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/6"
+				   popupconfig="popups/WuHu/PopUp-KaKou.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13"/>
+				</simplerenderer>				
+			</layer>
+		</operationallayers>
+	</map>
+
+	<!-- widgets organized into widget containers that manage close/open etc -->
+	<!-- supported layout property options: horizontal(default)|float|vertical|fix -->
+	<widgetcontainer layout="fix">
+		<widget label="单车轨迹" preload="open"
+				config="widgets/CarTrack/WuHu/CarTrackWidget.xml"
+				url="widgets/CarTrack/CarTrackWidget.swf"/>
+		
+		<widget label="轨迹线" preload="open"
+				config="widgets/Overlay/WuHu/carTrack/PolylineOverlayWidget-carTrack.xml"
+				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+		
+		<widget label="轨迹起点图标" preload="open"
+				config="widgets/Overlay/WuHu/carTrack/PointOverlayWidget-carTrackStart.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="轨迹终点图标" preload="open"
+				config="widgets/Overlay/WuHu/carTrack/PointOverlayWidget-carTrackEnd.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="卡口序号" preload="open" 
+				config="widgets/Overlay/WuHu/carTrack/TextOverlayWidget-carTrackOrder.xml"
+				url="widgets/Overlay/TextOverlayWidget.swf"/>
+				
+		<widget label="模拟移动" preload="open"
+				config="widgets/SimulationMovePoint/WuHu/SimulationMovePointWidget-carTrack.xml"
+				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
+	</widgetcontainer>
+</configuration>

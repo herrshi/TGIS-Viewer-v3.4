@@ -8,7 +8,7 @@
 //  3. 页面调用flash函数setDeviceSearchDistance，设置每种设备的搜索半径。
 //  4. 搜索每个几何要素附近的设备。polyline需要先缓冲再查询，polygon直接查询。
 //  5. 显示设备。设备弹出窗有添加/删除按钮，调用js函数addRelateDeviceByMap将设备添加到任务中，
-        调用js函数deleteRelateDeviceByMap从任务中删除设备。
+调用js函数deleteRelateDeviceByMap从任务中删除设备。
 ///////////////////////////////////////////////////////////////////////////
 -->
 <TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009"
@@ -20,8 +20,11 @@
 					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import com.esri.ags.FeatureSet;
 			import com.esri.ags.Graphic;
+			import com.esri.ags.SpatialReference;
 			import com.esri.ags.events.DrawEvent;
+
 			import com.esri.ags.geometry.Geometry;
 			import com.esri.ags.geometry.MapPoint;
 			import com.esri.ags.geometry.Polygon;
@@ -29,11 +32,14 @@
 			import com.esri.ags.layers.GraphicsLayer;
 			import com.esri.ags.portal.PopUpRenderer;
 			import com.esri.ags.renderers.IRenderer;
+
 			import com.esri.ags.symbols.SimpleFillSymbol;
 			import com.esri.ags.symbols.SimpleLineSymbol;
 			import com.esri.ags.tasks.GeometryService;
 			import com.esri.ags.tasks.GeometryServiceSingleton;
+			import com.esri.ags.tasks.QueryTask;
 			import com.esri.ags.tasks.supportClasses.IdentifyResult;
+			import com.esri.ags.tasks.supportClasses.Query;
 			import com.esri.ags.tools.DrawTool;
 			
 			import mx.collections.ArrayCollection;
@@ -46,6 +52,7 @@
 			import cn.seisys.TGISViewer.utils.Hashtable;
 			import cn.seisys.TGISViewer.utils.PopUpInfoParser;
 			import cn.seisys.TGISViewer.utils.RendererParser;
+			
 			
 			/**
 			 * 组件启动时调用的js函数，通知页面启动完成。
@@ -65,7 +72,7 @@
 			
 			private var _lineSymbol:SimpleLineSymbol;
 			private var _fillSymbol:SimpleFillSymbol;
-			
+			private var _pointGlowSymbol:SimpleMarkerSymbol;
 			/**
 			 * 显示新增任务时绘制路线/区域的图层
 			 * */
@@ -101,6 +108,12 @@
 			 * */
 			private var _drawIndex:uint;
 			
+			/*路口图层*/
+			private var _roadLayer:GraphicsLayer;
+			private var myGraphicsLayer:GraphicsLayer;
+			private var clickPointLayer:GraphicsLayer;
+			
+			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
 				geometryService.url = GeometryServiceSingleton.instance.url;
@@ -124,12 +137,27 @@
 				_showDeviceLayer.name = "guardJobShowDeviceLayer";
 				map.addLayer( _showDeviceLayer );
 				
+				_roadLayer= new GraphicsLayer();
+				map.addLayer( _roadLayer );
+				
+				/*点连成线*/
+				myGraphicsLayer = new GraphicsLayer();
+				map.addLayer(myGraphicsLayer);
+				
+				/*所点击的点*/
+				clickPointLayer = new GraphicsLayer();
+				map.addLayer(clickPointLayer);
+				
+				
+				
 				_identifyParamTable = new Hashtable();
 				_searchResultPopUpRendererTable = new Hashtable();
 				_showDevicePopUpRendererTable = new Hashtable();
 				
 				var selectionColor:Number = getStyle( "selectionColor" );
 				_lineSymbol = new SimpleLineSymbol( "solid", selectionColor, 1, 2 );
+				_pointGlowSymbol = new SimpleMarkerSymbol("circle",15,0x00000,1,0,0,0,null);
+				
 				_fillSymbol = new SimpleFillSymbol( "solid", selectionColor, 0.2, 
 					new SimpleLineSymbol( "solid", selectionColor, 1, 2 ) );
 				
@@ -151,6 +179,24 @@
 					var showPanel:Boolean = ( configXML.showpanel == "false" ? false : true );
 					this.visible = this.includeInLayout = showPanel;
 					
+					if ( configXML.queryRoadUrl[0] )
+					{
+						_queryRoadUrl = configXML.queryRoadUrl.url;
+						if ( configData.arcgisServerIP )
+						{
+							_queryRoadUrl = _queryRoadUrl.replace( "{serverip}", configData.arcgisServerIP );
+						}
+					}
+					
+					if(_queryRoadUrl==null)
+					{
+						imagePoint2Line.visible=false;
+						imagePoint2Line.includeInLayout=false;
+					}
+					else
+					{
+						queryRoad();
+					}
 					//identify配置
 					if ( configXML.identifyparams[ 0 ] )
 					{
@@ -178,6 +224,8 @@
 							_identifyParamTable.add( type, paramObj );
 						}
 					}
+					
+					
 					
 					//renderer
 					var rendererParser:RendererParser = new RendererParser();
@@ -253,6 +301,82 @@
 				}
 			}
 			
+			private var _queryRoadUrl:String;
+			private function queryRoad():void {
+				if ( _queryRoadUrl ) {
+					var queryTask:QueryTask = new QueryTask( _queryRoadUrl );
+					queryTask.disableClientCaching = false;
+					queryTask.useAMF = false;
+					var query:Query = new Query();
+					query.outFields = ["OBJECTID","NAME", "INTERS_ID", "CROSS_N"];
+					query.returnGeometry = true;
+					query.where = "1=1";
+					queryTask.execute( query, new AsyncResponder( onResult, onFault ) );
+				}
+				function onResult(featureSet:FeatureSet, token:Object = null):void {
+					for each (var graphic:Graphic in featureSet.features) {
+						var roadObjectId:String = graphic.attributes["OBJECTID"];
+						var roadName:String = graphic.attributes["NAME"];
+						var intersId:String = graphic.attributes["INTERS_ID"];
+						var crossName:String = graphic.attributes["CROSS_N"];
+						if ( !intersId || !crossName )
+							continue;
+						var roadGraphic:Graphic = new Graphic( graphic.geometry,iBlack );
+					     roadGraphic.addEventListener(MouseEvent.CLICK,mouseClickRoadGraphic)
+						 //roadGraphic.addEventListener(MouseEvent.DOUBLE_CLICK,mouseDblRoadGraphicclick)
+						_roadLayer.add(roadGraphic)
+					}
+				}
+				function onFault(info:Object, token:Object = null):void {
+					showError( info.toString() );
+				}
+			}
+			
+			private var startPoint:MapPoint= null;
+			private function mouseClickRoadGraphic(event:MouseEvent):void
+			{
+				var mapPoint:MapPoint= new MapPoint();
+				mapPoint= event.currentTarget.geometry;
+				if(startPoint==null)
+				{
+					startPoint=mapPoint;
+				}
+				var myPointSymbol:SimpleMarkerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE, 20, 0xFF0000, 0.5);
+				/*var compositeSym:CompositeSymbol = new CompositeSymbol();
+				compositeSym.symbols=[myPointSymbol,picSym];*/
+				var drawGlowGraphic:Graphic = new Graphic(mapPoint,myPointSymbol,null);
+				clickPointLayer.add( drawGlowGraphic );
+			
+				if(startPoint!=mapPoint)
+				{
+					var path:Array = new Array();
+					var paths:Array=[];
+
+					path.push(startPoint);
+					path.push(mapPoint);
+					paths.push(path);
+					var pathline:Polyline = new Polyline(paths,new SpatialReference(4326));
+					var sls:SimpleLineSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, 0x0000ff, 0.8, 5);
+					var gr:Graphic=new Graphic(pathline,sls);	
+					gr.attributes = { drawIndex: _drawIndex };
+					_drawIndex++;
+					/*存放线的图层*/
+					_showGeometryLayer.add(gr);
+				}
+				startPoint = mapPoint;
+			}
+	
+			private var graList:ArrayCollection=new ArrayCollection();
+			private var point_index:Number=0;
+			protected function image_clickHandler(event:MouseEvent):void
+			{
+				_selectedDrawingIcon = Image(event.currentTarget);
+				var drawType:String = _selectedDrawingIcon.name;
+				clearSelectionFilter();
+				_selectedDrawingIcon.filters = [ glowFilter ];
+				startPoint =null;
+			}
+		
 			private function appevent_setDeviceSearchDistanceHandler( event:AppEvent ):void
 			{
 				var param:String = event.data as String;
@@ -268,7 +392,6 @@
 						paramObj.distance = distance;
 					}
 				}
-				
 				identifyDevice( Geometry.POLYLINE );
 			}
 			
@@ -284,7 +407,6 @@
 			}
 			
 			private var _selectedDrawingIcon:Image;
-			
 			private function clearSelectionFilter():void
 			{
 				for ( var i:int = 0; i < imageGroup.numChildren; i++ )
@@ -316,28 +438,35 @@
 					case DrawTool.POLYGON:
 						setMapAction( drawType, "", _fillSymbol, searchDrawEnd );
 						break;
-						
+					
 					case DrawTool.LINE:
 					case DrawTool.FREEHAND_POLYLINE:
 					case DrawTool.POLYLINE:
+					
 						setMapAction( drawType, "", _lineSymbol, searchDrawEnd );
+						break;
+					
+					case DrawTool.MAPPOINT:
+						setMapAction( drawType, "", picSym, searchDrawEnd );
 						break;
 				}
 			}
+			
 			
 			private function searchDrawEnd(event:DrawEvent):void
 			{
 				var drawGraphic:Graphic = event.graphic;
 				//保存绘制顺序，回传给页面时需要序号
 				drawGraphic.attributes = { drawIndex: _drawIndex };
+				
 				_drawIndex++;
 				_drawLayer.add( drawGraphic );
 			}
 			
+			/*保存路线*/
 			protected function btnSaveGeometry_clickHandler(event:MouseEvent):void
 			{
 				var geometryArray:Array = [];
-				
 				//已保存过的路线
 				var savedCount:uint = 0;
 				for each ( var showGraphic:Graphic in _showGeometryLayer.graphicProvider )
@@ -350,18 +479,18 @@
 					var geometryObj:Object = 
 						{
 							index: showGraphic.attributes.index,
-							type: showGraphic.geometry.type,
-							geometry: geometryJson
+								type: showGraphic.geometry.type,
+								geometry: geometryJson
 						};
 					geometryArray.push( geometryObj );
 					savedCount++;
 				}
 				
+				
 				//新增的路线
 				for each ( var drawGraphic:Graphic in _drawLayer.graphicProvider )
 				{
 					var drawIndex:uint = drawGraphic.attributes.drawIndex;
-					
 					geometryJson = drawGraphic.geometry.toJSON();
 					//删掉坐标系属性
 					geometryJson.spatialReference = null;
@@ -370,14 +499,11 @@
 					geometryObj = 
 						{
 							index: drawIndex + savedCount,
-							type: drawGraphic.geometry.type,
-							geometry: geometryJson
+								type: drawGraphic.geometry.type,
+								geometry: geometryJson
 						};
 					geometryArray.push( geometryObj );
 				}
-				
-				
-				
 				var dataString:String = JSON.stringify( geometryArray );
 				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
 					{
@@ -390,6 +516,7 @@
 				identifyDevice( Geometry.POLYGON );
 			}
 			
+			/*清除*/
 			protected function btnClearGeometry_clickHandler(event:MouseEvent):void
 			{
 				//清除用户画的路线和搜索出的设备
@@ -397,6 +524,7 @@
 				_searchResultLayer.clear();
 				_drawIndex = 0;
 				
+				 clickPointLayer.clear();
 				//清除岗点
 				AppEvent.dispatch( AppEvent.DELETE_ALL_POINTS, "policeSentry" );
 				
@@ -539,21 +667,20 @@
 				}
 				
 				/*var pointArray:Array = paramObj.points;
-				
 				for each ( var pointObj:Object in pointArray )
 				{
-					var id:String = pointObj.id;
-					for each ( var graphic:Graphic in _searchResultLayer.graphicProvider )
-					{
-						if ( graphic.attributes.type == deviceType && graphic.id == id )
-						{
-							_searchResultLayer.remove( graphic );
-							_searchResultLayer.refresh();
-							//关闭弹出窗
-							AppEvent.dispatch( AppEvent.HIDE_INFO_POPUP );
-							break;
-						}
-					}
+				var id:String = pointObj.id;
+				for each ( var graphic:Graphic in _searchResultLayer.graphicProvider )
+				{
+				if ( graphic.attributes.type == deviceType && graphic.id == id )
+				{
+				_searchResultLayer.remove( graphic );
+				_searchResultLayer.refresh();
+				//关闭弹出窗
+				AppEvent.dispatch( AppEvent.HIDE_INFO_POPUP );
+				break;
+				}
+				}
 				}*/
 			}
 			
@@ -632,18 +759,43 @@
 								popUpRenderer = _showDevicePopUpRendererTable.find( "default" );
 							}
 							graphic.infoWindowRenderer = popUpRenderer;
-							
 							_showDeviceLayer.add( graphic );
 						}
 					}
 				}
 			}
+			
+			private function searchDrawGlow():void
+			{
+				/*for each(var gra:Graphic in _roadLayer.graphicProvider)
+				{
+					gra.addEventListener(MouseEvent.CLICK,mapClick);
+				}*/
+			}
+			
+			private function mapClick(event:MouseEvent):void
+			{
+				var mapPoint:MapPoint = event.currentTarget.geometry;
+				mapPoint.spatialReference= new SpatialReference(4326);
+				var drawGlowGraphic:Graphic = new Graphic(mapPoint,picSym,null);
+	
+				drawGlowGraphic.attributes = { drawIndex: _drawIndex };
+				_drawIndex++;
+				_drawLayer.add( drawGlowGraphic );
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<s:GlowFilter id="glowFilter" alpha="1" color="{getStyle('focusColor')}" inner="true"
 					  strength="2"/>
+		
+		<esri:PictureMarkerSymbol id="picSym" source="assets/images/Red_glow.swf" width="24" 
+								  height="24" xoffset="-8" yoffset="0"/>
+		<esri:SimpleMarkerSymbol id="iBlack" color="0x000000" alpha="0.9" size="15">
+			<esri:SimpleLineSymbol style="solid" color="0x3e3e3e" alpha="0.6" width="1"/>
+		</esri:SimpleMarkerSymbol>
 		
 		<esri:IdentifyTask id="identifyTask" url="{_identifyUrl}"/>
 		
@@ -658,9 +810,12 @@
 							   unit="{GeometryService.UNIT_METER}"/>
 	</fx:Declarations>
 	
-	<TGISViewer:WidgetTemplate id="wTemplate" enableCloseButton="false" width="300" height="120">
+	<TGISViewer:WidgetTemplate id="wTemplate"   enableCloseButton="false" width="300" height="120">
 		<s:VGroup width="100%" height="100%" gap="20" paddingLeft="5" paddingRight="5" paddingTop="5">
 			<s:HGroup id="imageGroup" width="100%" height="30" gap="10" horizontalAlign="center">
+				<s:Image id="imagePoint2Line" click="image_clickHandler(event)"  useHandCursor="true"  
+						 source="assets/images/i_draw_point.png"  rollOut="iconRollOutHandler(event)" 
+						 rollOver="iconRollOverHandler(event)"/>
 				<s:Image click="activateDrawTool(event)" name="{DrawTool.POLYLINE}"
 						 rollOut="iconRollOutHandler(event)" rollOver="iconRollOverHandler(event)"
 						 source="assets/images/i_draw_line.png" useHandCursor="true"/>

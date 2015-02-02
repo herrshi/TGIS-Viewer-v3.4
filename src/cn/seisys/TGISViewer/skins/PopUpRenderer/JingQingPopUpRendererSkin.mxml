@@ -19,13 +19,14 @@
 			import com.esri.ags.geometry.Multipoint;
 			import com.esri.ags.portal.PopUpRenderer;
 			import com.esri.ags.portal.supportClasses.PopUpFieldInfo;
+			import com.esri.ags.utils.StringUtil;
 			
 			import mx.containers.utilityClasses.ConstraintRow;
 			import mx.events.FlexEvent;
-			import mx.utils.StringUtil;
 			
 			import spark.components.Label;
 			
+			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
 			
 			import flashx.textLayout.conversion.TextConverter;
@@ -167,6 +168,33 @@
 						mediaBrowser.popUpFieldInfos = popUpInfo.popUpFieldInfos;
 						mediaBrowser.popUpMediaInfos = validMediaInfos;
 					}
+					
+					var canView:Boolean = formattedAttributes.canView || false;
+					var canEdit:Boolean = formattedAttributes.canEdit || false;
+					var canDelete:Boolean = formattedAttributes.canDelete || false;
+					var canLocate:Boolean = formattedAttributes.canLocate || false;
+					var canDispatch:Boolean = formattedAttributes.canDispatch || false;
+					var canDispatchPolice:Boolean = formattedAttributes.canDispatchPolice || false;
+					var canArrive:Boolean = formattedAttributes.canArrive || false;
+					var canQuick:Boolean = formattedAttributes.canQuick || false;
+					var canOver:Boolean = formattedAttributes.canOver || false;
+					if ( canView || canEdit || canDelete || canLocate || canDispatch || 
+						canDispatchPolice || canArrive || canQuick || canQuick)
+					{
+						footer.addElement( naviContainer );
+						footerLine.includeInLayout = footerLine.visible = true;
+						
+						btnView.visible = btnView.includeInLayout = canView;
+						btnEdit.visible = btnEdit.includeInLayout = canEdit;
+						btnDelete.visible = btnDelete.includeInLayout = canDelete;
+						btnLocate.visible = btnLocate.includeInLayout = canLocate;
+						btnDispatch.visible = btnDispatch.includeInLayout = canDispatch;
+						btnDispatchPolice.visible = btnDispatchPolice.includeInLayout = canDispatchPolice;
+						btnArrive.visible = btnArrive.includeInLayout = canArrive;
+						btnQuick.visible = btnQuick.includeInLayout = canQuick;
+						btnOver.visible = btnOver.includeInLayout = canOver;
+					}
+					
 				}
 			}
 			
@@ -234,6 +262,61 @@
 				}
 			}
 			
+			private function openDevice( type:String, id:String ):void
+			{
+				AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+					{
+						functionName: "openDevice",
+						params: [ type, id ]
+					} 
+				);
+			}
+			
+			protected function btnView_clickHandler(event:MouseEvent):void
+			{
+				openDevice( "JingQing_View", hostComponent.graphic.id );
+			}
+			
+			protected function btnEdit_clickHandler(event:MouseEvent):void
+			{
+				openDevice( "JingQing_Edit", hostComponent.graphic.id );
+			}
+			
+			protected function btnDelete_clickHandler(event:MouseEvent):void
+			{
+				openDevice( "JingQing_Delete", hostComponent.graphic.id );
+			}
+			
+			protected function btnLocate_clickHandler(event:MouseEvent):void
+			{
+				openDevice( "JingQing_Locate", hostComponent.graphic.id );
+			}
+			
+			protected function btnDispatch_clickHandler(event:MouseEvent):void
+			{
+				openDevice( "JingQing_Dispatch", hostComponent.graphic.id );
+			}
+			
+			protected function btnDispatchPolice_clickHandler(event:MouseEvent):void
+			{
+				openDevice( "JingQing_DispatchPolice", hostComponent.graphic.id );
+			}
+			
+			protected function btnArrive_clickHandler(event:MouseEvent):void
+			{
+				openDevice( "JingQing_Arrive", hostComponent.graphic.id );
+			}
+			
+			protected function btnQuick_clickHandler(event:MouseEvent):void
+			{
+				openDevice( "JingQing_Quick", hostComponent.graphic.id );
+			}
+			
+			protected function btnOver_clickHandler(event:MouseEvent):void
+			{
+				openDevice( "JingQing_Over", hostComponent.graphic.id );
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -287,8 +370,17 @@
 							 creationPolicy="all" tabHeight="25"
 							 borderStyle="none">
 				<s:NavigatorContent width="100%" height="100%" label="操  作" icon="{starIcon}">
-					<s:HGroup id="buttonContainer" width="100%" height="100%" 
-							  verticalAlign="middle" paddingLeft="10" gap="30"/>
+					<s:TileGroup width="100%" height="100%" >
+						<s:Button id="btnView" label="查看" click="btnView_clickHandler(event)"/>
+						<s:Button id="btnEdit" label="编辑" click="btnEdit_clickHandler(event)"/>
+						<s:Button id="btnDelete" label="删除" click="btnDelete_clickHandler(event)"/>
+						<s:Button id="btnLocate" label="定位" click="btnLocate_clickHandler(event)"/>
+						<s:Button id="btnDispatch" label="下发" click="btnDispatch_clickHandler(event)"/>
+						<s:Button id="btnDispatchPolice" label="派警" click="btnDispatchPolice_clickHandler(event)"/>
+						<s:Button id="btnArrive" label="反馈" click="btnArrive_clickHandler(event)"/>
+						<s:Button id="btnQuick" label="快处" click="btnQuick_clickHandler(event)"/>
+						<s:Button id="btnOver" label="结案" click="btnOver_clickHandler(event)"/>
+					</s:TileGroup>
 				</s:NavigatorContent>
 			</mx:TabNavigator>
 		</s:Group>
@@ -332,6 +424,7 @@
 		
 		<s:HGroup id="footer" paddingBottom="10" width="100%">
 			<!-- elements are added in commitProperties() -->
+			
 		</s:HGroup>
 	</s:VGroup>
 </s:SparkSkin>

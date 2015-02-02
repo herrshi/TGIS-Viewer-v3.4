@@ -10,14 +10,15 @@
 	<initvisible>false</initvisible>
 	
 	<popup>
-		<title>{name}</title>
+		<title>气象站</title>
 		<fields>
-			<field name="name"/>
+			<field name="name" alias="编号：" visible="true"/>
 			<field name="temperature" alias="温度：" visible="true"/>
 			<field name="windSpeed" alias="风速：" visible="true"/>
 			<field name="fintRainintensity" alias="雨水强度：" visible="true"/>
 			<field name="fintRelativehumidity" alias="湿度：" visible="true"/>
 			<field name="fintVisibility" alias="能见度：" visible="true"/>
+			<field name="fstrState"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<buttons>
@@ -25,9 +26,17 @@
 		</buttons>
 	</popup>
 	
-	<simplerenderer>
-		<picturemarkersymbol url="assets/images/mapIcons/WuHu/QiXiangZhan-blue.png" yoffset="18"/>
-	</simplerenderer>
+	<uniquevaluerenderer field="fstrState">
+		<picturemarkersymbol url="assets/images/mapIcons/WuHu/QiXiangZhan-grey.png" yoffset="18"/>
+		
+		<uniquevalueinfo value="连接">
+			<picturemarkersymbol url="assets/images/mapIcons/WuHu/QiXiangZhan-blue.png" yoffset="18" />
+		</uniquevalueinfo>
+		
+		<uniquevalueinfo value="中断">
+			<picturemarkersymbol url="assets/images/mapIcons/WuHu/QiXiangZhan-red.png" yoffset="18" />
+		</uniquevalueinfo>
+	</uniquevaluerenderer>
 	
 	<clickfunction>
 		<action>showInfoWindow</action>

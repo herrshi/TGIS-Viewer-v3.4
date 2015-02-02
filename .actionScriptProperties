@@ -79,6 +79,7 @@
     <module application="src/index.mxml" destPath="widgets/LayerSymbolFilter/SingleLayerSymbolFilterWidget.swf" optimize="true" sourcePath="src/widgets/LayerSymbolFilter/SingleLayerSymbolFilterWidget.mxml"/>
     <module application="src/index.mxml" destPath="widgets/Geoprocessing/GeoprocessingWidget.swf" optimize="true" sourcePath="src/widgets/Geoprocessing/GeoprocessingWidget.mxml"/>
     <module application="src/index.mxml" destPath="widgets/HuanBaoJu/DistrictCountWidget.swf" optimize="true" sourcePath="src/widgets/HuanBaoJu/DistrictCountWidget.mxml"/>
+    <module application="src/index.mxml" destPath="widgets/BaseMapSwitcher/BaseMapSwitcherWidget.swf" optimize="true" sourcePath="src/widgets/BaseMapSwitcher/BaseMapSwitcherWidget.mxml"/>
   </modules>
   <workers managerFilePath="src/Workers.as">
     <worker embed="true" path="src/workers/SocketWorker.as"/>

@@ -460,7 +460,7 @@
 					var classMaxValue:Number = int( minValue + ( maxValue - minValue ) * i / classCount );
 					var classColor:Number = colorArray[i-1];
 					var symbol:SimpleFillSymbol = new SimpleFillSymbol( "solid", classColor, 0.8, 
-						new SimpleLineSymbol( "solid", classColor, 1, 2 ) );
+						new SimpleLineSymbol( "solid", 0x000000, 1, 2 ) );
 					var classBreakInfo:ClassBreakInfo = new ClassBreakInfo( symbol, 
 						classMinValue, classMaxValue );
 					classBreakInfoArray.push( classBreakInfo );

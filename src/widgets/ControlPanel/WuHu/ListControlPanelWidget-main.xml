@@ -46,12 +46,12 @@
 				</clickfunctions>
 			</item>
 			
-			<item label="视频检测器">
+			<item label="事件检测">
 				<clickfunctions>
 					<clickfunction name="ChangeOverlayVisible">
 						<params>
-							<param name="WidgetName" value="视频检测器Overlay"/>
-							<param name="OverlayType" value="ShiPinJianCeQi" />
+							<param name="WidgetName" value="事件检测Overlay"/>
+							<param name="OverlayType" value="SJJC" />
 						</params>
 					</clickfunction>
 				</clickfunctions>
@@ -129,6 +129,17 @@
 						<params>
 							<param name="WidgetName" value="警情Overlay"/>
 							<param name="OverlayType" value="JingQing" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
+			<item label="岗点">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="岗点Overlay"/>
+							<param name="OverlayType" value="policeSentry" />
 						</params>
 					</clickfunction>
 				</clickfunctions>

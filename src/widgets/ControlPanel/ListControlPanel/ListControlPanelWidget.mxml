@@ -16,7 +16,6 @@
 			import spark.components.supportClasses.ItemRenderer;
 			
 			import cn.seisys.TGISViewer.AppEvent;
-			import cn.seisys.TGISViewer.WidgetStates;
 			import cn.seisys.TGISViewer.utils.Hashtable;
 			
 			[Bindable]
@@ -38,12 +37,10 @@
 			private var _preloadWidgetBackupArray:Array;
 			
 			/**
-			 * 此菜单下的所有widget
-			 * 关闭菜单时关闭所有widget
+			 * 所有widget
+			 * 关闭菜单是关闭所有正在运行的widget
 			 * */
 			private var _allWidgetArray:Array;
-			
-			private var _allWidgetBackupArray:Array;
 			
 			/**
 			 * 启动时要显示的图层
@@ -62,6 +59,11 @@
 			 * */
 			private var _presetOverlayVisibleArray:Array;
 			
+			/**
+			 * 是否正在启动时创建组件
+			 * */
+			private var _isCreatingWidget:Boolean;
+			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
 				_menuItemAC = new ArrayCollection();
@@ -70,7 +72,6 @@
 				_preloadWidgetArray = [];
 				_preloadWidgetBackupArray = [];
 				_allWidgetArray = [];
-				_allWidgetBackupArray = [];
 				_presetOverlayVisibleArray = [];
 				
 				_preloadLayerArray = [];
@@ -105,8 +106,6 @@
 							createMenuItem( itemXMLList, false );
 						}
 					}
-					
-					preloadNextWidget();
 					
 					//整理菜单项，每个顶级菜单项一个对象，结果绑定到listMenuItemDataGroup
 					var menuItem:MenuItem;
@@ -152,6 +151,22 @@
 						}
 					}
 					
+					//如果菜单不包含预启动的widget，直接通知页面
+					if ( _preloadWidgetArray.length == 0 )
+					{
+						AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+							{ 
+								functionName: "mapMenuStateChanged", 
+								params: [ widgetTitle, "open" ] 
+							} 
+						);
+					}
+					else
+					{
+						_isCreatingWidget = true;
+						preloadNextWidget();
+					}
+					
 					function createMenuItem( itemList:XMLList, grouped:Boolean, groupLength:uint = 0, groupLabel:String = "" ):void
 					{
 						for each ( var itemXML:XML in itemList )
@@ -185,8 +200,7 @@
 									var widgetName:String = paramTable.find( "WidgetName" );
 									_preloadWidgetArray.push( widgetName );
 									_preloadWidgetBackupArray.push( widgetName );
-//									_allWidgetArray.push( widgetName );
-									_allWidgetBackupArray.push( widgetName );
+									_allWidgetArray.push( widgetName );
 									
 									//如果initenable=true则graphicsLayer.visible=true
 									if ( open )
@@ -199,13 +213,12 @@
 								else if ( functionName == "ChangeWidget" )
 								{
 									widgetName = paramTable.find( "WidgetName" );
+									_allWidgetArray.push( widgetName );
 									if ( open )
 									{
 										_preloadWidgetArray.push( widgetName );
 										_preloadWidgetBackupArray.push( widgetName );
 									}
-//									_allWidgetArray.push( widgetName );
-									_allWidgetBackupArray.push( widgetName );
 								}
 								else if ( functionName == "ChangeLayer" )
 								{
@@ -249,30 +262,6 @@
 				}
 			}
 			
-			/**
-			 * 按照顺序启动widget
-			 * 不能在一个循环里全部启动，必须等上一个启动完触发WIDGET_CREATED后再启动下一个
-			 * */
-			private function preloadNextWidget():void
-			{
-				if ( _preloadWidgetArray.length > 0 )
-				{
-					var widgetName:String = _preloadWidgetArray[0];
-					_preloadWidgetArray.splice( 0, 1 );
-					AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
-				}
-			}
-			
-			private function closeNextWidget():void
-			{
-				if ( _allWidgetArray.length > 0 )
-				{
-					var widgetName:String = _allWidgetArray[0];
-					_allWidgetArray.splice( 0, 1 );
-					AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
-				}
-			}
-			
 			private function preloadLayer():void
 			{
 				for each ( var layerObj:Object in _preloadLayerArray )
@@ -290,44 +279,43 @@
 				}
 			}
 			
-			private function appevent_widgetCreatedHandler( event:AppEvent ):void
+			/**
+			 * 按照顺序启动widget
+			 * 不能在一个循环里全部启动，必须等上一个启动完触发WIDGET_CREATED后再启动下一个
+			 * */
+			private function preloadNextWidget():void
 			{
-//				var createdWidgetTitle:String = event.data as String;
-				
-				//所有组件都已创建完成
-				if ( _preloadWidgetArray.length == 0 )
+				if ( _preloadWidgetArray.length > 0 )
 				{
-					//初始启动的Overlay改为可见
-					presetOverlayVisible();
-					AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
-						{ 
-							functionName: "mapMenuStateChanged", 
-							params: [ widgetTitle, "open" ] 
-						} 
-					);
-				}
-				else
-				{
-					preloadNextWidget();
+					var widgetName:String = _preloadWidgetArray[0];
+					_preloadWidgetArray.splice( 0, 1 );
+					AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
 				}
 			}
 			
-			private function appevent_widgetStateChangedHandler( event:AppEvent ):void
+			private function appevent_widgetCreatedHandler( event:AppEvent ):void
 			{
-				var data:Object = event.data;
-				
-				if ( data.state as String == WidgetStates.WIDGET_CLOSED )
+				if ( _isCreatingWidget )
 				{
-					//所有组件都已关闭
-					if ( _allLayerArray.length == 0 )
+					//所有组件都已创建完成
+					if ( _preloadWidgetArray.length == 0 )
 					{
-						AppEvent.removeListener( AppEvent.WIDGET_STATE_CHANGED, appevent_widgetStateChangedHandler );
+						//初始启动的Overlay改为可见
+						presetOverlayVisible();
+						AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+							{ 
+								functionName: "mapMenuStateChanged", 
+								params: [ widgetTitle, "open" ] 
+							} 
+						);
+						_isCreatingWidget = false;
 					}
 					else
 					{
-						closeNextWidget();
+						preloadNextWidget();
 					}
 				}
+				
 			}
 			
 			private function presetOverlayVisible():void
@@ -347,6 +335,7 @@
 			{
 				if ( ( event.data as int == widgetId ) || ( event.data as String == widgetTitle ) )
 				{
+					this.visible = true;
 					AppEvent.addListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
 					AppEvent.addListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
 					//还原预加载组件
@@ -354,7 +343,22 @@
 					{
 						_preloadWidgetArray.push( widgetName );
 					}
-					preloadNextWidget();
+					
+					//如果菜单不包含预启动的widget，直接通知页面
+					if ( _preloadWidgetArray.length == 0 )
+					{
+						AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+							{ 
+								functionName: "mapMenuStateChanged", 
+								params: [ widgetTitle, "open" ] 
+							} 
+						);
+					}
+					else
+					{
+						_isCreatingWidget = true;
+						preloadNextWidget();
+					}
 					
 					preloadLayer();
 				}
@@ -370,15 +374,6 @@
 					AppEvent.removeListener( AppEvent.WIDGET_CREATED, appevent_widgetCreatedHandler );
 					AppEvent.removeListener( AppEvent.OPEN_MENU, appevent_openMenuHandler );
 					
-					AppEvent.addListener( AppEvent.WIDGET_STATE_CHANGED, appevent_widgetStateChangedHandler );
-					//关闭所有组件
-					//和打开组件一样，必须依次关闭，一个关闭以后再关闭下一个。
-					for each ( var widgetName:String in _allWidgetBackupArray )
-					{
-						_allWidgetArray.push( widgetName );
-					}
-					closeNextWidget();
-					
 					for each ( var layerObj:Object in _allLayerArray )
 					{
 						var serviceName:String = layerObj.serviceName;
@@ -393,9 +388,12 @@
 						);
 					}
 					
-					//把自身关闭
-					trace( widgetTitle + " closed" );
-					setState( WidgetStates.WIDGET_CLOSED );
+					//关闭所有组件
+					for each ( var widgetName:String in _allWidgetArray )
+					{
+						AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+					}
+					this.visible = false;
 				}
 			}
 			

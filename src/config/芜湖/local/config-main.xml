@@ -99,7 +99,7 @@
 				   popupconfig="popups/WuHu/PopUp-KaKou.xml">
 				<simplerenderer>
 					<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" 
-										 yoffset="11"/>
+										 yoffset="13"/>
 				</simplerenderer>				
 			</layer>
 			
@@ -116,9 +116,7 @@
 				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/13"
 				   popupconfig="popups/WuHu/PopUp-LuKou.xml">
 				<simplerenderer>
-					<simplemarkersymbol color="0x3E6FBC" size="10">
-						<line width="3"/>
-					</simplemarkersymbol>
+					<simplemarkersymbol color="0x3E6FBC" size="10"/>
 				</simplerenderer>				
 			</layer>
 		</operationallayers>
@@ -130,6 +128,10 @@
 		<widget label="气象站Overlay"
 				config="widgets/Overlay/WuHu/PointOverlayWidget-QiXiangZhan.xml" 
 				url="widgets/Overlay/PointOverlayWidget.swf"/>
+		
+		<widget label="能见度仪Overlay"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-NengJianDuYi.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
 		
 		<widget label="诱导板Overlay"
 				config="widgets/Overlay/WuHu/PointOverlayWidget-QingBaoBan.xml" 
@@ -211,12 +213,12 @@
 				config="widgets/Overlay/WuHu/PointOverlayWidget-CheJianQi.xml"
 				url="widgets/Overlay/PointOverlayWidget.swf" />
 		
-		<widget label="能见度仪Overlay"
-				config="widgets/Overlay/WuHu/PointOverlayWidget-NengJianDuYi.xml"
-				url="widgets/Overlay/PointOverlayWidget.swf" />
-		
 		<widget label="视频检测器Overlay"
 				config="widgets/Overlay/WuHu/PointOverlayWidget-ShiPinJianCeQi.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
+		<widget label="六合一小区Overlay"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-LiuHeYiXiaoQu.xml"
 				url="widgets/Overlay/PointOverlayWidget.swf" />
 		
 		<widget label="添加点位" 
@@ -283,6 +285,10 @@
 		
 		<widget label="接处警菜单" right="20" top="50"
 				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-JieChuJing.xml"
+				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
+		
+		<widget label="六合一车辆菜单" right="20" top="50"
+				config="widgets/ControlPanel/WuHu/ListControlPanelWidget-LiuHeYi.xml"
 				url="widgets/ControlPanel/ListControlPanel/ListControlPanelWidget.swf"/>
 	</widgetcontainer>
 	

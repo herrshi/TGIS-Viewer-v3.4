@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!--  长沙警员、警车gps轨迹 -->
+<!--  警员、警车gps轨迹 -->
 <configuration>
 	<style>
 		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
@@ -25,7 +25,7 @@
 		 scalebarvisible="false" esrilogovisible="false">
 		<basemaps>
 			<layer label="矢量图" type="tiled" visible="true"
-				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base_new/MapServer" />
+				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_base2015/MapServer" />
 <!-- 			<layer label="卫星图" type="tiled" visible="false" -->
 <!-- 				url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_satelite/MapServer" /> -->
 		</basemaps>
@@ -42,6 +42,10 @@
 				config="widgets/Overlay/WuHu/PointOverlayWidget-gpsTrack.xml" 
 				url="widgets/Overlay/PointOverlayWidget.swf"/>
 		
+		<widget label="gpsCarTrack" preload="open" 
+				config="widgets/GPSTrack/WuHu/GPSTrackWidget-car.xml"
+				url="widgets/GPSTrack/GPSTrackWidget.swf"/>
+		
 		<widget label="警车轨迹线" preload="open"
 				config="widgets/Overlay/WuHu/PolylineOverlayWidget-gpsCarTrack.xml"
 				url="widgets/Overlay/PolylineOverlayWidget.swf" />
@@ -49,6 +53,10 @@
 		<widget label="警车模拟移动" preload="open"
 				config="widgets/SimulationMovePoint/WuHu/SimulationMovePointWidget-gpsCarTrack.xml"
 				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
+				
+		<widget label="gpsPoliceTrack" preload="open" 
+				config="widgets/GPSTrack/WuHu/GPSTrackWidget-police.xml"
+				url="widgets/GPSTrack/GPSTrackWidget.swf"/>
 		
 		<widget label="警员轨迹线" preload="open"
 				config="widgets/Overlay/WuHu/PolylineOverlayWidget-gpsPoliceTrack.xml"
@@ -57,14 +65,18 @@
 		<widget label="警员模拟移动" preload="open"
 				config="widgets/SimulationMovePoint/WuHu/SimulationMovePointWidget-gpsPoliceTrack.xml"
 				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
-		
-		<widget label="gpsCarTrack" preload="open" 
-				config="widgets/GPSTrack/WuHu/GPSTrackWidget-car.xml"
-				url="widgets/GPSTrack/GPSTrackWidget.swf"/>
 				
-		<widget label="gpsPoliceTrack" preload="open" 
-				config="widgets/GPSTrack/WuHu/GPSTrackWidget-police.xml"
+		<widget label="gpsZhongDianCheLiangTrack" preload="open" 
+				config="widgets/GPSTrack/WuHu/GPSTrackWidget-ZhongDianCheLiang.xml"
 				url="widgets/GPSTrack/GPSTrackWidget.swf"/>
+		
+		<widget label="重点车辆轨迹线" preload="open"
+				config="widgets/Overlay/WuHu/PolylineOverlayWidget-gpsZhongDianCheLiangTrack.xml"
+				url="widgets/Overlay/PolylineOverlayWidget.swf" />
+		
+		<widget label="重点车辆模拟移动" preload="open"
+				config="widgets/SimulationMovePoint/WuHu/SimulationMovePointWidget-gpsZhongDianCheLiangTrack.xml"
+				url="widgets/SimulationMovePoint/SimulationMovePointWidget.swf"/>
 		
 <!-- 		<widget label="底图切换" preload="open" right="20" top="20" -->
 <!-- 			config="widgets/MapSwitcher/MapSwitcherWidget.xml" -->

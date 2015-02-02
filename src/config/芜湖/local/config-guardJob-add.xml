@@ -46,7 +46,7 @@
 				url="widgets/EditorToolbar/EditorToolbarWidget.swf"/>
 					  
 		<widget label="岗点" preload="open"
-				config="widgets/Overlay/WuHu/PointOverlayWidget-policeSentry.xml"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-GangDian.xml"
 				url="widgets/Overlay/PointOverlayWidget.swf"/>
 				
 <!-- 		<widget label="底图切换" preload="open" right="20" top="20" -->

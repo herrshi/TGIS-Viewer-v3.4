@@ -3,6 +3,7 @@
 	<title>{ROAD_NAME}</title>
 	<fields>
 		<field name="ROAD_NAME" />
+		<field name="DEVICEID" alias="设备编号：" visible="true"/>
 	</fields>
 	<showzoomtobutton>false</showzoomtobutton>
 <!-- 	<buttons> -->

@@ -14,7 +14,7 @@
 		<title>{callPoliceTime}</title>
 		<fields>
 			<field name="taskSourceId" alias="任务源Id：" visible="true"/>
-			<field name="callPoliceTime" alias="报警时间：" visible="true"/>
+			<field name="callPoliceTime"/>
 			<field name="callPolicePhone" alias="报警电话：" visible="true"/>
 			<field name="callPolicePerson" alias="报警人：" visible="true"/>
 			<field name="occurPlace" alias="案发地址：" visible="true"/>
