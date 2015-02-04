@@ -52,32 +52,32 @@
 		</popup>
 
 		<popup layername="摄像机">
-			<title>{devDesc}</title>
-			<idfieldname>devId</idfieldname>
+			<title>{NAME}</title>
+			<idfieldname>DEVICEID</idfieldname>
 			<fields>
-				<field name="devDesc" />
-				<field name="devId" alias="编号" visible="true" />
+				<field name="NAME" />
+				<field name="DEVICEID" alias="编号" visible="true" />
 			</fields>
 			<showzoomtobutton>false</showzoomtobutton>
 			<buttons>
-				<button label="添加" action="addDeviceToJob" type="摄像机" idfield="devId" />
-				<button label="删除" action="deleteDeviceFromJob" type="摄像机" idfield="devId" />
-				<button label="详细信息" action="openDevice" type="SXJ" idfield="devId" />
+				<button label="添加" action="addDeviceToJob" type="摄像机" idfield="DEVICEID" />
+				<button label="删除" action="deleteDeviceFromJob" type="摄像机" idfield="DEVICEID" />
+				<button label="详细信息" action="openDevice" type="SXJ" idfield="DEVICEID" />
 			</buttons>
 		</popup>
 		
 		<popup layername="信号机">
-			<title>{devDesc}</title>
-			<idfieldname>devId</idfieldname>
+			<title>{NAME}</title>
+			<idfieldname>DEVICEID</idfieldname>
 			<fields>
-				<field name="devDesc" />
-				<field name="devId" alias="编号" visible="true" />
+				<field name="NAME" />
+				<field name="DEVICEID" alias="编号" visible="true" />
 			</fields>
 			<showzoomtobutton>false</showzoomtobutton>
 			<buttons>
-				<button label="添加" action="addDeviceToJob" type="信号机" idfield="devId" />
-				<button label="删除" action="deleteDeviceFromJob" type="信号机" idfield="devId" />
-				<button label="详细信息" action="openDevice" type="XHJ" idfield="devId" />
+				<button label="添加" action="addDeviceToJob" type="信号机" idfield="DEVICEID" />
+				<button label="删除" action="deleteDeviceFromJob" type="信号机" idfield="DEVICEID" />
+				<button label="详细信息" action="openDevice" type="XHJ" idfield="DEVICEID" />
 			</buttons>
 		</popup>
 	</searchresultpopups>

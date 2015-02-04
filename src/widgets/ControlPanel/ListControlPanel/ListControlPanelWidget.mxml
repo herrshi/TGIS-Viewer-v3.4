@@ -203,11 +203,13 @@
 									_allWidgetArray.push( widgetName );
 									
 									//如果initenable=true则graphicsLayer.visible=true
-									if ( open )
-									{
-										var overlayType:String = paramTable.find( "OverlayType" );
-										_presetOverlayVisibleArray.push( overlayType );
-									}
+									var overlayType:String = paramTable.find( "OverlayType" );
+									_presetOverlayVisibleArray.push( 
+										{
+											"type": overlayType, 
+											"visible": open
+										} 
+									);
 								}
 								//如果是普通的widget，则initenable=true时自动启动组件
 								else if ( functionName == "ChangeWidget" )
@@ -320,12 +322,14 @@
 			
 			private function presetOverlayVisible():void
 			{
-				for each ( var overlayType:String in _presetOverlayVisibleArray )
+				for each ( var overlayObj:Object in _presetOverlayVisibleArray )
 				{
+					var overlayType:String = overlayObj.type;
+					var overlayVisible:Boolean = overlayObj.visible;
 					AppEvent.dispatch( AppEvent.CHANGE_OVERLAY_VISIBLE, 
 						{ 
 							type: overlayType, 
-							visible: true
+							visible: overlayVisible
 						} 
 					);
 				}
@@ -359,7 +363,6 @@
 						_isCreatingWidget = true;
 						preloadNextWidget();
 					}
-					
 					preloadLayer();
 				}
 			}

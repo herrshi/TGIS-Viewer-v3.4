@@ -24,9 +24,17 @@
 		</buttons>
 	</popup>
 	
-	<simplerenderer>
-		<picturemarkersymbol url="assets/images/mapIcons/WuHu/SheXiangJi-blue.png" yoffset="18"/>
-	</simplerenderer>
+	<uniquevaluerenderer field="cameraState">
+		<picturemarkersymbol url="assets/images/mapIcons/WuHu/SheXiangJi-grey.png" yoffset="18"/>
+		
+		<uniquevalueinfo value="通信连接">
+			<picturemarkersymbol url="assets/images/mapIcons/WuHu/SheXiangJi-blue.png" yoffset="18" />
+		</uniquevalueinfo>
+		
+		<uniquevalueinfo value="通信中断">
+			<picturemarkersymbol url="assets/images/mapIcons/WuHu/SheXiangJi-red.png" yoffset="18" />
+		</uniquevalueinfo>
+	</uniquevaluerenderer>
 	
 	<clickfunction>
 		<action>showInfoWindow</action>

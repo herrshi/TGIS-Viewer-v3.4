@@ -24,7 +24,6 @@
 			import com.esri.ags.Graphic;
 			import com.esri.ags.SpatialReference;
 			import com.esri.ags.events.DrawEvent;
-
 			import com.esri.ags.geometry.Geometry;
 			import com.esri.ags.geometry.MapPoint;
 			import com.esri.ags.geometry.Polygon;
@@ -32,7 +31,6 @@
 			import com.esri.ags.layers.GraphicsLayer;
 			import com.esri.ags.portal.PopUpRenderer;
 			import com.esri.ags.renderers.IRenderer;
-
 			import com.esri.ags.symbols.SimpleFillSymbol;
 			import com.esri.ags.symbols.SimpleLineSymbol;
 			import com.esri.ags.tasks.GeometryService;
@@ -170,6 +168,7 @@
 				AppEvent.addListener( AppEvent.GUARD_SHOW_DEVICE, appevent_showGuardJobDeviceHandler );
 				AppEvent.addListener( AppEvent.GUARD_DELETE_DEVICE_BY_PAGE, 
 					appevent_deleteGuardJobDeviceByMapHandler );
+				AppEvent.addListener( AppEvent.GUARD_DELETE_JOB, appevent_deleteGuardJobHandler );
 			}
 			
 			protected function this_widgetConfigLoadedHandler(event:Event):void
@@ -763,6 +762,48 @@
 						}
 					}
 				}
+			}
+			
+			private function appevent_deleteGuardJobHandler( event:AppEvent ):void
+			{
+				var jobId:String = event.data as String;
+				
+				var geometryAC:ArrayCollection = _showGeometryLayer.graphicProvider as ArrayCollection;
+				for ( var i:int = 0; i < geometryAC.length; i++ )
+				{
+					var geometryGraphic:Graphic = geometryAC.getItemAt( i ) as Graphic;
+					if ( geometryGraphic.attributes.jobId == jobId )
+					{
+						geometryAC.removeItemAt( i );
+						i--;
+					}
+				}
+				
+				var deviceAC:ArrayCollection = _showDeviceLayer.graphicProvider as ArrayCollection;
+				for ( i = 0; i < deviceAC.length; i++ )
+				{
+					var deviceGraphic:Graphic = deviceAC.getItemAt( i ) as Graphic;
+					if ( deviceGraphic.attributes.jobId == jobId )
+					{
+						deviceAC.removeItemAt( i );
+						i--;
+					}
+				}
+				/*for each ( var geometryGraphic:Graphic in _showGeometryLayer.graphicProvider )
+				{
+					if ( geometryGraphic.attributes.jobId == jobId )
+					{
+						_showGeometryLayer.remove( geometryGraphic );
+					}
+				}*/
+				
+				/*for each ( var deviceGraphic:Graphic in _showDeviceLayer.graphicProvider )
+				{
+					if ( deviceGraphic.attributes.jobId == jobId )
+					{
+						_showDeviceLayer.remove( deviceGraphic );
+					}
+				}*/
 			}
 			
 			private function searchDrawGlow():void

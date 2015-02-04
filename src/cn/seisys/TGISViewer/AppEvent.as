@@ -661,6 +661,11 @@ public class AppEvent extends Event
 	public static const GUARD_DELETE_DEVICE_BY_PAGE:String = "deleteGuardJobDeviceByPage";
 	
 	/**
+	 * 页面删除任务路线
+	 * */
+	public static const GUARD_DELETE_JOB:String = "deleteGuardJobGeometryByPage";
+	
+	/**
 	 * 新增设备时设置关联的设施设备(路口、道路)
 	 * */
 	public static const ADD_RELATE_DEVICE:String = "addRelateDevice";

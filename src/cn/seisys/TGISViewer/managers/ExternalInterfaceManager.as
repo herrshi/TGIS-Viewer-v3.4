@@ -109,6 +109,7 @@ package cn.seisys.TGISViewer.managers
 			ExternalInterface.addCallback( "setDeviceSearchDistance", dispatchSetDeviceSearchDistanceEvent );
 			ExternalInterface.addCallback( "showGuardJobGeometry", dispatchShowGuardJobGeometryEvent );
 			ExternalInterface.addCallback( "showGuardJobDevice", dispatchShowGuardJobDeviceEvent );
+			ExternalInterface.addCallback( "deleteGuardJob", dispatchDeleteGuardJobEvent );
 			ExternalInterface.addCallback( "deleteRelateDeviceByPage", dispatchDeleteRelateDeviceByPageEvent );
 			
 			//设置搜索条件
@@ -157,6 +158,11 @@ package cn.seisys.TGISViewer.managers
 		private function dispatchShowGuardJobGeometryEvent( param:String ):void
 		{
 			AppEvent.dispatch( AppEvent.GUARD_SHOW_GEOMETRY, param );
+		}
+		
+		private function dispatchDeleteGuardJobEvent( param:String ):void
+		{
+			AppEvent.dispatch( AppEvent.GUARD_DELETE_JOB, param );
 		}
 		
 		private function dispatchShowGuardJobDeviceEvent( param:String ):void

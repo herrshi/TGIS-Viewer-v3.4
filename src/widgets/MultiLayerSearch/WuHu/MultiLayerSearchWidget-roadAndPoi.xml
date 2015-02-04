@@ -20,13 +20,45 @@
 			<uniquevalueinfo value="道路">
 				<simplelinesymbol color="0x3E6FBC" width="2" />
 			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="摄像机">
+				<picturemarkersymbol url="assets/images/mapIcons/WuHu/SheXiangJi-blue.png" yoffset="18" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="诱导板">
+				<picturemarkersymbol url="assets/images/mapIcons/WuHu/QingBaoBan-blue.png" yoffset="18" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="能见度仪">
+				<picturemarkersymbol url="assets/images/mapIcons/WuHu/NengJianDuYi-blue.png" yoffset="18" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="气象站">
+				<picturemarkersymbol url="assets/images/mapIcons/WuHu/QiXiangZhan-blue.png" yoffset="18" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="事件检测">
+				<picturemarkersymbol url="assets/images/mapIcons/WuHu/GangDian-blue.png" yoffset="18" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="卡口">
+				<picturemarkersymbol url="assets/images/mapIcons/KaKou-blue.png" yoffset="13" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="电子警察">
+				<picturemarkersymbol url="assets/images/mapIcons/WuHu/DianZiJingCha-blue.png" yoffset="18" />
+			</uniquevalueinfo>
+			
+			<uniquevalueinfo value="车检器">
+				<picturemarkersymbol url="assets/images/mapIcons/FaBuDuan-blue.png" yoffset="13" />
+			</uniquevalueinfo>
 		</uniquevaluerenderer>
 
 		<popups>
 			<popup layername="default">
 				<title>{NAME}</title>
 				<fields>
-					<field name="NAME" />
+					<field name="ROAD_NAME" />
 				</fields>
 				<showzoomtobutton>false</showzoomtobutton>
 			</popup>
@@ -35,6 +67,14 @@
 				<title>{NAME}</title>
 				<fields>
 					<field name="NAME" />
+				</fields>
+				<showzoomtobutton>false</showzoomtobutton>
+			</popup>
+			
+			<popup layername="商贸场所">
+				<title>{MC}</title>
+				<fields>
+					<field name="MC" />
 				</fields>
 				<showzoomtobutton>false</showzoomtobutton>
 			</popup>

@@ -106,6 +106,22 @@
 				</simplerenderer>				
 			</layer>
 			
+			<layer label="能见度仪" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/10"
+				   popupconfig="popups/WuHu/PopUp-NengJianDuYi.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/WuHu/NengJianDuYi-blue.png" yoffset="18"/>
+				</simplerenderer>				
+			</layer>
+			
+			<layer label="摄像机" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/12"
+				   popupconfig="popups/WuHu/PopUp-SheXiangJi.xml">
+				<simplerenderer>
+					<picturemarkersymbol url="assets/images/mapIcons/WuHu/SheXiangJi-blue.png" yoffset="18"/>
+				</simplerenderer>				
+			</layer>
+			
 			<layer label="路口" type="feature" visible="false" 
 				   url="http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/13"
 				   popupconfig="popups/WuHu/PopUp-LuKou.xml">

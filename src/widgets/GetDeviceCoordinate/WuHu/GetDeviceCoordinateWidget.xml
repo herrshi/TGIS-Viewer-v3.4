@@ -98,8 +98,12 @@
 				<title>{ROAD_NAME}</title>
 				<fields>
 					<field name="ROAD_NAME" />
+					<field name="DEVICEID" alias="设备编号：" visible="true"/>
 				</fields>
 				<showzoomtobutton>false</showzoomtobutton>
+				<buttons>
+					<button label="详细信息" action="openDevice" type="KaKou" idfield="DEVICEID" />
+				</buttons>
 			</popup>
 		</layer>
 		
@@ -132,6 +136,41 @@
 				<buttons>
 					<button label="详细信息" action="openDevice" type="LuKou" idfield="OBJECTID" />
 				</buttons>
+			</popup>
+		</layer>
+		
+		<layer>
+			<type>LongMengJia</type>
+			<url>http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/14</url>
+			<idfield>DEVICEID</idfield>
+			<zoomscale>1000</zoomscale>
+			<popup>
+				<title>{ROAD_NAME}</title>
+				<fields>
+					<field name="ROAD_NAME" />
+				</fields>
+				<showzoomtobutton>false</showzoomtobutton>
+<!-- 				<buttons> -->
+<!-- 					<button label="详细信息" action="openDevice" type="LuKou" idfield="OBJECTID" /> -->
+<!-- 				</buttons> -->
+			</popup>
+		</layer>
+		
+		<layer>
+			<type>XinHaoDeng</type>
+			<url>http://{serverip}/arcgis/rest/services/wuhu/wuhu_device_new/MapServer/16</url>
+			<idfield>DEVICEID</idfield>
+			<zoomscale>1000</zoomscale>
+			<popup>
+				<title>{ROAD_NAME}</title>
+				<fields>
+					<field name="ROAD_NAME" />
+					<field name="NAME" alias="类型：" visible="true"/>
+				</fields>
+				<showzoomtobutton>false</showzoomtobutton>
+<!-- 				<buttons> -->
+<!-- 					<button label="详细信息" action="openDevice" type="LuKou" idfield="OBJECTID" /> -->
+<!-- 				</buttons> -->
 			</popup>
 		</layer>
 		
