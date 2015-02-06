@@ -101,6 +101,7 @@
 				_timeFieldName = '"' + _timeFieldName + '"';
 			}
 			
+			//打开区域分布图和Widet
 			protected function btnQuYuFenBuTu_clickHandler(event:MouseEvent):void
 			{
 				btnQuYuFenBuTu.source = "assets/images/HuanBaoJu/center/b_qyfbt_d.png";
@@ -125,7 +126,7 @@
 					} 
 				);
 			}
-			
+			//打开点位图
 			protected function btnDianWeiTu_clickHandler(event:MouseEvent):void
 			{
 				btnQuYuFenBuTu.source = "assets/images/HuanBaoJu/center/b_qyfbt.png";
@@ -150,7 +151,7 @@
 					} 
 				);
 			}
-			
+			//打开热点图
 			protected function btnReDianTu_clickHandler(event:MouseEvent):void
 			{
 				btnQuYuFenBuTu.source = "assets/images/HuanBaoJu/center/b_qyfbt.png";
@@ -174,6 +175,11 @@
 						visible: true 
 					} 
 				);
+			}
+			//打开热点图
+			protected function btnTuli_clickHandler(event:MouseEvent):void
+			{
+				openWidget( "图例" );
 			}
 			
 			protected function btnMonthBackward_clickHandler(event:MouseEvent):void
@@ -356,6 +362,10 @@
 					 source="assets/images/HuanBaoJu/center/b_rdt.png"
 					 buttonMode="true" useHandCursor="true" 
 					 click="btnReDianTu_clickHandler(event)"/>
+			<!--s:Image id="btnTuli" 
+					 source="assets/images/HuanBaoJu/center/b_tl2.png"
+					 buttonMode="true" useHandCursor="true" 
+					 click="btnTuli_clickHandler(event)"/-->
 		</s:HGroup>
 	</s:HGroup>
 </TGISViewer:BaseWidget>

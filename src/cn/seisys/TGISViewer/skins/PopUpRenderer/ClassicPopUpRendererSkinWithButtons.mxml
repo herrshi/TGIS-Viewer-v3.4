@@ -1,62 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright (c) 2011 ESRI
+Copyright (c) 2011 ESRI
 
-    All rights reserved under the copyright laws of the United States
-    and applicable international laws, treaties, and conventions.
+All rights reserved under the copyright laws of the United States
+and applicable international laws, treaties, and conventions.
 
-    You may freely redistribute and use this sample code, with or
-    without modification, provided you include the original copyright
-    notice and use restrictions.
+You may freely redistribute and use this sample code, with or
+without modification, provided you include the original copyright
+notice and use restrictions.
 
-    See use restrictions in use_restrictions.txt.
+See use restrictions in use_restrictions.txt.
 -->
 <!---
-    在默认skin底部增加了按钮
-    <p><b>Since:</b> ArcGIS API for Flex 2.3</p>
+在默认skin底部增加了按钮
+<p><b>Since:</b> ArcGIS API for Flex 2.3</p>
 -->
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
-             xmlns:s="library://ns.adobe.com/flex/spark"
-             xmlns:esri="http://www.esri.com/2008/ags"
-             xmlns:supportClasses="com.esri.ags.skins.supportClasses.*"
+			 xmlns:s="library://ns.adobe.com/flex/spark"
+			 xmlns:esri="http://www.esri.com/2008/ags"
+			 xmlns:supportClasses="com.esri.ags.skins.supportClasses.*"
 			 xmlns:mx="library://ns.adobe.com/flex/mx"
-             width="320"
-             maxHeight="300"
-             preinitialize="skin_preinitializeHandler(event)" >
-
-    <fx:Metadata>
-        /**
-        * A strongly typed property that references the component to which this skin is applied.
-        */
-        [HostComponent("com.esri.ags.portal.PopUpRenderer")]
-    </fx:Metadata>
-
-    <fx:Script>
-        <![CDATA[
-			import com.esri.ags.Graphic;
-			import com.esri.ags.Map;
-			import com.esri.ags.geometry.Extent;
-			import com.esri.ags.geometry.Geometry;
-			import com.esri.ags.geometry.MapPoint;
-			import com.esri.ags.geometry.Multipoint;
-			import com.esri.ags.layers.FeatureLayer;
-			import com.esri.ags.layers.supportClasses.LayerDetails;
-			import com.esri.ags.portal.PopUpRenderer;
-			import com.esri.ags.portal.supportClasses.PopUpFieldInfo;
-			import com.esri.ags.skins.supportClasses.AttachmentMouseEvent;
-			import com.esri.ags.utils.StringUtil;
-			
-			import mx.containers.utilityClasses.ConstraintRow;
-			import mx.controls.Alert;
-			import mx.events.CloseEvent;
-			import mx.events.FlexEvent;
-			
-			import spark.components.Label;
-			
+			 width="320"
+			 maxHeight="300"
+			 show="sparkskin1_showHandler(event)"
+			 hide="sparkskin1_hideHandler(event)"
+			 preinitialize="skin_preinitializeHandler(event)" 
+			 currentState="normal">
+	
+	<fx:Metadata>
+		/**
+		* A strongly typed property that references the component to which this skin is applied.
+		*/
+		[HostComponent("com.esri.ags.portal.PopUpRenderer")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
 			import cn.seisys.TGISViewer.AppEvent;
 			import cn.seisys.TGISViewer.WidgetStates;
 			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
 			import cn.seisys.TGISViewer.utils.MapServiceUtil;
+			
+			import com.esri.ags.FeatureSet;
+			import com.esri.ags.Graphic;
+			import com.esri.ags.Map;
+			import com.esri.ags.SpatialReference;
+			import com.esri.ags.events.GeometryServiceEvent;
+			import com.esri.ags.geometry.Extent;
+			import com.esri.ags.geometry.Geometry;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.Multipoint;
+			import com.esri.ags.geometry.Polyline;
+			import com.esri.ags.layers.FeatureLayer;
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.layers.supportClasses.LayerDetails;
+			import com.esri.ags.portal.PopUpRenderer;
+			import com.esri.ags.portal.supportClasses.PopUpFieldInfo;
+			import com.esri.ags.skins.supportClasses.AttachmentMouseEvent;
+			import com.esri.ags.symbols.SimpleFillSymbol;
+			import com.esri.ags.symbols.SimpleLineSymbol;
+			import com.esri.ags.symbols.Symbol;
+			import com.esri.ags.tasks.GeometryService;
+			import com.esri.ags.tasks.QueryTask;
+			import com.esri.ags.tasks.supportClasses.BufferParameters;
+			import com.esri.ags.tasks.supportClasses.Query;
+			import com.esri.ags.utils.StringUtil;
 			
 			import flashx.textLayout.conversion.TextConverter;
 			import flashx.textLayout.elements.Configuration;
@@ -66,96 +74,130 @@
 			import flashx.textLayout.formats.TextDecoration;
 			import flashx.textLayout.formats.TextLayoutFormat;
 			import flashx.textLayout.formats.WhiteSpaceCollapse;
-
-            private var textLayoutConfiguration:Configuration;
-
-            /* Define the symbol fill items that should be colored by the "symbolColor" style.*/
-            private static const symbols:Array = [ "titleLineSymbol" ];
-
-            /**
-             * @private
-             */
-            override public function get symbolItems():Array
-            {
-                return symbols;
-            }
-
-            private function skin_preinitializeHandler(event:FlexEvent):void
-            {
-                // set the link styles
-                textLayoutConfiguration = new Configuration();
-                var textLayoutFormat:TextLayoutFormat = new TextLayoutFormat();
-                textLayoutFormat.color = getStyle("linkActiveColor")
-                textLayoutFormat.textDecoration = TextDecoration.UNDERLINE;
-                textLayoutConfiguration.defaultLinkActiveFormat = textLayoutFormat;
-                textLayoutFormat = new TextLayoutFormat();
-                textLayoutFormat.color = getStyle("linkHoverColor")
-                textLayoutFormat.textDecoration = TextDecoration.UNDERLINE;
-                textLayoutConfiguration.defaultLinkHoverFormat = textLayoutFormat;
-                textLayoutFormat = new TextLayoutFormat();
-                textLayoutFormat.color = getStyle("linkNormalColor")
-                textLayoutFormat.textDecoration = TextDecoration.UNDERLINE;
-                textLayoutConfiguration.defaultLinkNormalFormat = textLayoutFormat;
-
-                // preserve white space
-                textLayoutFormat = new TextLayoutFormat();
-                textLayoutFormat.whiteSpaceCollapse = WhiteSpaceCollapse.PRESERVE;
-                textLayoutConfiguration.textFlowInitialFormat = textLayoutFormat;
-
-                attachmentInspector.addEventListener(AttachmentMouseEvent.ATTACHMENT_CLICK, attachmentInspector_attachmentClickHandler);
-            }
-
-            private function attachmentInspector_attachmentClickHandler(event:AttachmentMouseEvent):void
-            {
-                navigateToURL(new URLRequest(event.attachmentInfo.url));
-            }
 			
-            /**
-             * @private
-             */
+			import mx.collections.ArrayCollection;
+			import mx.containers.utilityClasses.ConstraintRow;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
+			
+			import spark.components.ComboBox;
+			import spark.components.Label;
+			import spark.events.IndexChangeEvent;
+			
+			private var map:Map;
+			private var textLayoutConfiguration:Configuration;
+			private var graphicsLayer:GraphicsLayer;
+			private var queryGeo:Geometry;
+			
+			
+			[Bindable]
+			private var comboData:ArrayCollection = new ArrayCollection([
+				{label:'请选择',index:0,scale:0},
+				{label:'50 m',index:50,scale:564},
+				{label:'100 m',index:100,scale:1127},
+				{label:'500 m',index:500,scale:9018},
+				{label:'1000 m',index:1000,scale:18036},
+				{label:'5000 m',index:5000,scale:72143},
+				{label:'10000 m',index:10000,scale:144286}]);
+			
+			
+			/* Define the symbol fill items that should be colored by the "symbolColor" style.*/
+			private static const symbols:Array = [ "titleLineSymbol" ];
+			
+			/**
+			 * @private
+			 */
+			override public function get symbolItems():Array
+			{
+				return symbols;
+			}
+			
+			private function skin_preinitializeHandler(event:FlexEvent):void
+			{
+				// set the link styles
+				textLayoutConfiguration = new Configuration();
+				var textLayoutFormat:TextLayoutFormat = new TextLayoutFormat();
+				textLayoutFormat.color = getStyle("linkActiveColor")
+				textLayoutFormat.textDecoration = TextDecoration.UNDERLINE;
+				textLayoutConfiguration.defaultLinkActiveFormat = textLayoutFormat;
+				textLayoutFormat = new TextLayoutFormat();
+				textLayoutFormat.color = getStyle("linkHoverColor")
+				textLayoutFormat.textDecoration = TextDecoration.UNDERLINE;
+				textLayoutConfiguration.defaultLinkHoverFormat = textLayoutFormat;
+				textLayoutFormat = new TextLayoutFormat();
+				textLayoutFormat.color = getStyle("linkNormalColor")
+				textLayoutFormat.textDecoration = TextDecoration.UNDERLINE;
+				textLayoutConfiguration.defaultLinkNormalFormat = textLayoutFormat;
+				
+				// preserve white space
+				textLayoutFormat = new TextLayoutFormat();
+				textLayoutFormat.whiteSpaceCollapse = WhiteSpaceCollapse.PRESERVE;
+				textLayoutConfiguration.textFlowInitialFormat = textLayoutFormat;
+				
+				attachmentInspector.addEventListener(AttachmentMouseEvent.ATTACHMENT_CLICK, attachmentInspector_attachmentClickHandler);
+			}
+			
+			private function attachmentInspector_attachmentClickHandler(event:AttachmentMouseEvent):void
+			{
+				navigateToURL(new URLRequest(event.attachmentInfo.url));
+			}
+			
+			/**
+			 * @private
+			 */
 			private var _buttonArray:Array;
-			
-            override protected function commitProperties():void
-            {
-                super.commitProperties();
-
-                var featureLayer:FeatureLayer = hostComponent.featureLayer;
-                var formattedAttributes:Object = hostComponent.formattedAttributes;
-                var graphic:Graphic = hostComponent.graphic;
-                var map:Map = hostComponent.map;
-                var popUpInfo:PopUpInfoWithButtons = hostComponent.popUpInfo as PopUpInfoWithButtons;
-                var validMediaInfos:Array = hostComponent.validPopUpMediaInfos;
-                var geometry:Geometry = graphic ? graphic.geometry : null;
-                var layerDetails:LayerDetails = featureLayer ? featureLayer.layerDetails : null;
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				//加入地图底图
+				map=hostComponent.map;
+				if ( map )
+				{
+					//判断是否有buffer图层
+					if(buffLayerExist())
+					{
+						graphicsLayer=bufferLayer;
+						graphicsLayer.clear();
+					}
+					else
+					{
+						graphicsLayer = new GraphicsLayer();
+						graphicsLayer.name="buffer";
+						map.addLayer(graphicsLayer); 
+					}
+				}
+				
+				
+				showBufferDdistric();
+				//获取到map中的所有buffer graphicslayer，然后剔除,以防多次加载graphicslayer
+				//				clearBuffLayer();				
+				this.currentState="normal";
+				
+				var featureLayer:FeatureLayer = hostComponent.featureLayer;
+				var formattedAttributes:Object = hostComponent.formattedAttributes;
+				var graphic:Graphic = hostComponent.graphic;
+				var popUpInfo:PopUpInfoWithButtons = hostComponent.popUpInfo as PopUpInfoWithButtons;
+				var validMediaInfos:Array = hostComponent.validPopUpMediaInfos;
+				var geometry:Geometry = graphic ? graphic.geometry : null;
+				var layerDetails:LayerDetails = featureLayer ? featureLayer.layerDetails : null;
 				
 				header.removeAllElements();
 				vGroup.removeAllElements();
+				resultVGroup.removeAllElements();
 				footer.removeAllElements();
-
-                if (popUpInfo)
-                {
-                    if (popUpInfo.title)
-                    {
-                        titleText.text = StringUtil.substitute(popUpInfo.title, formattedAttributes);
-                        if (titleText.text)
-                        {
-                            header.addElement(titleText);
-                            header.includeInLayout = header.visible = true;
-							headerLine.includeInLayout = headerLine.visible = true;
-                        }
-                        else
-                        {
-                            header.includeInLayout = header.visible = false;
-							headerLine.includeInLayout = headerLine.visible = false;
-                        }
-                    }
-					/*else
+				
+				if (popUpInfo)
+				{
+					if (popUpInfo.title)
 					{
-						var title:String = formattedAttributes.title;
-						if ( title && title != "" )
+						titleText.text = StringUtil.substitute(popUpInfo.title, formattedAttributes);
+						if (titleText.text)
 						{
-							titleText.text = title;
 							header.addElement(titleText);
+							header.addElement(back);
 							header.includeInLayout = header.visible = true;
 							headerLine.includeInLayout = headerLine.visible = true;
 						}
@@ -164,112 +206,127 @@
 							header.includeInLayout = header.visible = false;
 							headerLine.includeInLayout = headerLine.visible = false;
 						}
+					}
+					/*else
+					{
+					var title:String = formattedAttributes.title;
+					if ( title && title != "" )
+					{
+					titleText.text = title;
+					header.addElement(titleText);
+					header.includeInLayout = header.visible = true;
+					headerLine.includeInLayout = headerLine.visible = true;
+					}
+					else
+					{
+					header.includeInLayout = header.visible = false;
+					headerLine.includeInLayout = headerLine.visible = false;
+					}
 					}*/
 					
-                    var htmlText:String;
-                    if (popUpInfo.description)
-                    {
-                        htmlText = StringUtil.substitute(popUpInfo.description, formattedAttributes);
-                        if (htmlText)
-                        {
-                            setTextFlow(descriptionText, htmlText);
-                            vGroup.addElement(descriptionText);
-                        }
-                    }
-                    else if (popUpInfo.popUpFieldInfos)
-                    {
-                        // make sure there's enough constraint rows
-                        var constraintRows:Vector.<ConstraintRow> = keyValueGroupLayout.constraintRows; // returns a clone
-                        if (constraintRows.length < popUpInfo.popUpFieldInfos.length)
-                        {
-                            for (var i:int = constraintRows.length + 1; i <= popUpInfo.popUpFieldInfos.length; i++)
-                            {
-                                var constraintRow:ConstraintRow = new ConstraintRow();
-                                constraintRow.initialized(this, null); // required
-                                constraintRow.id = "row" + i;
-                                constraintRows.push(constraintRow);
-                            }
-                            keyValueGroupLayout.constraintRows = constraintRows;
-                        }
-
-                        keyValueGroup.removeAllElements();
-                        var rowID:int = 1;
-                        for each (var fieldInfo:PopUpFieldInfo in popUpInfo.popUpFieldInfos)
-                        {
-                            if (fieldInfo.visible)
-                            {
-                                var fieldLabel:Label = new Label();
+					var htmlText:String;
+					if (popUpInfo.description)
+					{
+						htmlText = StringUtil.substitute(popUpInfo.description, formattedAttributes);
+						if (htmlText)
+						{
+							setTextFlow(descriptionText, htmlText);
+							vGroup.addElement(descriptionText);
+						}
+					}
+					else if (popUpInfo.popUpFieldInfos)
+					{
+						// make sure there's enough constraint rows
+						var constraintRows:Vector.<ConstraintRow> = keyValueGroupLayout.constraintRows; // returns a clone
+						if (constraintRows.length < popUpInfo.popUpFieldInfos.length)
+						{
+							for (var i:int = constraintRows.length + 1; i <= popUpInfo.popUpFieldInfos.length; i++)
+							{
+								var constraintRow:ConstraintRow = new ConstraintRow();
+								constraintRow.initialized(this, null); // required
+								constraintRow.id = "row" + i;
+								constraintRows.push(constraintRow);
+							}
+							keyValueGroupLayout.constraintRows = constraintRows;
+						}
+						
+						keyValueGroup.removeAllElements();
+						var rowID:int = 1;
+						for each (var fieldInfo:PopUpFieldInfo in popUpInfo.popUpFieldInfos)
+						{
+							if (fieldInfo.visible)
+							{
+								var fieldLabel:Label = new Label();
 								fieldLabel.setStyle( "fontWeight", "bold" );
 								fieldLabel.setStyle( "textAlign", "end" );
-                                fieldLabel.text = ( fieldInfo.label || fieldInfo.fieldName );
-                                fieldLabel.left = 0;
-                                fieldLabel.right = "col1:0";
-                                fieldLabel.top = "row" + rowID + ":" + (rowID == 1 ? 5 : 15);
-                                keyValueGroup.addElement(fieldLabel);
-
-                                var fieldValue:RichEditableText;
-                                htmlText = formattedAttributes[fieldInfo.fieldName];
-                                if (htmlText)
-                                {
-                                    fieldValue = new RichEditableText();
-                                    // convert attribute field values that just contain URLs into links
-                                    var match:Array = htmlText.match(/^\s*((https?|ftp):\/\/\S+)\s*$/i);
-                                    if (match && match.length > 0)
-                                    {
-                                        htmlText = '<a href="' + match[1] + '" target="_blank">' + match[1] + "</a>";
-                                    }
-                                    setTextFlow(fieldValue, htmlText);
-                                    fieldValue.editable = false;
-                                    fieldValue.left = "col2:5";
-                                    fieldValue.right = 0;
-                                    fieldValue.top = fieldLabel.top;
-                                    keyValueGroup.addElement(fieldValue);
-                                }
-                                rowID++;
-                            }
-                        }
-                        if (keyValueGroup.numElements > 0)
-                        {
-                            fieldLabel.bottom = "row" + --rowID + ":5"; // add a little bottom padding to last label
-                            vGroup.addElement(keyValueGroup);
-                        }
-                    }
+								fieldLabel.text = ( fieldInfo.label || fieldInfo.fieldName );
+								fieldLabel.left = 0;
+								fieldLabel.right = "col1:0";
+								fieldLabel.top = "row" + rowID + ":" + (rowID == 1 ? 5 : 15);
+								keyValueGroup.addElement(fieldLabel);
+								
+								var fieldValue:RichEditableText;
+								htmlText = formattedAttributes[fieldInfo.fieldName];
+								if (htmlText)
+								{
+									fieldValue = new RichEditableText();
+									// convert attribute field values that just contain URLs into links
+									var match:Array = htmlText.match(/^\s*((https?|ftp):\/\/\S+)\s*$/i);
+									if (match && match.length > 0)
+									{
+										htmlText = '<a href="' + match[1] + '" target="_blank">' + match[1] + "</a>";
+									}
+									setTextFlow(fieldValue, htmlText);
+									fieldValue.editable = false;
+									fieldValue.left = "col2:5";
+									fieldValue.right = 0;
+									fieldValue.top = fieldLabel.top;
+									keyValueGroup.addElement(fieldValue);
+								}
+								rowID++;
+							}
+						}
+						if (keyValueGroup.numElements > 0)
+						{
+							fieldLabel.bottom = "row" + --rowID + ":5"; // add a little bottom padding to last label
+							vGroup.addElement(keyValueGroup);
+						}
+					}
 					
-                    if (validMediaInfos && validMediaInfos.length > 0)
-                    {
-                        vGroup.addElement(mediaBrowser);
-                        mediaBrowser.attributes = graphic.attributes;
-                        mediaBrowser.formattedAttributes = formattedAttributes;
-                        mediaBrowser.popUpFieldInfos = popUpInfo.popUpFieldInfos;
-                        mediaBrowser.popUpMediaInfos = validMediaInfos;
-                    }
-
-                    if (popUpInfo.showAttachments && graphic && featureLayer
-                        && layerDetails && layerDetails.hasAttachments && layerDetails.objectIdField)
-                    {
-                        vGroup.addElement(attachmentInspector);
-                        attachmentInspector.showAttachments(graphic, featureLayer);
-                    }
-
-                    if (popUpInfo.showZoomToButton && map && geometry)
-                    {
-                        footer.addElement(zoomToButton);
-                    }
+					if (validMediaInfos && validMediaInfos.length > 0)
+					{
+						vGroup.addElement(mediaBrowser);
+						mediaBrowser.attributes = graphic.attributes;
+						mediaBrowser.formattedAttributes = formattedAttributes;
+						mediaBrowser.popUpFieldInfos = popUpInfo.popUpFieldInfos;
+						mediaBrowser.popUpMediaInfos = validMediaInfos;
+					}
 					
-                    if (popUpInfo.showRelatedRecords && graphic && featureLayer
-                        && layerDetails && layerDetails.relationships && layerDetails.relationships.length)
-                    {
-                        footer.addElement(showRelatedRecords);
-                        relationshipInspector.graphic = graphic;
-
-                        if (showRelatedRecords.selected) // show related records
-                        {
-                            showRelatedRecords.label = resourceManager.getString('ESRIMessages', 'hideRelatedRecordsLabel');
-                            relationshipInspector.includeInLayout = relationshipInspector.visible = true;
-                        }
-                    }
+					if (popUpInfo.showAttachments && graphic && featureLayer
+						&& layerDetails && layerDetails.hasAttachments && layerDetails.objectIdField)
+					{
+						vGroup.addElement(attachmentInspector);
+						attachmentInspector.showAttachments(graphic, featureLayer);
+					}
 					
+					if (popUpInfo.showZoomToButton && map && geometry)
+					{
+						footer.addElement(zoomToButton);
+					}
 					
+					if (popUpInfo.showRelatedRecords && graphic && featureLayer
+						&& layerDetails && layerDetails.relationships && layerDetails.relationships.length)
+					{
+						footer.addElement(showRelatedRecords);
+						relationshipInspector.graphic = graphic;
+						if (showRelatedRecords.selected) // show related records
+						{
+							showRelatedRecords.label = resourceManager.getString('ESRIMessages', 'hideRelatedRecordsLabel');
+							relationshipInspector.includeInLayout = relationshipInspector.visible = true;
+						}
+					}
+					
+					//加了Buttons,在此基础上加上combox
 					_buttonArray = popUpInfo.buttonArray;
 					if ( _buttonArray && _buttonArray.length > 0 )
 					{
@@ -298,9 +355,10 @@
 							
 							var button:Button = new Button();
 							button.minWidth = 50;
+							button.height=25;
 							button.label = label;
 							button.id = id;
-//							button.setStyle( "skinClass", Class( btSkin ) );
+							//							button.setStyle( "skinClass", Class( btSkin ) );
 							switch( action.toLowerCase() )
 							{
 								//显示设备详细信息，调用js函数
@@ -349,104 +407,135 @@
 									button.addEventListener( MouseEvent.CLICK, showRegion_clickHandler );
 									break;
 							}
+							
+							//test，加入combox
+							footer.addElement( radiusLabel );
+							footer.addElement( cbBox );
 							footer.addElement( button );
+							resultVGroup.addElement( QueryResultDG );
 						}
 					}
 					else
 					{
 						footerLine.includeInLayout = footerLine.visible = false;
 					}
-                }
+				}
 				else
 				{
-					
-					
-					
+				}
+			}
+			
+			
+			private function clearBuffLayer():void
+			{
+				var mapLayer:ArrayCollection=map.layers as ArrayCollection;
+				for(var i:int=0;i<mapLayer.length;i++)
+				{
+					var layer:GraphicsLayer=mapLayer[i] as GraphicsLayer;
+					if(layer && layer.name=="buffer" )
+					{
+						map.removeLayer(layer);
+					}
+				}
+			}
+			
+			private var  bufferLayer:GraphicsLayer=new GraphicsLayer();
+			private function buffLayerExist():Boolean
+			{
+				var mapLayer:ArrayCollection=map.layers as ArrayCollection;
+				for(var i:int=0;i<mapLayer.length;i++)
+				{
+					var layer:GraphicsLayer=mapLayer[i] as GraphicsLayer;
+					if(layer && layer.name=="buffer")
+					{
+						bufferLayer=layer;
+						return true;
+					}
 				}
 				
+				return false;
+			}
+			
+			private function setTextFlow(textComp:RichEditableText, htmlText:String):void
+			{
+				if (textComp && htmlText != null)
+				{
+					var textFlow:TextFlow = TextConverter.importToFlow(htmlText, TextConverter.TEXT_FIELD_HTML_FORMAT, textLayoutConfiguration);
+					if (textFlow)
+					{
+						textFlow.addEventListener(FlowElementMouseEvent.CLICK, textFlow_linkClickHandler, false, 0, true);
+						textComp.textFlow = textFlow;
+					}
+				}
+			}
+			
+			private function textFlow_linkClickHandler(event:FlowElementMouseEvent):void
+			{
+				var linkElement:LinkElement = event.flowElement as LinkElement;
+				if (linkElement && linkElement.target != "_blank")
+				{
+					linkElement.target = "_blank"; // make sure target is "_blank"
+				}
+			}
+			
+			private function zoomToButton_clickHandler(event:MouseEvent):void
+			{
+				var graphic:Graphic = hostComponent.graphic;
+				var map:Map = hostComponent.map;
+				var geometry:Geometry = graphic.geometry;
 				
-            }
-
-            private function setTextFlow(textComp:RichEditableText, htmlText:String):void
-            {
-                if (textComp && htmlText != null)
-                {
-                    var textFlow:TextFlow = TextConverter.importToFlow(htmlText, TextConverter.TEXT_FIELD_HTML_FORMAT, textLayoutConfiguration);
-                    if (textFlow)
-                    {
-                        textFlow.addEventListener(FlowElementMouseEvent.CLICK, textFlow_linkClickHandler, false, 0, true);
-                        textComp.textFlow = textFlow;
-                    }
-                }
-            }
-
-            private function textFlow_linkClickHandler(event:FlowElementMouseEvent):void
-            {
-                var linkElement:LinkElement = event.flowElement as LinkElement;
-                if (linkElement && linkElement.target != "_blank")
-                {
-                    linkElement.target = "_blank"; // make sure target is "_blank"
-                }
-            }
-
-            private function zoomToButton_clickHandler(event:MouseEvent):void
-            {
-                var graphic:Graphic = hostComponent.graphic;
-                var map:Map = hostComponent.map;
-                var geometry:Geometry = graphic.geometry;
-
-                var extent:Extent = geometry.extent; // returns null for MapPoint or Multipoint's with only one point
-                if (extent)
-                {
-                    map.zoomTo(geometry);
-                }
-                else
-                {
-                    var mapPoint:MapPoint;
-                    if (geometry is MapPoint)
-                    {
-                        mapPoint = geometry as MapPoint;
-                    }
-                    else if (geometry is Multipoint)
-                    {
-                        var multipoint:Multipoint = geometry as Multipoint;
-                        if (multipoint.points && multipoint.points.length > 0)
-                        {
-                            mapPoint = multipoint.points[0];
-                        }
-                    }
-                    if (mapPoint)
-                    {
-                        // make sure the infoWindow always points to the current (selected) feature
-                        map.infoWindow.show(mapPoint);
-                        // Zoom to 1/16th the size of the current extent.
-                        // This is the same as calling map.zoomIn() four times.
-                        map.zoom(1 / 16, mapPoint);
-                        if (!map.extent.contains(mapPoint))
-                        {
-                            map.centerAt(mapPoint);
-                        }
-                    }
-                }
-            }
-
-            private function showRelatedRecords_changeHandler(event:Event):void
-            {
-                if (showRelatedRecords.selected)
-                {
-                    showRelatedRecords.label = resourceManager.getString('ESRIMessages', 'hideRelatedRecordsLabel');
-
-                    hostComponent.width = hostComponent.width * 2;
-                    relationshipInspector.includeInLayout = relationshipInspector.visible = true;
-                }
-                else
-                {
-                    showRelatedRecords.label = resourceManager.getString('ESRIMessages', 'showRelatedRecordsLabel');
-
-                    hostComponent.width = hostComponent.width / 2;
-                    relationshipInspector.includeInLayout = relationshipInspector.visible = false;
-                }
-            }
+				var extent:Extent = geometry.extent; // returns null for MapPoint or Multipoint's with only one point
+				if (extent)
+				{
+					map.zoomTo(geometry);
+				}
+				else
+				{
+					var mapPoint:MapPoint;
+					if (geometry is MapPoint)
+					{
+						mapPoint = geometry as MapPoint;
+					}
+					else if (geometry is Multipoint)
+					{
+						var multipoint:Multipoint = geometry as Multipoint;
+						if (multipoint.points && multipoint.points.length > 0)
+						{
+							mapPoint = multipoint.points[0];
+						}
+					}
+					if (mapPoint)
+					{
+						// make sure the infoWindow always points to the current (selected) feature
+						map.infoWindow.show(mapPoint);
+						// Zoom to 1/16th the size of the current extent.
+						// This is the same as calling map.zoomIn() four times.
+						map.zoom(1 / 16, mapPoint);
+						if (!map.extent.contains(mapPoint))
+						{
+							map.centerAt(mapPoint);
+						}
+					}
+				}
+			}
+			
+			private function showRelatedRecords_changeHandler(event:Event):void
+			{
+				if (showRelatedRecords.selected)
+				{
+					showRelatedRecords.label = resourceManager.getString('ESRIMessages', 'hideRelatedRecordsLabel');
+					
+					hostComponent.width = hostComponent.width * 2;
+					relationshipInspector.includeInLayout = relationshipInspector.visible = true;
+				}
+				else
+				{
+					showRelatedRecords.label = resourceManager.getString('ESRIMessages', 'showRelatedRecordsLabel');
+					
+					hostComponent.width = hostComponent.width / 2;
+					relationshipInspector.includeInLayout = relationshipInspector.visible = false;
+				}
+			}
 			
 			private function openDevice_clickHandler( event:MouseEvent ):void
 			{
@@ -502,7 +591,7 @@
 						var dataObj:Object = 
 							{ 
 								type: buttonObj.type, 
-								DeviceList: [ button.id ] 
+									DeviceList: [ button.id ] 
 							};
 						var dataString:String = JSON.stringify( dataObj );
 						trace( dataString );
@@ -515,9 +604,7 @@
 			{	
 				var button:Button = event.currentTarget as Button;
 				var buttonLabel:String = button.label;
-				
 				var centerPoint:MapPoint = MapServiceUtil.getGeomCenter( hostComponent.graphic );
-				
 				for each ( var buttonObj:Object in _buttonArray )
 				{
 					if ( buttonObj.label == buttonLabel )
@@ -541,28 +628,175 @@
 				{
 					if ( buttonObj.label == buttonLabel )
 					{
-						var widgetName:String = buttonObj.widgetName;
-						//打开搜索组件
-						AppEvent.dispatch( AppEvent.WIDGET_CHANGE_STATE, 
-							{ 
-								label: widgetName, 
-								state:WidgetStates.WIDGET_OPENED 
-							} 
-						);
-						
-						var type:String = buttonObj.type;
-						var centerPoint:MapPoint = MapServiceUtil.getGeomCenter( hostComponent.graphic );
-						AppEvent.dispatch( AppEvent.BUFFER_SEARCH, 
-							{ 
-								type: type, 
-								id: button.id,
-								point: centerPoint
-							} 
-						);
+						if(queryGeo)
+						{
+							map.centerAt(centerPoint);
+							map.scale = Number(cbBox.selectedItem.scale);
+							queryFeaturesGraphical(queryGeo);
+						}
 						break;
 					}
 				}
 			}
+			
+			private function buffer(geometries:Array, distances:Array):void
+			{
+				var bufferParameters:BufferParameters = new BufferParameters();
+				bufferParameters.geometries = geometries;
+				bufferParameters.distances = distances;
+				bufferParameters.unit = GeometryService.UNIT_METER;
+				gService.buffer(bufferParameters);
+			}
+			
+			
+			protected function gService_bufferCompleteHandler(event:GeometryServiceEvent):void
+			{
+				var result:Array = event.result as Array;
+				if(result.length > 0)
+				{
+					var g:Graphic = new Graphic();
+					g.geometry = result[0];
+					g.symbol = new  SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 0x000000, 0.1, new  SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, 0x000000, 0.1, 1));
+					graphicsLayer.clear();
+					graphicsLayer.add(g);
+					queryGeo=g.geometry;
+				}
+			}
+			
+			
+			private var queryFields:ArrayCollection = new ArrayCollection([
+				{name:'序号',alias:'序号',type:'String'},
+				{name:'信访编号',alias:'信访编号',type:'String'},
+				{name:'信访日期',alias:'信访日期',type:'Date'},
+				{name:'人数',alias:'人数',type:'String'},
+				{name:'信访来源',alias:'信访来源',type:'String'},
+				{name:'信访方式',alias:'信访方式',type:'String'},
+				{name:'信访人',alias:'信访人',type:'String'},
+				{name:'信访人地址',alias:'信访人地址',type:'String'},
+				{name:'问题属地',alias:'问题属地',type:'String'},
+				{name:'问题类别',alias:'问题类别',type:'String'},
+				{name:'所属行业',alias:'所属行业',type:'String'},
+				{name:'办理方式',alias:'办理方式',type:'String'}]);
+			
+			
+			[Bindable]
+			private var queryResultAC:ArrayCollection = new ArrayCollection();
+			
+			private function queryFeaturesGraphical(geom:Geometry):void
+			{
+				//				var queryLayer:FeatureLayer= new FeatureLayer("http://localhost/ArcGIS/rest/services/XinFangDian/MapServer/1");
+				var query:Query = new Query();
+				query.geometry = geom;
+				query.outFields=["*"];
+				query.returnGeometry=true;
+				//				queryLayer.outFields=["*"];
+				query.spatialRelationship = Query.SPATIAL_REL_INTERSECTS;
+				//				queryLayer.queryFeatures(query, new AsyncResponder(onResult, onFault));
+				
+				
+				//为了显示busy，改用querytask
+				var queryTask:QueryTask= new QueryTask;
+				queryTask.url="http://localhost:6080/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1";
+				queryTask.showBusyCursor=true;
+				queryTask.execute(query,new AsyncResponder(onResult,onFault));
+				function onResult(featureSet:FeatureSet, token:XMLList = null):void
+				{
+					try
+					{
+						queryResultAC = createQueryResults(featureSet);
+						if (queryResultAC.length >0)
+						{
+							currentState="queryResult";
+							//做连线
+							drawLine();
+						}
+						else
+						{
+							currentState="queryResult";
+						}
+						//							currentState="queryResult";
+					}
+					catch (error:Error)
+					{
+						
+					}
+				}
+				
+				function onFault(info:Object, token:Object = null):void
+				{
+				}
+			}
+			
+			
+			private var resultLineSymbol:Symbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, 0xFF0000, 1, 1.5);
+			private function drawLine():void
+			{
+				var fromPt:MapPoint=centerPoint as MapPoint;
+				for(var i:int=0; i<queryResultAC.length; i++)
+				{
+					var toPt:MapPoint =queryResultAC[i].geometry as MapPoint;
+					var currentPath:Array = [ fromPt, toPt ];
+					var polyline:Polyline = new Polyline( [currentPath] );
+					var lineGraphic:Graphic=new Graphic();
+					lineGraphic.geometry=polyline;
+					lineGraphic.symbol=resultLineSymbol;
+					graphicsLayer.add(lineGraphic);
+				}
+			}
+
+			
+			private function createQueryResults(featureSet:FeatureSet):ArrayCollection
+			{
+				var result:ArrayCollection = new ArrayCollection();
+				var listArray:ArrayCollection = new ArrayCollection();
+				for each (var graphic:Graphic in featureSet.features)
+				{
+					var obj:Object=new Object();
+					var detailArray:ArrayCollection=new ArrayCollection;
+					for(var i:int=0; i<queryFields.length; i++)
+					{
+						if (queryFields[i].name in graphic.attributes)
+						{
+							var fieldName:String=queryFields[i].name;
+							var fieldLabel:String=queryFields[i].alias;
+							var fieldType:String=queryFields[i].type;
+							var value:String="";
+							if(graphic.attributes[fieldName] != null && graphic.attributes[fieldName] != "")
+							{
+								if(fieldType == "Date")
+								{
+									value = dateFormat.format(graphic.attributes[fieldName]);
+								}
+								else
+								{
+									value = graphic.attributes[fieldName];
+								}
+								obj[fieldName]=value;
+							}
+							var obj2:Object=
+								{
+									name:fieldLabel,//用alias，这个是显示在表格中的名称
+									label:fieldName,//用于表格中修改属性时作为字段名
+									value:value
+								}
+							detailArray.addItem(obj2);//详细列表数组
+						}
+					}
+					//					graphic.symbol = returnGeoSymbol(graphic.geometry);
+					//					var point:MapPoint=getGeomCenter(graphic);
+					//					if(point && !isNaN(point.x) && !isNaN(point.y))
+					//					{
+					//						graphicsLayer.add(graphic);
+					//					}
+					obj.graphic= graphic;
+					obj.geometry=graphic.geometry;
+					obj.detailArray=detailArray;//重新组织detailArray
+					listArray.addItem(obj);
+				}
+				return listArray;
+			}
+			
+
 			
 			private function moveGraphic_clickHandler( event:MouseEvent ):void
 			{
@@ -619,10 +853,10 @@
 						var dataObj:Object = 
 							{ 
 								type: buttonObj.type, 
-								id: button.id, 
-								desc: graphic.attributes.desc,
-								x: mapPoint.x, 
-								y: mapPoint.y 
+									id: button.id, 
+									desc: graphic.attributes.desc,
+									x: mapPoint.x, 
+									y: mapPoint.y 
 							};
 						var dataString:String = JSON.stringify( dataObj );
 						AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
@@ -659,7 +893,7 @@
 							var dataObj:Object = 
 								{ 
 									type: buttonObj.type, 
-									id: button.id
+										id: button.id
 								};
 							var dataString:String = JSON.stringify( dataObj );
 							AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
@@ -673,7 +907,7 @@
 							dataObj = 
 								{
 									type: buttonObj.type,
-									points: [ { id: button.id } ]
+										points: [ { id: button.id } ]
 								};
 							dataString = JSON.stringify( dataObj );
 							AppEvent.dispatch( AppEvent.DELETE_POINTS_BY_MAP, dataString );
@@ -682,80 +916,165 @@
 					}
 				}
 			}
+			
+			protected function back_clickHandler(event:MouseEvent):void
+			{
+				currentState	="normal";			
+			}
+			
+			protected function cbBox_changeHandler(event:IndexChangeEvent):void
+			{
+				if(event.newIndex > 0)
+				{
+					showBufferDdistric();
+				}
+				else
+				{
+					graphicsLayer.clear();
+				}
+			}
+			
+			private var centerPoint:MapPoint;
+			protected function showBufferDdistric():void
+			{
+				centerPoint = MapServiceUtil.getGeomCenter( hostComponent.graphic );
+				var radius:Number= Number(cbBox.selectedItem.index);
+				var arr:Array = new Array();
+				var dis:Array = new Array();
+				arr[0] = centerPoint;
+				dis[0] = radius;
+				buffer(arr, dis);//spatialReference如何获得	
+			}
+			
+			protected function sparkskin1_showHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				var a:int = 1;
+			}
+			
+			protected function sparkskin1_hideHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				var a:int = 1;
+			}
+			
 		]]>
-    </fx:Script>
-
-    <fx:Declarations>
-        <!--- @private -->
-        <s:RichEditableText id="titleText"
-                            width="100%"
-                            editable="false"
-                            fontWeight="bold"
-							fontSize="16"/>
-
-        <!--- @private -->
-        <s:Line id="titleLine" width="100%">
-            <s:stroke>
-                <!--- @private -->
-                <s:SolidColorStroke id="titleLineSymbol"
-                                    color="#BBBBBB"
-                                    weight="1"/>
-            </s:stroke>
-        </s:Line>
-
-        <!--- @private -->
-        <s:RichEditableText id="descriptionText"
-                            width="100%"
-                            editable="false"/>
-
-        <!--- @private -->
-        <s:Group id="keyValueGroup" width="100%">
-            <s:layout>
-                <!--- @private -->
-                <s:ConstraintLayout id="keyValueGroupLayout">
-                    <s:constraintColumns>
-                        <!--- @private -->
-                        <s:ConstraintColumn id="col1" maxWidth="100"/>
-                        <!--- @private -->
-                        <s:ConstraintColumn id="col2" width="100%"/>
-                    </s:constraintColumns>
-                </s:ConstraintLayout>
-            </s:layout>
-        </s:Group>
-
-        <!--- @private -->
-        <supportClasses:PopUpMediaBrowser id="mediaBrowser"
-                                          width="100%"
-                                          skinClass="com.esri.ags.skins.supportClasses.PopUpMediaBrowserSkin"/>
-
-        <!--- @private -->
-        <esri:AttachmentInspector id="attachmentInspector"
-                                  width="100%"
-                                  addEnabled="false"
-                                  deleteEnabled="false"/>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<mx:DateFormatter id="dateFormat" formatString="YYYY-MM-DD" />		
+		
+		<esri:GeometryService  id="gService"  showBusyCursor="false"
+							   bufferComplete="gService_bufferCompleteHandler(event)"
+							   url="http://localhost:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
 		
 		<!--- @private -->
-        <s:Button id="zoomToButton"
-                  click="zoomToButton_clickHandler(event)"
-                  fontWeight="bold"
-                  label="{resourceManager.getString('ESRIMessages', 'zoomLabel')}"/>
-
-        <!--- @private -->
-        <s:ToggleButton id="showRelatedRecords"
-                        change="showRelatedRecords_changeHandler(event)"
-                        fontWeight="bold"
-                        label="{resourceManager.getString('ESRIMessages', 'showRelatedRecordsLabel')}"/>
-    </fx:Declarations>
-
+		<s:RichEditableText id="titleText"
+							width="100%"
+							editable="false"
+							fontWeight="bold"
+							fontSize="16"/>
+		
+		<!--- @private -->
+		<s:Line id="titleLine" width="100%">
+			<s:stroke>
+				<!--- @private -->
+				<s:SolidColorStroke id="titleLineSymbol"
+									color="#BBBBBB"
+									weight="1"/>
+			</s:stroke>
+		</s:Line>
+		
+		<!--- @private -->
+		<s:RichEditableText id="descriptionText"
+							width="100%"
+							editable="false"/>
+		
+		<!--- @private -->
+		<s:Group id="keyValueGroup" width="100%">
+			<s:layout>
+				<!--- @private -->
+				<s:ConstraintLayout id="keyValueGroupLayout">
+					<s:constraintColumns>
+						<!--- @private -->
+						<s:ConstraintColumn id="col1" maxWidth="100"/>
+						<!--- @private -->
+						<s:ConstraintColumn id="col2" width="100%"/>
+					</s:constraintColumns>
+				</s:ConstraintLayout>
+			</s:layout>
+		</s:Group>
+		
+		<!--- @private -->
+		<supportClasses:PopUpMediaBrowser id="mediaBrowser"
+										  width="100%"
+										  skinClass="com.esri.ags.skins.supportClasses.PopUpMediaBrowserSkin"/>
+		
+		<!--- @private -->
+		<esri:AttachmentInspector id="attachmentInspector"
+								  width="100%"
+								  addEnabled="false"
+								  deleteEnabled="false"/>
+		
+		<!--- @private -->
+		<s:Button id="zoomToButton"
+				  click="zoomToButton_clickHandler(event)"
+				  fontWeight="bold"
+				  label="{resourceManager.getString('ESRIMessages', 'zoomLabel')}"/>
+		
+		<!--- @private -->
+		<s:ToggleButton id="showRelatedRecords"
+						change="showRelatedRecords_changeHandler(event)"
+						fontWeight="bold"
+						label="{resourceManager.getString('ESRIMessages', 'showRelatedRecordsLabel')}"/>
+		
+		<!--- @private -->
+		<s:Label id="radiusLabel"  verticalAlign="middle" height="25"  text="半径："/>
+		
+		<!--- @private -->
+		<!--s:ComboBox id="cbBox" width="100" labelField="label" dataProvider="{comboData}" selectedIndex="0" alpha="1"   skinClass="cn.seisys.TGISViewer.skins.PopUpRenderer.alphaCombobox" change="cbBox_changeHandler(event)"/-->
+		
+		<s:DropDownList id="cbBox" width="100" height="25" labelField="label" dataProvider="{comboData}" selectedIndex="0" change="cbBox_changeHandler(event)"/>
+		
+		<!--- @private -->
+		<s:DataGrid id="QueryResultDG"  width="100%" height="100%"  dataProvider="{queryResultAC}"   >
+			<s:columns>
+				<s:ArrayList>
+					<!--s:GridColumn  headerText="信访编号"   dataField="信访编号"    /-->
+					<s:GridColumn  headerText="信访人"   dataField="信访人"    />
+					<s:GridColumn  headerText="信访方式"   dataField="信访方式"    />
+					<s:GridColumn  headerText="问题类别"   dataField="问题类别"    />
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
+		
+		<!--s:DataGrid id="QueryResultDG"  width="100%" height="100%" columns="{cols}"  dataProvider="{queryResultAC}" >
+		</s:DataGrid-->
+		
+		
+		<!--- @private -->
+		<s:Button id="back"
+				  visible.normal="false"
+				  visible.queryResult="true"
+				  click="back_clickHandler(event)"
+				  label="返回"/>
+		
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="queryResult" />
+	</s:states>
+	
 	<s:VGroup width="100%" height="100%">
-		<s:VGroup id="header"
+		<s:HGroup id="header"
 				  width="100%"
 				  includeInLayout="false"
 				  paddingLeft="5"
 				  paddingRight="5"
 				  visible="false">
 			<!-- elements are added in commitProperties() -->
-		</s:VGroup>
+		</s:HGroup>
 		
 		<s:Line id="headerLine" width="100%" includeInLayout="false" visible="false">
 			<s:stroke>
@@ -764,31 +1083,32 @@
 			</s:stroke>
 		</s:Line>
 		
-		<s:HGroup width="100%" height="100%"
-				  paddingBottom="5"
-				  paddingLeft="5"
-				  paddingRight="5"
-				  paddingTop="5">
-			<s:Scroller width="100%" height="100%">
+		<s:Group width="100%" height="100%">
+			<s:Scroller width="100%" height="100%" visible.normal="true" visible.queryResult="false">
 				<!--- @private -->
-				<s:VGroup id="vGroup">
+				<s:VGroup id="vGroup" > <!--改这个容器的可见性-->
 					<!-- elements are added in commitProperties() -->
 				</s:VGroup>
 			</s:Scroller>
+			<s:Scroller width="100%" height="100%" visible.normal="false" visible.queryResult="true">
+				<s:VGroup id="resultVGroup" > <!--改这个容器的可见性-->
+				</s:VGroup>
+			</s:Scroller>
+			
 			<esri:RelationshipInspector id="relationshipInspector"
 										width="100%" height="100%"
 										includeInLayout="false"
 										visible="false"/>
-		</s:HGroup>
+		</s:Group>
 		
-		<s:Line id="footerLine" width="100%" includeInLayout="false" visible="false">
+		<s:Line id="footerLine" width="100%" includeInLayout="false" visible="false"  visible.queryResult="false">   <!--改这个容器的可见性-->
 			<s:stroke>
 				<s:SolidColorStroke color="{getStyle( 'selectionColor' )}"
 									weight="1"/>
 			</s:stroke>
 		</s:Line>
 		
-		<s:HGroup id="footer" paddingBottom="5">
+		<s:HGroup id="footer" paddingBottom="5" visible.queryResult="false"> <!--改这个容器的可见性-->
 			<!-- elements are added in commitProperties() -->
 		</s:HGroup>
 	</s:VGroup>	

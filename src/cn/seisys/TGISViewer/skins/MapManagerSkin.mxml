@@ -213,6 +213,7 @@
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"police","points":[{"id":1692,"x":112.9894,"y":28.185,"fields":{"policeSn":"X20433","policeName":"曹积","departmentName":"镜湖大队","dutyName":"民警","pdaCode":"","interphoneCode":"","acquisitionTime":"2014-09-01 00:00:01","gpsState":"在岗","distance":"0","phoneNum":"","m350Sn":""}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeSentry","points":[{"id":37,"x":"118.410437","y":"31.34109","fields":{"spotId":37,"spotName":"16点岗点","spotType":"一级岗","deptName":"镜湖大队","taskPeriod":"晚班上午【09:30~12:00】","colorState":"1","policeName":"","policeId":"","policeState":""}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"policeCar","points":[{"id":"17","x":118.4132,"y":31.3403,"fields":{"policeCarId":"17","policeCarSn":"贵B 150","deptName":"三山大队","acquisitionTime":"2014-10-14 00:00:00.0"}}]}' );
+//				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"QingBaoBan","points":[{"id":"17","x":118.4152,"y":31.3423,"fields":{"qbbDesc":"17","qbbState":"通信连接"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"ZhongDianCheLiang","points":[{"id":"17","x":118.3883,"y":31.3308,"fields":{"hphm":"皖A112345","cllx":"危化品车","csdw":"上海电科智能系统股份有限公司","gpsno":"wh2032342","clztColor":"<font color=0x6AAE59>异常</font>","clzt":"异常"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"YingJiZiYuan","points":[{"id":"2","x":"118.410674890","y":"31.323583666534","fields":{"ckmc":"1","ckdz":"1","ssdw":"上海电科智能系统股份有限公司","zrr":"1","lxdh":"1"}},{"id":"3","x":"118.410674890","y":"31.323383666534","fields":{"ckmc":"112","ckdz":"2","ssdw":"上海电科前端科技有限公司","zrr":"12","lxdh":"212"}},{"id":"4","x":"118.410674890","y":"31.323183666534","fields":{"ckmc":"侧事故","ckdz":"234","ssdw":"上海电科智能系统股份有限公司","zrr":"随风倒高峰","lxdh":"342"}},{"id":"5","x":"118.410674890","y":"31.323684666534","fields":{"ckmc":"代购费","ckdz":"豆腐干","ssdw":"上海电科智能系统股份有限公司","zrr":"粉底霜","lxdh":"25332"}},{"id":"6","x":"118.410674890","y":"31.323483666534","fields":{"ckmc":"aa","ckdz":"aa","ssdw":"上海电科前端科技有限公司","zrr":"aa","lxdh":"aa"}}]}' );
 				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
@@ -225,8 +226,8 @@
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"SheXiangJi","points":[{"id":"CAM01","x":"110.407656","y":"35.355133","fields":{"cameraDesc":"CAM01","cameraIp":"52.123.16.29","cameraState":"连接"}},{"id":"CAM02","x":"118.407656","y":"31.355133","fields":{"cameraDesc":"CAM02","cameraIp":"52.123.16.71","cameraState":"连接"}},{"id":"CAM03","x":null,"y":null,"fields":{"cameraDesc":"CAM03","cameraIp":"52.123.16.157","cameraState":"连接"}},{"id":"CAM04","x":null,"y":null,"fields":{"cameraDesc":"CAM04","cameraIp":"52.123.20.170","cameraState":"连接"}},{"id":"CAM05","x":null,"y":null,"fields":{"cameraDesc":"CAM05","cameraIp":"52.123.34.108","cameraState":"连接"}},{"id":"CAM06","x":null,"y":null,"fields":{"cameraDesc":"CAM06","cameraIp":"52.123.34.102","cameraState":"连接"}},{"id":"CAM07","x":null,"y":null,"fields":{"cameraDesc":"CAM07","cameraIp":"52.123.20.175","cameraState":"连接"}},{"id":"CAM08","x":null,"y":null,"fields":{"cameraDesc":"CAM08","cameraIp":"52.123.20.176","cameraState":"连接"}},{"id":"CAM09","x":null,"y":null,"fields":{"cameraDesc":"CAM09","cameraIp":"52.123.20.177","cameraState":"连接"}},{"id":"CAM10","x":null,"y":null,"fields":{"cameraDesc":"CAM10","cameraIp":"52.123.20.178","cameraState":"连接"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"KaKou","points":[{"id":"KK001","x":118.39563496200003 ,"y":31.342197578000082 ,"fields":{"desc":"坦克山路(天网)"}}]}' );
 //				AppEvent.dispatch( AppEvent.WIDGET_CLOSE, "首页菜单" );
-				AppEvent.dispatch( AppEvent.OPEN_MENU, "稽查布控菜单" );
-				AppEvent.dispatch( AppEvent.WIDGET_RUN, "稽查布控菜单" );
+//				AppEvent.dispatch( AppEvent.OPEN_MENU, "稽查布控菜单" );
+//				AppEvent.dispatch( AppEvent.WIDGET_RUN, "稽查布控菜单" );
 //				AppEvent.dispatch( AppEvent.WIDGET_RUN, "添加点位" );
 //				AppEvent.dispatch( AppEvent.ADD_POINTS, '{"type":"JingQing","points":[{"x":118.402174,"y":31.354151,"id":"JingQing111","fields":{"taskSourceId":"111","callPoliceTime":"222","callPolicePhone":"333","callPolicePerson":"444","occurPlace":"555","content":"666666666666666666666","canView":"true","canEdit":"true","canDelete":"true","canLocate":"true","canDispatch":"true"}}]}' );
 //				AppEvent.dispatch( AppEvent.ADD_CAR_TRACK, '{"plateNumber":"皖AP1649","kkPoints":[{"deviceId":"KK18","deviceDesc":"人民路-凤池路","passTime":"2014-05-16 09:18:00","picUrl":""},{"deviceId":"KK17","deviceDesc":"钟山凉都路口","passTime":"2014-05-16 21:18:00","picUrl":""},{"deviceId":"KK20","deviceDesc":"钟山凉都路口","passTime":"2015-01-31 10:29:24","picUrl":""},{"deviceId":"KK21","deviceDesc":"人民路西段入城西向东","passTime":"2015-01-31 10:34:23","picUrl":""},{"deviceId":"KK22","deviceDesc":"人民路西段入城西向东","passTime":"2015-01-31 10:38:07","picUrl":""}]}' );
@@ -263,6 +264,8 @@
 						visible:true
 					} 
 				);*/
+				
+				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "信访点", id: "3100002014W0000027" } );
 			}
 			
 			protected function btnTest2_clickHandler(event:MouseEvent):void
@@ -392,7 +395,7 @@
 				  left.resized="{hostComponent.mapLeft}" right.resized="{hostComponent.mapRight}"
 				  top.resized="{hostComponent.mapTop}" bottom.resized="{hostComponent.mapBottom}"/>
     </s:Group>
-	<s:HGroup visible="true" right="10" bottom="10">
+	<s:HGroup visible="false" right="10" bottom="10">
 		<s:Button id="btnTest1" label="test1" click="btnTest1_clickHandler(event)"/>
 		<s:Button id="btnTest2" label="test2" click="btnTest2_clickHandler(event)"/>
 		<s:Button id="btnTest3" label="test3" click="btnTest3_clickHandler(event)"/>

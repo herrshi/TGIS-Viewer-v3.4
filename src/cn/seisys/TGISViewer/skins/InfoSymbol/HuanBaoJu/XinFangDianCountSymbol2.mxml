@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  width="100" height="100"
+		  implements="mx.core.IDataRenderer" 
+		  fontFamily="微软雅黑">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.charts.events.ChartItemEvent;
+			import mx.charts.series.items.PieSeriesItem;
+			import mx.collections.ArrayCollection;
+			import mx.effects.easing.Elastic;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			private var _pieDataAC:ArrayCollection;
+			
+			private var _data:Object;
+			
+			[Bindable]
+			// implement IDataRenderer
+			public function get data():Object
+			{
+				return _data;
+			}
+			
+			public function set data(value:Object):void
+			{
+				_data = value;
+				
+				_pieDataAC = _data.countAC;
+				
+				//计算总数
+				var total:int = 0;
+				for each ( var countObj:Object in _pieDataAC )
+				{
+					total += countObj.count;
+				}
+				lblName.text = _data.BlockName;
+				lblCount.text = total.toString();
+			}
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+			}
+			
+			protected function pieChart_itemClickHandler(event:ChartItemEvent):void
+			{
+				var item:PieSeriesItem = event.hitData.chartItem as PieSeriesItem;
+				var degrees:Number = radiansToDegrees(item.startAngle);
+				var arr:Array = [];
+				arr[item.index] = 0.2;
+				pieSeries.perWedgeExplodeRadius = arr;
+				pieSeries.startAngle -= degrees;
+				
+				_pieDataAC.refresh();
+			}
+			
+			private function radiansToDegrees(radians:Number):Number 
+			{
+				return radians * (180 / Math.PI);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	
+	<mx:PieChart id="pieChart" 
+				 width="100%" height="100%" 
+				 dataProvider="{_pieDataAC}" 
+				 showDataTips="true" 
+				 innerRadius="0.5"
+				 itemClick="pieChart_itemClickHandler(event)">
+		<mx:series>
+			<mx:PieSeries id="pieSeries" 
+						  field="count" 
+						  nameField="name">
+				<mx:showDataEffect>
+					<mx:SeriesInterpolate duration="1500"
+										  easingFunction="{Elastic.easeOut}" />
+				</mx:showDataEffect>
+			</mx:PieSeries>
+		</mx:series>
+	</mx:PieChart>
+		
+	<s:Label id="lblName" 
+			 alpha="0.8"
+			 color="0xffffff" fontWeight="bold" 
+			 horizontalCenter="0" verticalCenter="-8">
+		<s:filters>
+			<s:GlowFilter color="0x000000" 
+						  alpha="0.6" 
+						  blurX="4" blurY="4" strength="5"/>
+		</s:filters>
+	</s:Label>
+	
+	<s:Label id="lblCount"
+			 alpha="0.8"
+			 color="0xffffff" fontWeight="bold"
+			 horizontalCenter="0" verticalCenter="8">
+		<s:filters>
+			<s:GlowFilter color="0x000000" 
+						  alpha="0.6" 
+						  blurX="4" blurY="4" strength="5"/>
+		</s:filters>
+	</s:Label>
+</s:Group>

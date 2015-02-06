@@ -3,11 +3,30 @@
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   xmlns:mx="library://ns.adobe.com/flex/mx" 
 					   xmlns:TGISViewer="cn.seisys.TGISViewer.*" 
+					   initialize="basewidget_initializeHandler()"
 					   layout="absolute">
 	
 	<fx:Script>
 		<![CDATA[
 			import cn.seisys.TGISViewer.AppEvent;
+			import mx.core.FlexGlobals;
+			
+			[Bindable]
+			private var parentFlex:Sprite = Sprite(FlexGlobals.topLevelApplication);
+			
+			private function basewidget_initializeHandler():void
+			{
+				if (isPartOfPanel) // if widget is part of "left", "right" or "bottom" panel
+				{
+					this.percentWidth = this.percentHeight = 100;
+					wTemplate.percentWidth = wTemplate.percentHeight = 100;
+				}
+				else
+				{
+					wTemplate.width = wTemplate.minWidth = 220;
+					wTemplate.height = wTemplate.minHeight = parentFlex.height - 570;
+				}
+			}
 			
 			protected function lblWuRanYuan_clickHandler(event:MouseEvent):void
 			{
@@ -84,10 +103,9 @@
 		]]>
 	</fx:Script>
 	
-	
-	<TGISViewer:WidgetTemplateLargeIcon id="wTemplate" 
-										width="200" height="200">
-		<s:VGroup width="100%" 
+	<!--widgetState="minimized"-->
+	<TGISViewer:WidgetTemplateLargeIcon id="wTemplate" width="220" height="{parentFlex.height - 570}" enableCloseButton="false" enableDraging="true" draggable="true">
+		<s:VGroup width="100%"  height="100%"
 				  paddingTop="20" gap="0">
 			<s:HGroup width="100%"
 					  paddingLeft="10" paddingRight="10" 

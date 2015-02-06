@@ -725,9 +725,23 @@ public class AppEvent extends Event
 	 public static const HUANBAOJU_DISTRICT_COUNT:String = "HuanBaoJuDistrictCount";
 	 
 	 /**
-	 * 每个区的分类信访数量
-	 * */
+	  * 每个区的分类信访数量
+	  * */
 	 public static const HUANBAOJU_DISTRICT_TYPE_COUNT:String = "HuanBaoJuDistrictTypeCount";
+	 
+	 public static const HUANBAOJU_DISTRICT_SELECTED:String = "HuanBaoJuSelectedDistrict";
+	 
+	 /**
+	 * 每个街道的信访总数量
+	 * */
+	 public static const HUANBAOJU_BLOCK_COUNT:String = "HuanBaoJuBlockCount";
+	 
+	 /**
+	 * 每个街道的分类信访数量
+	 * */
+	 public static const HUANBAOJU_BLOCK_TYPE_COUNT:String = "HuanBaoJuBlockTypeCount";
+	 
+	 public static const HUANBAOJU_BLOCK_SELECTED:String = "HuanBaoJuSelectedBlock";
 	 
     //--------------------------------------------------------------------------
     //

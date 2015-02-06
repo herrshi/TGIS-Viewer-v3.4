@@ -8,11 +8,10 @@
 					   width="100%" height="100%" 
 					   creationComplete="this_creationCompleteHandler(event)" 
 					   preinitialize="this_preinitializeHandler(event)" 
-					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" >
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)"
+					   currentState="district">
 	<fx:Script>
 		<![CDATA[
-			import com.esri.ags.Graphic;
-			
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
@@ -33,24 +32,37 @@
 			
 			[Bindable] private var _districtCountAC:ArrayCollection;
 			
+			[Bindable] private var _blockCountAC:ArrayCollection;
+			
 			/**
 			 * 每个区信访点分类统计
 			 * */
 			private var _districtTypeCountTable:Hashtable;
+			
+			private var _blockTypeCountTable:Hashtable;
 			
 			/**
 			 * 每个区信访点分月统计
 			 * */
 			private var _districtMonthCountTable:Hashtable;
 			
+			private var _blockMonthCountTable:Hashtable;
+			
 			private var _selectedDistrictName:String;
+			
+			private var _selectedBlockName:String;
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
 				_districtMonthCountTable = new Hashtable();
 				
-				AppEvent.addListener( AppEvent.HUANBAOJU_DISTRICT_COUNT, appevent_districtCountHandler );
-				AppEvent.addListener( AppEvent.HUANBAOJU_DISTRICT_TYPE_COUNT, appevent_districtTypeCountHandler );
+				_blockMonthCountTable = new Hashtable();
+				
+				AppEvent.addListener( AppEvent.HUANBAOJU_DISTRICT_COUNT, appevent_districtCountHandler );//按区县进行分类，统计出所有污染源的比例
+				AppEvent.addListener( AppEvent.HUANBAOJU_DISTRICT_TYPE_COUNT, appevent_districtTypeCountHandler );//按区县进行分类，统计出指定污染源的比例
+				
+				AppEvent.addListener( AppEvent.HUANBAOJU_BLOCK_COUNT, appevent_blockCountHandler );//按街道进行分类，统计出所有污染源的比例
+				AppEvent.addListener( AppEvent.HUANBAOJU_BLOCK_TYPE_COUNT, appevent_blockTypeCountHandler );//按街道进行分类，统计出指定污染源的比例
 			}
 			
 			/**
@@ -106,8 +118,19 @@
 				}
 			}
 			
+			private function appevent_blockCountHandler( event:AppEvent ):void
+			{
+				_blockCountAC = event.data as ArrayCollection;
+				//初始化时选中数量最多的一个区
+				if ( !_selectedBlockName )
+				{
+					_selectedBlockName = _blockCountAC.getItemAt( 0 ).blockName;
+				}
+			}
+			
 			private function appevent_districtTypeCountHandler( event:AppEvent ):void
 			{
+				this.currentState = "district";
 				_districtTypeCountTable = event.data as Hashtable;
 				if ( !_selectedDistrictName )
 				{
@@ -116,11 +139,33 @@
 				drawCharts();
 			}
 			
+			private function appevent_blockTypeCountHandler( event:AppEvent ):void
+			{
+				this.currentState = "block";
+				_blockTypeCountTable = event.data as Hashtable;
+				if ( !_selectedBlockName )
+				{
+					_selectedBlockName = _blockCountAC.getItemAt( 0 ).blockName;
+				}
+				drawCharts2();
+			}
+			
 			protected function districtCountDG_itemClickHandler(event:Event):void
 			{
 //				var districtCount:DistrictCount = ItemRenderer( event.target ).data as DistrictCount;
 				_selectedDistrictName = ItemRenderer( event.target ).data.districtName;
 				drawCharts();
+				
+				AppEvent.dispatch( AppEvent.HUANBAOJU_DISTRICT_SELECTED, _selectedDistrictName );
+			}
+			
+			protected function blockCountDG_itemClickHandler(event:Event):void
+			{
+				//				var districtCount:DistrictCount = ItemRenderer( event.target ).data as DistrictCount;
+				_selectedBlockName = ItemRenderer( event.target ).data.blockName;
+				drawCharts2();
+				
+				AppEvent.dispatch( AppEvent.HUANBAOJU_BLOCK_SELECTED, _selectedBlockName );
 			}
 			
 			private function drawCharts():void
@@ -134,7 +179,22 @@
 				if ( _districtMonthCountTable.containsKey( _selectedDistrictName ) )
 				{
 					var monthCountAC:ArrayCollection = _districtMonthCountTable.find( _selectedDistrictName );
-					monthCountChart.dataProvider = monthCountAC
+					monthCountChart.dataProvider = monthCountAC;
+				}
+			}
+			
+			private function drawCharts2():void
+			{
+				if ( _blockTypeCountTable.containsKey( _selectedBlockName ) )
+				{
+					var typeCountAC:ArrayCollection = _blockTypeCountTable.find( _selectedBlockName );
+					typeCountChart.dataProvider = typeCountAC;
+				}
+				
+				if ( _blockMonthCountTable.containsKey( _selectedBlockName ) )
+				{
+					var monthCountAC:ArrayCollection = _blockMonthCountTable.find( _selectedBlockName );
+					monthCountChart.dataProvider = monthCountAC;
 				}
 			}
 		]]>
@@ -148,6 +208,11 @@
 		<mx:SolidColorStroke id="s1" color="0x339de7" weight="2"/>
 	</fx:Declarations>
 	
+	<TGISViewer:states>
+		<s:State name="district"/>
+		<s:State name="block"/>
+	</TGISViewer:states>
+	
 	<s:Image id="contentBackground" 
 			 width="100%" height="100%" 
 			 fillMode="scale" scaleMode="stretch"
@@ -155,7 +220,7 @@
 	
 	<s:VGroup width="100%" height="100%" 
 			  horizontalAlign="center">
-		<skins:DistrictCountDataGroup id="districtCountDG" 
+		<skins:DistrictCountDataGroup id="districtCountDG" includeIn="district"
 									  dataProvider="{_districtCountAC}" 
 									  itemClick="districtCountDG_itemClickHandler(event)">
 			<skins:layout>
@@ -163,44 +228,65 @@
 			</skins:layout>
 		</skins:DistrictCountDataGroup>
 		
+		<skins:BlockCountDataGroup id="blockCountDG" includeIn="block"
+									  dataProvider="{_blockCountAC}" 
+									  itemClick="blockCountDG_itemClickHandler(event)">
+			<skins:layout>
+				<s:HorizontalLayout paddingLeft="5" paddingTop="5"/>
+			</skins:layout>
+		</skins:BlockCountDataGroup>
+		
 		<s:HGroup width="100%" height="100%">
-			<mx:ColumnChart id="typeCountChart" 
-							width="50%" height="100%"
-							showDataTips="true" 
-							fontSize="16">
-				<!--<mx:filters>
+			<s:Group width="50%" height="100%">
+				<s:Label text="信访数量分类统计" 
+						 top="10" horizontalCenter="0" 
+						 fontSize="16" fontWeight="bold"/>
+				
+				<mx:ColumnChart id="typeCountChart" 
+								width="100%" height="100%"
+								showDataTips="true" 
+								fontSize="16">
+					<!--<mx:filters>
 					<s:DropShadowFilter 
-						distance="10" 
-						color="0x666666"
-						alpha=".8"/>
-				</mx:filters>-->
-				
-				<mx:horizontalAxis>
-					<mx:CategoryAxis categoryField="name"/>
-				</mx:horizontalAxis>
-				
-				<mx:series>
-					<mx:ColumnSeries xField="name" yField="count" 
-									 showDataEffect="{interpolateIn}" 
-									 stroke="{s1}" 
-									 fill="{sc1}" />
-				</mx:series>
-			</mx:ColumnChart>
+					distance="10" 
+					color="0x666666"
+					alpha=".8"/>
+					</mx:filters>-->
+					
+					<mx:horizontalAxis>
+						<mx:CategoryAxis categoryField="name"/>
+					</mx:horizontalAxis>
+					
+					<mx:series>
+						<mx:ColumnSeries xField="name" yField="count" 
+										 showDataEffect="{interpolateIn}" 
+										 stroke="{s1}" 
+										 fill="{sc1}" />
+					</mx:series>
+				</mx:ColumnChart>
+			</s:Group>
 			
-			<mx:AreaChart id="monthCountChart"
-						  width="50%" height="100%"
-						  showDataTips="true" 
-						  fontSize="16">
-				<mx:horizontalAxis>
-					<mx:CategoryAxis categoryField="month"/>
-				</mx:horizontalAxis>
+			<s:Group width="50%" height="100%">
+				<s:Label text="信访数量时间分布" 
+						 top="10" horizontalCenter="0" 
+						 fontSize="16" fontWeight="bold"/>
 				
-				<mx:series>
-					<mx:AreaSeries yField="count" 
-								   areaStroke="{s1}" 
-								   areaFill="{sc1}"/>
-				</mx:series>
-			</mx:AreaChart>
+				<mx:AreaChart id="monthCountChart"
+							  width="100%" height="100%"
+							  showDataTips="true" 
+							  fontSize="16">
+					<mx:horizontalAxis>
+						<mx:CategoryAxis categoryField="month"/>
+					</mx:horizontalAxis>
+					
+					<mx:series>
+						<mx:AreaSeries yField="count" 
+									   areaStroke="{s1}" 
+									   areaFill="{sc1}"/>
+					</mx:series>
+				</mx:AreaChart>
+			</s:Group>
+			
 		</s:HGroup>
 	</s:VGroup>
 	

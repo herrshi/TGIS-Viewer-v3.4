@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<configuration>
+	<needzoom>false</needzoom>
+	<layers>
+		<layer>
+			<type>信访点</type>
+			<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1</url>
+			<idfield>信访编号</idfield>
+			<zoomscale>12000</zoomscale>
+			<popup>
+				<title>{问题类别}</title>
+				<fields>
+					<field name="问题类别" />
+					<field name="信访人" alias="信访人：" visible="true" />
+					<field name="人数" alias="人数：" visible="true" />
+					<field name="信访方式" alias="信访方式：" visible="true" />
+					<field name="信访人地址" alias="信访人地址：" visible="true" />
+					<field name="问题类别" alias="问题类别：" visible="true" />
+					<field name="办理方式" alias="办理方式：" visible="true" />
+					<field name="DistrictName" alias="所属区县：" visible="true" />
+					<field name="BlockName" alias="所属街道：" visible="true" />
+				</fields>
+				<showzoomtobutton>false</showzoomtobutton>
+			</popup>
+		</layer>
+	</layers>
+</configuration>

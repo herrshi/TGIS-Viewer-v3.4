@@ -216,20 +216,23 @@
 					map.centerAt( centerPoint );
 					
 					//缩放
-					switch( graphic.geometry.type )
+					if ( _needZoom )
 					{
-						case Geometry.MAPPOINT:
+						switch( graphic.geometry.type )
 						{
-							map.scale = layerConfigObj.zoomScale;
-							break;
-						}
-							
-						case Geometry.POLYGON:
-						case Geometry.EXTENT:
-						case Geometry.POLYLINE:
-						{
-							map.extent = graphic.geometry.extent;
-							break;
+							case Geometry.MAPPOINT:
+							{
+								map.scale = layerConfigObj.zoomScale;
+								break;
+							}
+								
+							case Geometry.POLYGON:
+							case Geometry.EXTENT:
+							case Geometry.POLYLINE:
+							{
+								map.extent = graphic.geometry.extent;
+								break;
+							}
 						}
 					}
 					

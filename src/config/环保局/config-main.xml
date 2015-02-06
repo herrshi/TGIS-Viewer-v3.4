@@ -8,7 +8,7 @@
 		<font name="微软雅黑" size="14" />
 	</style>
 
-	<arcgisserverip>localhost:6080</arcgisserverip>
+	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip>
 
 <!-- 	<geometryservice url="http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/Geometry/GeometryServer"/> -->
 <!-- 	<geometryservice url="http://localhost:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer"/> -->
@@ -50,30 +50,86 @@
 <!-- 			<layer label="标注线" type="dynamic" visible="true"  -->
 <!-- 				   url="http://{serverip}/arcgis/rest/services/HuanBaoJu/LabelLine/MapServer"/> -->
 			
-<!-- 			<layer label="插值图" type="dynamic" visible="false" alpha="0.6"  -->
-<!-- 				   url="http://{serverip}/arcgis/rest/services/shanghai/shanghai_idw/MapServer"/> -->
+			<layer label="插值图" type="dynamic" visible="false" alpha="0.6" 
+				   url="http://localhost:6080/arcgis/rest/services/HuanBaoJu/IDW/MapServer"/>
+			
+			<layer label="噪声功能区" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/HuanBaoJu/GongNengQu/MapServer/0"
+				   popupconfig="popups/HuanBaoJu/PopUp-ZaoShengGongNengQu.xml">
+				<uniquevaluerenderer field="类别">
+					<simplefillsymbol color="0xFFFFFF" alpha="0.8"/>
+					
+					<uniquevalueinfo value="1">
+						<simplefillsymbol color="0x006100" alpha="0.8"/>
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="2">
+						<simplefillsymbol color="0xa4c400" alpha="0.8"/>
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="3">
+						<simplefillsymbol color="0xffbb00" alpha="0.8"/>
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="4">
+						<simplefillsymbol color="0xff2600" alpha="0.8"/>
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="水质功能区" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/HuanBaoJu/GongNengQu/MapServer/1"
+				   popupconfig="popups/HuanBaoJu/PopUp-ShuiZhiGongNengQu.xml">
+				<uniquevaluerenderer field="CLASS">
+					<simplefillsymbol color="0xFFFFFF" alpha="0.8"/>
+					
+					<uniquevalueinfo value="2">
+						<simplefillsymbol color="0x006100" alpha="0.8"/>
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="3">
+						<simplefillsymbol color="0xa4c400" alpha="0.8"/>
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="4">
+						<simplefillsymbol color="0xffbb00" alpha="0.8"/>
+					</uniquevalueinfo>
+					
+					<uniquevalueinfo value="5">
+						<simplefillsymbol color="0xff2600" alpha="0.8"/>
+					</uniquevalueinfo>
+				</uniquevaluerenderer>
+			</layer>
+			
+			<layer label="工业区" type="feature" visible="false" 
+				   url="http://{serverip}/arcgis/rest/services/HuanBaoJu/GongNengQu/MapServer/2"
+				   popupconfig="popups/HuanBaoJu/PopUp-GongYeQu.xml">
+				<simplerenderer>
+					<simplefillsymbol color="0xc9f2d0" alpha="0.8"/>
+				</simplerenderer>
+			</layer>
 			
 		    <layer label="信访点" type="feature" visible="false" 
 				   url="http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1"
 				   popupconfig="popups/HuanBaoJu/PopUp-XinFangDian.xml">
 				
 				<uniquevaluerenderer field="问题类别">
-					<picturemarkersymbol url="assets/images/i_pin_small.png"/>
+					<simplemarkersymbol color="0x000000" size="10"/>
 					
 					<uniquevalueinfo value="大气污染|">
-						<picturemarkersymbol url="assets/images/HuanBaoJu/center/i_dqwr_small.png"/>
+						<simplemarkersymbol color="0xFF0000" size="10"/>
 					</uniquevalueinfo>
 					
 					<uniquevalueinfo value="固体废物|">
-						<picturemarkersymbol url="assets/images/HuanBaoJu/center/i_gtfwwr_small.png"/>
+						<simplemarkersymbol color="0x00FF00" size="10"/>
 					</uniquevalueinfo>
 					
 					<uniquevalueinfo value="水污染|">
-						<picturemarkersymbol url="assets/images/HuanBaoJu/center/i_swr_small.png"/>
+						<simplemarkersymbol color="0x0000FF" size="10"/>
 					</uniquevalueinfo>
 					
 					<uniquevalueinfo value="噪声污染|">
-						<picturemarkersymbol url="assets/images/HuanBaoJu/center/i_zswr_small.png"/>
+						<simplemarkersymbol color="0xFFFF00" size="10"/>
 					</uniquevalueinfo>
 				</uniquevaluerenderer>
 			</layer>
@@ -124,14 +180,14 @@
 				config="widgets/HuanBaoJu/HeaderWidget.xml"
 				url="widgets/HuanBaoJu/HeaderWidget.swf" />
 				
-		<widget label="污染类型" left="80" top="150" preload="open"
-				icon="assets/images/HuanBaoJu/center/b_dqwr.png"
-				config="widgets/HuanBaoJu/PollutionTypeWidget.xml"
-				url="widgets/HuanBaoJu/PollutionTypeWidget.swf"/>
+<!-- 		<widget label="污染类型" left="80" top="150" preload="open" -->
+<!-- 				icon="assets/images/HuanBaoJu/center/b_dqwr.png" -->
+<!-- 				config="widgets/HuanBaoJu/PollutionTypeWidget.xml" -->
+<!-- 				url="widgets/HuanBaoJu/PollutionTypeWidget.swf"/> -->
 				
-		<widget label="图层" right="10" top="500"
-				icon="assets/images/HuanBaoJu/center/b_tc.png"
-				url="widgets/HuanBaoJu/LayerWidget.swf"/>
+<!-- 		<widget label="图层" right="10" top="500" -->
+<!-- 				icon="assets/images/HuanBaoJu/center/b_tc.png" -->
+<!-- 				url="widgets/HuanBaoJu/LayerWidget.swf"/> -->
 		
 		<widget label="区域分布图" preload="open"
 				config="widgets/HuanBaoJu/AreaDistributionWidget.xml"
@@ -139,11 +195,21 @@
 		
 		<widget label="图层过滤" preload="open" 
 				url="widgets/LayerSymbolFilter/LayerSymbolFilterWidget.swf"/>
+		
+		<widget label="设备定位" preload="open"
+				config="widgets/GetDeviceCoordinate/HuanBaoJu/GetDeviceCoordinateWidget.xml"
+				url="widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.swf"/>
 	</widgetcontainer>
 	
 	<widgetcontainer paneltype="bottom" initialstate="collapsed" size="250">
 		<widget label="数量"
 				config="widgets/HuanBaoJu/DistrictCountWidget.xml"
 				url="widgets/HuanBaoJu/DistrictCountWidget.swf"/>
+	</widgetcontainer>
+	
+	<widgetcontainer paneltype="right" initialstate="collapsed" size="250">
+		<widget label="右边栏" 
+				config="widgets/HuanBaoJu/RightPanelWidget.xml"
+				url="widgets/HuanBaoJu/RightPanelWidget.swf"/>
 	</widgetcontainer>
 </configuration>

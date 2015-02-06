@@ -1,0 +1,144 @@
+<?xml version="1.0" ?>
+<configuration>
+	<LayerList>
+		<group name="功能区">
+			<item id="噪声功能区" name="噪声功能区">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="噪声功能区" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="水质功能区" name="水质功能区">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="水质功能区" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="工业区" name="工业区">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="工业区" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+		</group>
+		<group name="污染类型">
+			<item id="大气污染" name="大气污染">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="大气污染" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="水污染" name="水污染">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="水污染" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="噪声污染" name="噪声污染">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="噪声污染" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="油烟气污染" name="油烟气污染">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="油烟气污染" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="固体废物" name="固体废物污染">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="固体废物" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="电磁辐射" name="电磁辐射污染">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="电磁辐射" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="危险化学品" name="危险化学品">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="危险化学品" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="新建项目" name="新建项目">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="新建项目" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="畜养、农药化肥污染" name="畜牧养殖">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="畜养、农药化肥污染" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="行业作风" name="政风行风">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="行业作风" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="其他环保业务" name="其他污染">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="其他环保业务" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			<item id="非环保投诉" name="非环保投诉">
+				<clickfunctions>
+					<clickfunction name="PollutionType">
+						<params>
+							<param name="type" value="非环保投诉" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+		</group>
+	</LayerList>
+</configuration>

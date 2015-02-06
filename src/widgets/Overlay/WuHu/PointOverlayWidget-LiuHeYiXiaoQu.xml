@@ -14,6 +14,8 @@
 		<fields>
 			<field name="xqmc"/>
 			<field name="xqdz" alias="地址：" visible="true"/>
+			<field name="intcount" alias="数量：" visible="true"/>
+			<field name="xqyb" alias="邮编：" visible="true"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<buttons>

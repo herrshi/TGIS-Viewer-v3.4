@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TGISViewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   xmlns:TGISViewer="cn.seisys.TGISViewer.*"
+					   xmlns:checkTree="cn.seisys.TGISViewer.components.checkTree.*"
+					   layout="absolute"
+					   width="100%" height="100%" 
+					   widgetConfigLoaded="this_widgetConfigLoadedHandler(event)" 
+					   creationComplete="this_creationCompleteHandler(event)" >
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.events.GridSelectionEvent;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.components.checkTree.CheckTreeItemRenderer;
+			import cn.seisys.TGISViewer.utils.Hashtable;
+			
+			/**九宫格缩放*/
+			[Embed(source="assets/images/HuanBaoJu/center/content_background.png", 
+                scaleGridTop="4", scaleGridBottom="187", 
+                scaleGridLeft="4", scaleGridRight="188"
+            )]
+			
+			[Bindable] private var _contentBackground:Class;
+			
+			[Bindable]
+			private var _treeDataProvider:ArrayCollection;
+			
+			[Bindable]
+			private var _dataGridDataProvider:ArrayCollection;
+			
+			[Bindable]
+			private var _selectionColor:Number;
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				_selectionColor = getStyle( "selectionColor" );
+				_dataGridDataProvider = new ArrayCollection();
+				
+				AppEvent.addListener( AppEvent.DATA_NEW_PUBLISHED, appevent_dataNewPublishedHandler );
+				AppEvent.addListener( AppEvent.HUANBAOJU_DISTRICT_SELECTED, appevent_HuanBaoJuDistrictSelectedHandler );
+				AppEvent.addListener( AppEvent.HUANBAOJU_BLOCK_SELECTED, appevent_HuanBaoJuBlockSelectedHandler );
+			}
+			
+			protected function this_widgetConfigLoadedHandler(event:Event):void
+			{
+				if ( configXML )
+				{
+					_treeDataProvider = new ArrayCollection();
+					
+					var groupList:XMLList = configXML..group;
+					for each ( var groupXML:XML in groupList )
+					{
+						var groupName:String = groupXML.@name;
+						var groupChildren:ArrayCollection = new ArrayCollection();
+						
+						var hasAtLeastOneChecked:Boolean = false;
+						var allChecked:Boolean = true;
+						//创建子项
+						var itemList:XMLList = groupXML..item;
+						//有子项
+						if ( itemList.length() > 0 )
+						{
+							for each ( var itemXML:XML in itemList )
+							{
+								//创建列表
+								var itemName:String = itemXML.@name;
+								var itemId:String = itemXML.@id;
+								var itemState:String = itemXML.@state;
+								var state:int = 
+									itemState == "checked" ? CheckTreeItemRenderer.STATE_CHECKED : 
+									CheckTreeItemRenderer.STATE_UNCHECKED;
+								//用于确定父项状态
+								var bolState:Boolean = itemState == "checked" ? true : false;
+								hasAtLeastOneChecked = hasAtLeastOneChecked || bolState;
+								allChecked = allChecked && bolState;
+								
+								//点击事件
+								var functionList:XMLList = itemXML..clickfunction;
+								var functionArray:Array = [];
+								for each ( var functionXML:XML in functionList )
+								{
+									var functionName:String = functionXML.@name;
+									var paramList:XMLList = functionXML..param;
+									var paramTable:Hashtable = new Hashtable();
+									for each ( var paramXML:XML in paramList )
+									{
+										var paramName:String = paramXML.@name;
+										var paramValue:String = paramXML.@value;
+										paramTable.add( paramName, paramValue );
+									}
+									var clickFunctionObj:Object = 
+										{
+											name: functionName,
+											paramTable: paramTable
+										}
+									functionArray.push( clickFunctionObj );
+								}
+								
+								var itemObject:Object = 
+									{ 
+										label: itemName, 
+										state: state,
+										functionArray: functionArray
+									};
+								groupChildren.addItem( itemObject );
+							}
+						}
+							//没有子项
+						else
+						{
+							allChecked = false;
+							//将存放子项的ArrarCollection清空，否则空的父项会显示上一个父项的子项
+							groupChildren = null;
+						}
+						
+						//确定父项状态
+						var groupState:int;
+						if ( allChecked )
+						{
+							groupState = CheckTreeItemRenderer.STATE_CHECKED;
+						}
+						else if ( hasAtLeastOneChecked )
+						{
+							groupState = CheckTreeItemRenderer.STATE_INDETERMINATE;
+						}
+						else
+						{
+							groupState = CheckTreeItemRenderer.STATE_UNCHECKED;
+						}
+						//创建父项
+						var groupObject:Object = 
+							{ 
+								label: groupName, 
+								children: groupChildren, 
+								state: groupState
+							};
+						_treeDataProvider.addItem( groupObject );
+					}
+				}
+			}
+			
+			protected function trControlPanel_doubleClickHandler(event:MouseEvent):void
+			{
+				var selectedItem:Object = trControlPanel.selectedItem;
+				var isOpen:Boolean = trControlPanel.isItemOpen( selectedItem );
+				trControlPanel.expandItem( selectedItem, !isOpen );
+			}
+			
+			protected function trControlPanel_checkBoxClickHandler(event:MouseEvent):void
+			{
+				var selectedItem:Object = trControlPanel.selectedItem;
+				if ( selectedItem )
+				{
+					treeItemChange( selectedItem );
+				}
+			}
+			
+			private var _selectedPollutionTypeAC:ArrayCollection = new ArrayCollection();
+			
+			private function treeItemChange( selectedItem:Object ):void
+			{
+				var children:ArrayCollection = selectedItem.children;
+				//有子项时递归
+				if ( children )
+				{
+					for each ( var childItem:Object in children )
+					{
+						treeItemChange( childItem );
+					}
+				}
+				else
+				{
+					var bolState:Boolean = ( selectedItem.state == CheckTreeItemRenderer.STATE_CHECKED );
+					var functionArray:Array = selectedItem.functionArray;
+					for each ( var clickFunctionObj:Object in functionArray ) 
+					{
+						var functionName:String = clickFunctionObj.name;
+						var paramTable:Hashtable = clickFunctionObj.paramTable;
+						
+						var widgetName:String;
+						var widgetState:String;
+						switch( functionName.toLowerCase() )
+						{
+							//按钮enable时显示图层，按钮disable时隐藏图层
+							case "changelayer":
+								var serviceName:String = paramTable.find( "ServiceName" );
+								var idString:String = paramTable.find( "LayerId" );
+								AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+									{ 
+										serviceName: serviceName,
+										layerIds: idString,
+										visible: bolState
+									} 
+								);
+								break;
+							
+							//按钮enable时打开组件，按钮disable时关闭组件
+							case "changewidget":
+								widgetName = paramTable.find( "WidgetName" );
+								widgetState = paramTable.find( "WidgetState" );
+								if ( bolState )
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
+									if ( widgetState && widgetState != "" )
+									{
+										AppEvent.dispatch( AppEvent.WIDGET_CHANGE_STATE, 
+											{ 
+												label: widgetName,
+												state: widgetState
+											} 
+										);
+									}
+								}
+								else
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+								}
+								break;
+							
+							//按钮enable时打开组件，按钮disable时不关闭组件
+							case "openwidget":
+								widgetName = paramTable.find( "WidgetName" );
+								widgetState = paramTable.find( "WidgetState" );
+								if ( bolState )
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_RUN, widgetName );
+									if ( widgetState && widgetState != "" )
+									{
+										AppEvent.dispatch( AppEvent.WIDGET_CHANGE_STATE, 
+											{ 
+												label: widgetName,
+												state: widgetState
+											} );
+									}
+								}
+								break;
+							
+							//按钮enable时不打开组件，按钮disable时关闭组件
+							case "closewidget":
+								widgetName = paramTable.find( "WidgetName" );
+								if ( !bolState )
+								{
+									AppEvent.dispatch( AppEvent.WIDGET_CLOSE, widgetName );
+								}
+								break;
+							
+							//点击按钮时通知页面
+							case "informstatechanged":
+								var type:String = paramTable.find( "type" );
+								AppEvent.dispatch( AppEvent.EXTERNALINTERFACE_CALL, 
+									{ 
+										functionName: "mapButtonStateChanged", 
+										params: [ type, bolState ] 
+									} 
+								);
+								break;
+							
+							case "pollutiontype":
+								var pollutionType:String = paramTable.find( "type" );
+								if ( bolState )
+								{
+									_selectedPollutionTypeAC.addItem( pollutionType );
+								}
+								else
+								{
+									for each ( type in _selectedPollutionTypeAC )
+									{
+										if ( type == pollutionType )
+										{
+											_selectedPollutionTypeAC.removeItem( type );
+											break;
+										}
+									}
+								}
+								
+								var typeExpr:String = "";
+								if ( _selectedPollutionTypeAC.length > 0 )
+								{
+									for each ( type in _selectedPollutionTypeAC )
+									{
+										typeExpr += "问题类别" + " LIKE '%" + type + "%' OR ";
+									}
+									//删掉最后的or
+									typeExpr = typeExpr.substr( 0, typeExpr.length - 4 );
+								}
+								trace( typeExpr );
+								AppEvent.dispatch( AppEvent.HUANBAOJU_QUERYEXPRESSION_TYPE, typeExpr );
+								break;
+						}
+					}
+				}
+			}
+			
+			private function appevent_dataNewPublishedHandler( event:AppEvent ):void
+			{
+				var key:String = event.data.key;
+				if ( key == "xfdData" )
+				{
+					_dataGridDataProvider.removeAll();
+					
+					var dataTable:Hashtable = event.data.data;
+					var xfdGraphicAC:ArrayCollection = dataTable.find( key );
+					for each ( var xfdGraphic:Graphic in xfdGraphicAC )
+					{
+						_dataGridDataProvider.addItem( xfdGraphic.attributes );
+					}
+				}
+				
+			}
+			
+			protected function datagrid_selectionChangeHandler(event:GridSelectionEvent):void
+			{
+				var currentDataItem:Object = datagrid.selectedItem; 
+				AppEvent.dispatch( AppEvent.FIND_DEVICE, { type: "信访点", id: currentDataItem["信访编号"] } );
+			}
+			
+			private var _searchText:String;
+			
+			protected function btnTextSearch_clickHandler(event:MouseEvent):void
+			{
+				_searchText = txtKey.text;
+				if ( _searchText != "" )
+				{
+					_dataGridDataProvider.filterFunction = filterKeyWord;
+				}
+				else
+				{
+					_dataGridDataProvider.filterFunction = null;
+				}
+				_dataGridDataProvider.refresh();
+			}
+			
+			protected function btnClearSearch_clickHandler(event:MouseEvent):void
+			{
+				_searchText = txtKey.text = "";
+				_dataGridDataProvider.filterFunction = null;
+				_dataGridDataProvider.refresh();
+			}
+			
+			private function filterKeyWord( item:Object ):Boolean
+			{
+				for ( var propertyName:String in item )
+				{
+					var propertyValue:String = item[propertyName];
+					if ( propertyValue && propertyValue.indexOf( _searchText ) >= 0 )
+					{
+						return true;
+					}
+				}
+				return false;
+			}
+			
+			private function appevent_HuanBaoJuDistrictSelectedHandler( event:AppEvent ):void
+			{
+				_searchText = event.data as String;
+				_dataGridDataProvider.filterFunction = filterKeyWord;
+				_dataGridDataProvider.refresh();
+			}
+			
+			private function appevent_HuanBaoJuBlockSelectedHandler( event:AppEvent ):void
+			{
+				_searchText = event.data as String;
+				_dataGridDataProvider.filterFunction = filterKeyWord;
+				_dataGridDataProvider.refresh();
+			} 
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Style>
+		@namespace ns "http://www.esri.com/2008/ags";
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace TGISViewer "cn.seisys.TGISViewer.*";
+		@namespace esri "http://www.esri.com/2008/ags";
+		
+		mx|Tree {
+			/*folderClosedIcon: ClassReference(null);
+			folderOpenIcon: ClassReference(null);*/
+			defaultLeafIcon: ClassReference(null);
+			contentBackGroundAlpha: 0;
+		}
+	</fx:Style>
+	
+	<s:Image id="contentBackground" 
+			 width="100%" height="100%" 
+			 fillMode="scale" scaleMode="stretch"
+			 source="{_contentBackground}"/>
+	
+	<s:VGroup height="100%" width="100%" 
+			  paddingTop="10" paddingBottom="10"
+			  paddingLeft="5" paddingRight="5">
+		<s:VGroup height="200" width="100%">
+			<checkTree:CheckTree id="trControlPanel" width="100%" height="100%"
+								 dataProvider="{_treeDataProvider}"
+								 borderAlpha="0" checkBoxBgColor="0x000000" checkBoxBgAlpha="1" 
+								 labelField="label" checkBoxStateField="state" checkBoxEnableState="true"
+								 checkBoxClick="trControlPanel_checkBoxClickHandler(event)"
+								 doubleClick="trControlPanel_doubleClickHandler(event)"/>
+			
+			
+		</s:VGroup>
+		
+		<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke id="scs"
+									caps="square"
+									color="#555555"
+									weight="2"/>
+			</s:stroke>
+		</s:Line>
+		
+		<s:HGroup width="100%" verticalAlign="middle" gap="10">
+			<!--<s:Label text="关键字："/>-->
+			<s:TextInput id="txtKey" width="100%"/>
+			<s:Button id="btnTextSearch" label="搜索" width="50" 
+					  click="btnTextSearch_clickHandler(event)"/>
+			<s:Button id="btnClearSearch" label="还原" width="50" 
+					  click="btnClearSearch_clickHandler(event)"/>
+		</s:HGroup>
+		
+		<s:DataGrid id="datagrid" 
+					width="100%" height="100%" 
+					dataProvider="{_dataGridDataProvider}" 
+					selectionChange="datagrid_selectionChangeHandler(event)">
+			<s:columns>
+				<s:ArrayList>
+					<s:GridColumn headerText="信访人" dataField="信访人"/>
+					<s:GridColumn headerText="问题类别" dataField="问题类别"/>
+					<s:GridColumn headerText="信访人地址" dataField="信访人地址"/>
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
+	</s:VGroup>
+</TGISViewer:BaseWidget>
