@@ -10,11 +10,11 @@
 	<initvisible>false</initvisible>
 	
 	<popup>
-		<title>{xqmc}</title>
+		<title>{xqmc}(共{intcount}辆)</title>
 		<fields>
 			<field name="xqmc"/>
+			<field name="intcount"/>
 			<field name="xqdz" alias="地址：" visible="true"/>
-			<field name="intcount" alias="数量：" visible="true"/>
 			<field name="xqyb" alias="邮编：" visible="true"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>

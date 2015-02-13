@@ -2,6 +2,16 @@
 	<layout direction="horizontal" gap="10" />
 	<groups>
 		<group>
+			<item id="SJJC" name="事件检测" image="assets/images/buttons/DuanMian.png">
+				<clickfunctions>
+					<clickfunction name="ChangeLayer">
+						<params>
+							<param name="ServiceName" value="事件检测" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
+			
 			<item id="dzjc" name="电子警察" image="assets/images/buttons/DianZiJingCha.png">
 				<clickfunctions>
 					<clickfunction name="ChangeLayer">
@@ -17,16 +27,6 @@
 					<clickfunction name="ChangeLayer">
 						<params>
 							<param name="ServiceName" value="卡口" />
-						</params>
-					</clickfunction>
-				</clickfunctions>
-			</item>
-			
-			<item id="SJJC" name="事件检测" image="assets/images/buttons/DuanMian.png">
-				<clickfunctions>
-					<clickfunction name="ChangeLayer">
-						<params>
-							<param name="ServiceName" value="事件检测" />
 						</params>
 					</clickfunction>
 				</clickfunctions>

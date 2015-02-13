@@ -23,6 +23,17 @@
 					</clickfunction>
 				</clickfunctions>
 			</item>
+			
+			<item label="联动单位" initenable="true">
+				<clickfunctions>
+					<clickfunction name="ChangeOverlayVisible">
+						<params>
+							<param name="WidgetName" value="联动单位Overlay"/>
+							<param name="OverlayType" value="LianDongDanWei" />
+						</params>
+					</clickfunction>
+				</clickfunctions>
+			</item>
 		</itemgroup>
 		
 		<item label="事件周边搜索" initenable="true">

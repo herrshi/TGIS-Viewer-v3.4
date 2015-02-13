@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+﻿<?xml version="1.0" ?>
 <configuration>
 	<style>
 		<!--textColor,backgroundColor,rolloverColor,selectionColor,titleColor -->
@@ -8,37 +8,40 @@
 		<font name="微软雅黑" size="14" />
 	</style>
 
-	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip>
+	<arcgisserverip>192.168.130.17:6080</arcgisserverip>
+<!-- 	<arcgisserverip>jiaotong.seisys.cn:8399</arcgisserverip> -->
 
 <!-- 	<geometryservice url="http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/Geometry/GeometryServer"/> -->
-<!-- 	<geometryservice url="http://localhost:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer"/> -->
+	<geometryservice url="http://192.168.130.17:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer"/>
 	
 	<!-- UI elements -->
 	<widget left="0" top="0"
 			url="widgets/HuanBaoJu/LogoWidget.swf"/>
 	
-<!-- 	<widget label="底图切换" right="250" top="100" -->
-<!-- 			config="widgets/MapSwitcher/MapSwitcherWidget.xml" -->
-<!-- 			url="widgets/MapSwitcher/MapSwitcherWidget.swf"/> -->
+	<widget label="底图切换" right="20" top="100"
+			config="widgets/MapSwitcher/MapSwitcherWidget.xml"
+			url="widgets/MapSwitcher/MapSwitcherWidget.swf"/>
 			
 	<widget left="10" top="150" 
 			config="widgets/Navigation/NavigationWidget.xml"
 		    url="widgets/Navigation/NavigationWidget.swf" />
 		    
-<!-- 	<widget left="3" bottom="3" visible="false" -->
-<!-- 			config="widgets/Coordinate/CoordinateWidget.xml"  -->
-<!-- 			url="widgets/Coordinate/CoordinateWidget.swf" /> -->
+	<widget left="3" bottom="3" visible="false"
+			config="widgets/Coordinate/CoordinateWidget.xml" 
+			url="widgets/Coordinate/CoordinateWidget.swf" />
 
 	<!-- 天地图配置 -->
-	<map top="90" initialextent="121.176502 30.833721 122.099353 31.586284"
+	<map top="90" initialextent="-99104 -83400 109104 79400"
 		 scalebarvisible="false" esrilogovisible="false">
 		<basemaps>
-<!-- 			<layer label="影像图" type="tianditu" visible="true" imageformat="tiles" -->
-<!--            		   style="default" servicemode="KVP" layerid="img" tilematrixsetid="c" -->
-<!--            		   url="http://t0.tianditu.com/img_c/wmts" /> -->
-			<layer label="矢量图" type="tianditu" visible="true" imageformat="tiles"
-           		   style="default" servicemode="KVP" layerid="vec" tilematrixsetid="c"
-           		   url="http://t0.tianditu.com/vec_c/wmts" />
+<!-- 			<layer label="综合图" type="tiled" visible="true" icon="assets/images/basemap_topographic.jpg" -->
+<!-- 				   url="http://map4.shanghai-map.net/RemoteRest/services/SHMAP_D/MapServer" /> -->
+<!-- 		    <layer label="影像图" type="tiled" visible="false" icon="assets/images/basemap_imagery.jpg" -->
+<!-- 				   url="http://map4.shanghai-map.net/RemoteRest/services/SHMAP_image/MapServer" /> -->
+			<layer label="综合图" type="tiled" visible="true" icon="assets/images/basemap_topographic.jpg" 
+           		   url="http://10.108.3.13:8080/rest/services/BaseMap/MapServer" />
+			<layer label="影像图" type="tiled" visible="false" icon="assets/images/basemap_imagery.jpg" 
+           		   url="http://10.108.3.13:8080/rest/services/Air2014S/MapServer" />
 <!-- 			<layer label="地形图" type="tianditu" visible="false" imageformat="tiles" -->
 <!--            		   style="default" servicemode="KVP" layerid="ter" tilematrixsetid="c" -->
 <!--            		   url="http://t0.tianditu.com/ter_c/wmts" /> -->
@@ -50,8 +53,8 @@
 <!-- 			<layer label="标注线" type="dynamic" visible="true"  -->
 <!-- 				   url="http://{serverip}/arcgis/rest/services/HuanBaoJu/LabelLine/MapServer"/> -->
 			
-			<layer label="插值图" type="dynamic" visible="false" alpha="0.6" 
-				   url="http://localhost:6080/arcgis/rest/services/HuanBaoJu/IDW/MapServer"/>
+<!-- 			<layer label="插值图" type="dynamic" visible="false" alpha="0.6"  -->
+<!-- 				   url="http://localhost:6080/arcgis/rest/services/HuanBaoJu/IDW/MapServer"/> -->
 			
 			<layer label="噪声功能区" type="feature" visible="false" 
 				   url="http://{serverip}/arcgis/rest/services/HuanBaoJu/GongNengQu/MapServer/0"
@@ -199,6 +202,13 @@
 		<widget label="设备定位" preload="open"
 				config="widgets/GetDeviceCoordinate/HuanBaoJu/GetDeviceCoordinateWidget.xml"
 				url="widgets/GetDeviceCoordinate/GetDeviceCoordinateWidget.swf"/>
+	</widgetcontainer>
+	
+	<widgetcontainer layout="float">
+		<widget label="信访热点" left="20" bottom="20"
+				icon="assets/images/i_heatmap_icon.png"
+				config="widgets/HeatMap/HuanBaoJu/HeatMapWidget.xml"
+				url="widgets/HeatMap/HeatMapWidget.swf"/>
 	</widgetcontainer>
 	
 	<widgetcontainer paneltype="bottom" initialstate="collapsed" size="250">

@@ -14,7 +14,10 @@
 		<title>{detectorName}</title>
 		<fields>
 			<field name="detectorName"/>
-			<field name="detectorId" alias="设备ID：" visible="true"/>
+			<field name="detectorId" alias="设备编号：" visible="true"/>
+			<field name="fstr_state" alias="通讯状态：" visible="true"/>
+			<field name="ipaddress" alias="IP地址：" visible="true"/>
+			<field name="fstr_desc" alias="所属区域：" visible="true"/>
 		</fields>
 		<showzoomtobutton>false</showzoomtobutton>
 		<buttons>

@@ -438,5 +438,7 @@
 				</s:ArrayList>
 			</s:columns>
 		</s:DataGrid>
+		
+		<s:Label text="{'信访事件共' + _dataGridDataProvider.length + '条'}"/>
 	</s:VGroup>
 </TGISViewer:BaseWidget>

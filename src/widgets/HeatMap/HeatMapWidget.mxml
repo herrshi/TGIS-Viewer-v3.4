@@ -250,7 +250,7 @@
 
             private function widgetClosedHandler(event:Event):void
             {
-                m_heatMapLayer.visible = false;
+				map.removeLayer( m_heatMapLayer );
                 setMapNavigation(null, null);
             }
 
@@ -258,7 +258,7 @@
             {
                 if (m_heatMapLayer)
                 {
-                    m_heatMapLayer.visible = true;
+                    map.addLayer( m_heatMapLayer );
                 }
             }
 
@@ -386,21 +386,21 @@
 			{
 				var today:Date = new Date();
 				dfStart.selectableRange = { rangeEnd: today };
-				dfStart.selectedDate = new Date( today.fullYear, today.month, today.date - 1 );
+				dfStart.selectedDate = new Date( "2013", "0", "1" );
 			}
 			
 			protected function dfEnd_initializeHandler(event:FlexEvent):void
 			{
 				var today:Date = new Date();
 				dfEnd.selectableRange = { rangeEnd: today };
-				dfEnd.selectedDate = today;
+				dfEnd.selectedDate = new Date( "2013", "11", "31" );
 			}
 			
 			protected function btnTimeQuery_clickHandler(event:MouseEvent):void
 			{
 				var startDate:String = dateTimeFormatter.format( dfStart.selectedDate );
 				var endDate:String = dateTimeFormatter.format( dfEnd.selectedDate );
-				var whereClause:String = "POSITIONTI >= date '" + startDate + "' and POSITIONTI <= date'" + endDate + "'";
+				var whereClause:String = "信访日期 >= date '" + startDate + "' and 信访日期 <= date'" + endDate + "'";
 				m_heatMapLayer.where = whereClause;
 			}
 			

@@ -36,11 +36,6 @@ See use restrictions in use_restrictions.txt.
 	
 	<fx:Script>
 		<![CDATA[
-			import cn.seisys.TGISViewer.AppEvent;
-			import cn.seisys.TGISViewer.WidgetStates;
-			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
-			import cn.seisys.TGISViewer.utils.MapServiceUtil;
-			
 			import com.esri.ags.FeatureSet;
 			import com.esri.ags.Graphic;
 			import com.esri.ags.Map;
@@ -66,15 +61,6 @@ See use restrictions in use_restrictions.txt.
 			import com.esri.ags.tasks.supportClasses.Query;
 			import com.esri.ags.utils.StringUtil;
 			
-			import flashx.textLayout.conversion.TextConverter;
-			import flashx.textLayout.elements.Configuration;
-			import flashx.textLayout.elements.LinkElement;
-			import flashx.textLayout.elements.TextFlow;
-			import flashx.textLayout.events.FlowElementMouseEvent;
-			import flashx.textLayout.formats.TextDecoration;
-			import flashx.textLayout.formats.TextLayoutFormat;
-			import flashx.textLayout.formats.WhiteSpaceCollapse;
-			
 			import mx.collections.ArrayCollection;
 			import mx.containers.utilityClasses.ConstraintRow;
 			import mx.controls.Alert;
@@ -85,6 +71,20 @@ See use restrictions in use_restrictions.txt.
 			import spark.components.ComboBox;
 			import spark.components.Label;
 			import spark.events.IndexChangeEvent;
+			
+			import cn.seisys.TGISViewer.AppEvent;
+			import cn.seisys.TGISViewer.WidgetStates;
+			import cn.seisys.TGISViewer.components.PopUpInfoWithButtons;
+			import cn.seisys.TGISViewer.utils.MapServiceUtil;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.elements.Configuration;
+			import flashx.textLayout.elements.LinkElement;
+			import flashx.textLayout.elements.TextFlow;
+			import flashx.textLayout.events.FlowElementMouseEvent;
+			import flashx.textLayout.formats.TextDecoration;
+			import flashx.textLayout.formats.TextLayoutFormat;
+			import flashx.textLayout.formats.WhiteSpaceCollapse;
 			
 			private var map:Map;
 			private var textLayoutConfiguration:Configuration;
@@ -114,6 +114,8 @@ See use restrictions in use_restrictions.txt.
 				return symbols;
 			}
 			
+			
+			private var queryLayerUrl:String="";
 			private function skin_preinitializeHandler(event:FlexEvent):void
 			{
 				// set the link styles
@@ -154,22 +156,20 @@ See use restrictions in use_restrictions.txt.
 				
 				//加入地图底图
 				map=hostComponent.map;
-				if ( map )
+				map.infoWindow.addEventListener(FlexEvent.HIDE,clearBufferLayer);
+				map.infoWindow.addEventListener(Event.CLOSE,clearBufferLayer2);
+				//判断是否有buffer图层
+				if(buffLayerExist())
 				{
-					//判断是否有buffer图层
-					if(buffLayerExist())
-					{
-						graphicsLayer=bufferLayer;
-						graphicsLayer.clear();
-					}
-					else
-					{
-						graphicsLayer = new GraphicsLayer();
-						graphicsLayer.name="buffer";
-						map.addLayer(graphicsLayer); 
-					}
+					graphicsLayer=bufferLayer;
+					graphicsLayer.clear();
 				}
-				
+				else
+				{
+					graphicsLayer = new GraphicsLayer();
+					graphicsLayer.name="buffer";
+					map.addLayer(graphicsLayer); 
+				}
 				
 				showBufferDdistric();
 				//获取到map中的所有buffer graphicslayer，然后剔除,以防多次加载graphicslayer
@@ -336,6 +336,8 @@ See use restrictions in use_restrictions.txt.
 							var label:String = buttonObj.label;
 							var action:String = buttonObj.action;
 							var idField:String = buttonObj.idField || "";
+							gService.url=buttonObj.geometryServiceUrl;//添加url
+							queryLayerUrl=buttonObj.queryLayerUrl;//添加url
 							var id:String = "";
 							if ( idField != "" )
 							{
@@ -450,9 +452,9 @@ See use restrictions in use_restrictions.txt.
 					{
 						bufferLayer=layer;
 						return true;
+						return;
 					}
 				}
-				
 				return false;
 			}
 			
@@ -696,7 +698,8 @@ See use restrictions in use_restrictions.txt.
 				
 				//为了显示busy，改用querytask
 				var queryTask:QueryTask= new QueryTask;
-				queryTask.url="http://localhost:6080/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1";
+				//				queryTask.url="http://winServer/ArcGIS/rest/services/XinFangDian/MapServer/1";
+				queryTask.url=queryLayerUrl;
 				queryTask.showBusyCursor=true;
 				queryTask.execute(query,new AsyncResponder(onResult,onFault));
 				function onResult(featureSet:FeatureSet, token:XMLList = null):void
@@ -727,7 +730,6 @@ See use restrictions in use_restrictions.txt.
 				}
 			}
 			
-			
 			private var resultLineSymbol:Symbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, 0xFF0000, 1, 1.5);
 			private function drawLine():void
 			{
@@ -743,7 +745,7 @@ See use restrictions in use_restrictions.txt.
 					graphicsLayer.add(lineGraphic);
 				}
 			}
-
+			
 			
 			private function createQueryResults(featureSet:FeatureSet):ArrayCollection
 			{
@@ -751,52 +753,56 @@ See use restrictions in use_restrictions.txt.
 				var listArray:ArrayCollection = new ArrayCollection();
 				for each (var graphic:Graphic in featureSet.features)
 				{
-					var obj:Object=new Object();
-					var detailArray:ArrayCollection=new ArrayCollection;
-					for(var i:int=0; i<queryFields.length; i++)
+					//与centerPoint比较
+					//if(hostComponent.graphic != graphic)
+					var pt:MapPoint = graphic.geometry as MapPoint;
+					if(centerPoint.x != pt.x || centerPoint.y != pt.y)
 					{
-						if (queryFields[i].name in graphic.attributes)
+						var obj:Object=new Object();
+						var detailArray:ArrayCollection=new ArrayCollection;
+						for(var i:int=0; i<queryFields.length; i++)
 						{
-							var fieldName:String=queryFields[i].name;
-							var fieldLabel:String=queryFields[i].alias;
-							var fieldType:String=queryFields[i].type;
-							var value:String="";
-							if(graphic.attributes[fieldName] != null && graphic.attributes[fieldName] != "")
+							if (queryFields[i].name in graphic.attributes)
 							{
-								if(fieldType == "Date")
+								var fieldName:String=queryFields[i].name;
+								var fieldLabel:String=queryFields[i].alias;
+								var fieldType:String=queryFields[i].type;
+								var value:String="";
+								if(graphic.attributes[fieldName] != null && graphic.attributes[fieldName] != "")
 								{
-									value = dateFormat.format(graphic.attributes[fieldName]);
+									if(fieldType == "Date")
+									{
+										value = dateFormat.format(graphic.attributes[fieldName]);
+									}
+									else
+									{
+										value = graphic.attributes[fieldName];
+									}
+									obj[fieldName]=value;
 								}
-								else
-								{
-									value = graphic.attributes[fieldName];
-								}
-								obj[fieldName]=value;
+								var obj2:Object=
+									{
+										name:fieldLabel,//用alias，这个是显示在表格中的名称
+										label:fieldName,//用于表格中修改属性时作为字段名
+										value:value
+									}
+								detailArray.addItem(obj2);//详细列表数组
 							}
-							var obj2:Object=
-								{
-									name:fieldLabel,//用alias，这个是显示在表格中的名称
-									label:fieldName,//用于表格中修改属性时作为字段名
-									value:value
-								}
-							detailArray.addItem(obj2);//详细列表数组
 						}
+						//					graphic.symbol = returnGeoSymbol(graphic.geometry);
+						//					var point:MapPoint=getGeomCenter(graphic);
+						//					if(point && !isNaN(point.x) && !isNaN(point.y))
+						//					{
+						//						graphicsLayer.add(graphic);
+						//					}
+						obj.graphic= graphic;
+						obj.geometry=graphic.geometry;
+						obj.detailArray=detailArray;//重新组织detailArray
+						listArray.addItem(obj);
 					}
-					//					graphic.symbol = returnGeoSymbol(graphic.geometry);
-					//					var point:MapPoint=getGeomCenter(graphic);
-					//					if(point && !isNaN(point.x) && !isNaN(point.y))
-					//					{
-					//						graphicsLayer.add(graphic);
-					//					}
-					obj.graphic= graphic;
-					obj.geometry=graphic.geometry;
-					obj.detailArray=detailArray;//重新组织detailArray
-					listArray.addItem(obj);
 				}
 				return listArray;
 			}
-			
-
 			
 			private function moveGraphic_clickHandler( event:MouseEvent ):void
 			{
@@ -919,7 +925,8 @@ See use restrictions in use_restrictions.txt.
 			
 			protected function back_clickHandler(event:MouseEvent):void
 			{
-				currentState	="normal";			
+				currentState	="normal";	
+				bufferLayerClear();
 			}
 			
 			protected function cbBox_changeHandler(event:IndexChangeEvent):void
@@ -948,16 +955,29 @@ See use restrictions in use_restrictions.txt.
 			
 			protected function sparkskin1_showHandler(event:FlexEvent):void
 			{
-				// TODO Auto-generated method stub
 				var a:int = 1;
 			}
 			
 			protected function sparkskin1_hideHandler(event:FlexEvent):void
 			{
-				// TODO Auto-generated method stub
 				var a:int = 1;
 			}
 			
+			protected function clearBufferLayer(event:FlexEvent):void
+			{
+				bufferLayerClear();
+			}
+			
+			protected function clearBufferLayer2(event:Event):void
+			{
+				bufferLayerClear();
+			}
+			
+			protected function bufferLayerClear():void
+			{
+				graphicsLayer.clear();
+				cbBox.selectedIndex=0;
+			}
 		]]>
 	</fx:Script>
 	
@@ -965,8 +985,7 @@ See use restrictions in use_restrictions.txt.
 		<mx:DateFormatter id="dateFormat" formatString="YYYY-MM-DD" />		
 		
 		<esri:GeometryService  id="gService"  showBusyCursor="false"
-							   bufferComplete="gService_bufferCompleteHandler(event)"
-							   url="http://localhost:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer" />
+							   bufferComplete="gService_bufferCompleteHandler(event)"/>
 		
 		<!--- @private -->
 		<s:RichEditableText id="titleText"

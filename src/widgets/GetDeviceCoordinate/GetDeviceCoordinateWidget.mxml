@@ -91,6 +91,7 @@
 			private function map_clickHandler( event:MouseEvent ):void
 			{
 				_resultLayer.clear();
+				map.infoWindow.hide();
 			}
 			
 			private function appevent_findDeviceHandler( event:AppEvent ):void
@@ -103,6 +104,8 @@
 				{
 					return;
 				}
+				
+				_resultLayer.clear();
 				
 				var idField:String = layerObj.idField;
 				var url:String = layerObj.url;

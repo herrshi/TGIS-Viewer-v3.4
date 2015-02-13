@@ -21,15 +21,15 @@
 	<minscale>64000</minscale>
     <layers>
         <layer>
-            <name>Earthquakes HeatMap</name>
-            <url>http://128.64.151.12:8399/arcgis/rest/services/shanghai/sh_points/MapServer/2</url>
-            <outFields>名称,地址,联系电话,所属区县</outFields>
+            <name>信访点</name>
+            <url>http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1</url>
+            <outFields>信访日期,信访人,AQI,DistrictName</outFields>
             <useproxy>false</useproxy>
             <useamf>true</useamf>
             <defaultquery>1=1</defaultquery>
-            <querytemplate>Magnitude &gt; REPLACE_STR</querytemplate>
-            <types>2,4,6,8</types>
-            <type_descs>Mag &gt; 2,Mag &gt; 4,Mag &gt; 6,Mag &gt; 8</type_descs>
+            <querytemplate></querytemplate>
+            <types></types>
+            <type_descs></type_descs>
         </layer>
     </layers>
     <ui>
@@ -51,7 +51,7 @@
         <query>
             <comp_label>Earthquake Magnitude:</comp_label>
             <heatmapquery_prompt>default selection</heatmapquery_prompt>
-            <featurecount_label> 个投诉</featurecount_label>
+            <featurecount_label> 个信访事件</featurecount_label>
         </query>
         <timeslider>
             <enabled_by_default>false</enabled_by_default>

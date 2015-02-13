@@ -112,7 +112,7 @@
 			{
 				_districtCountAC = event.data as ArrayCollection;
 				//初始化时选中数量最多的一个区
-				if ( !_selectedDistrictName )
+				if ( _districtCountAC.length > 0 && !_selectedDistrictName )
 				{
 					_selectedDistrictName = _districtCountAC.getItemAt( 0 ).districtName;
 				}
@@ -218,9 +218,13 @@
 			 fillMode="scale" scaleMode="stretch"
 			 source="{_contentBackground}"/>
 	
+	<s:Image source="assets/images/back.jpg" 
+			 right="5" top="10" 
+			 buttonMode="true" useHandCursor="true"/>
+	
 	<s:VGroup width="100%" height="100%" 
 			  horizontalAlign="center">
-		<skins:DistrictCountDataGroup id="districtCountDG" includeIn="district"
+		<skins:DistrictCountDataGroup id="districtCountDG" includeIn="district" 
 									  dataProvider="{_districtCountAC}" 
 									  itemClick="districtCountDG_itemClickHandler(event)">
 			<skins:layout>
@@ -228,13 +232,14 @@
 			</skins:layout>
 		</skins:DistrictCountDataGroup>
 		
-		<skins:BlockCountDataGroup id="blockCountDG" includeIn="block"
-									  dataProvider="{_blockCountAC}" 
-									  itemClick="blockCountDG_itemClickHandler(event)">
+		<skins:BlockCountDataGroup id="blockCountDG" includeIn="block" 
+								   dataProvider="{_blockCountAC}" 
+								   itemClick="blockCountDG_itemClickHandler(event)">
 			<skins:layout>
 				<s:HorizontalLayout paddingLeft="5" paddingTop="5"/>
 			</skins:layout>
 		</skins:BlockCountDataGroup>
+		
 		
 		<s:HGroup width="100%" height="100%">
 			<s:Group width="50%" height="100%">

@@ -215,6 +215,10 @@
 				config="widgets/Overlay/WuHu/PointOverlayWidget-YingJiSheShi.xml"
 				url="widgets/Overlay/PointOverlayWidget.swf" />
 		
+		<widget label="联动单位Overlay"
+				config="widgets/Overlay/WuHu/PointOverlayWidget-LianDongDanWei.xml"
+				url="widgets/Overlay/PointOverlayWidget.swf" />
+		
 		<widget label="稽查布控Overlay"
 				config="widgets/Overlay/WuHu/PointOverlayWidget-JiChaBuKong.xml"
 				url="widgets/Overlay/PointOverlayWidget.swf" />

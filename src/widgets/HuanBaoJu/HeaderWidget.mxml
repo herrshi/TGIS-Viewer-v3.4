@@ -118,13 +118,15 @@
 					} 
 				);
 				
-				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 
 						serviceName: "插值图", 
 						layerIds: "", 
 						visible: false 
 					} 
-				);
+				);*/
+				
+				closeWidget( "信访热点" );
 			}
 			//打开点位图
 			protected function btnDianWeiTu_clickHandler(event:MouseEvent):void
@@ -143,13 +145,17 @@
 					} 
 				);
 				
-				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+				map.infoWindow.hide();
+				
+				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 
 						serviceName: "插值图", 
 						layerIds: "", 
 						visible: false 
 					} 
-				);
+				);*/
+				
+				closeWidget( "信访热点" );
 			}
 			//打开热点图
 			protected function btnReDianTu_clickHandler(event:MouseEvent):void
@@ -168,13 +174,17 @@
 					} 
 				);
 				
-				AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
+				map.infoWindow.hide();
+				
+				/*AppEvent.dispatch( AppEvent.CHANGE_LAYER_VISIBILITY_BY_NAME, 
 					{ 
 						serviceName: "插值图", 
 						layerIds: "", 
 						visible: true 
 					} 
-				);
+				);*/
+				
+				openWidget( "信访热点" );
 			}
 			//打开热点图
 			protected function btnTuli_clickHandler(event:MouseEvent):void

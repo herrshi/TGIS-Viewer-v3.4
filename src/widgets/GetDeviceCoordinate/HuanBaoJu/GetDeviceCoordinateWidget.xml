@@ -6,6 +6,7 @@
 			<type>信访点</type>
 			<url>http://{serverip}/arcgis/rest/services/HuanBaoJu/XinFangDian/MapServer/1</url>
 			<idfield>信访编号</idfield>
+			<picturemarkersymbol url="assets/images/Red_glow.swf" xoffset="-15" yoffset="15"/>
 			<zoomscale>12000</zoomscale>
 			<popup>
 				<title>{问题类别}</title>

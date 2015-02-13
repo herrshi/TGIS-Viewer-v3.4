@@ -1235,7 +1235,9 @@ Class used to configure the viewer map component (including layers) and handle m
 											action: String( buttonXML.@action ),
 											type: String( buttonXML.@type ),
 											idField: String( buttonXML.@idfield ),
-											widgetName: String( buttonXML.@widgetname )
+											widgetName: String( buttonXML.@widgetname ),
+											geometryServiceUrl: String( buttonXML.@geometryServiceUrl ),
+											queryLayerUrl: String( buttonXML.@queryLayerUrl )
 										};
 									buttonArray.push( buttonObj );
 								}
