@@ -487,6 +487,7 @@
 				_searchResultLayer.clear();
 				_treeDataSource.removeAll();
 				
+				//搜索图层
 				var layerIdArray:Array = getSelectedLayerId( layerGroupText );
 				var searchTextArray:Array = txtKeyWord.text.split( " " );
 				if ( layerIdArray.length > 0 && searchTextArray.length > 0 )
@@ -502,6 +503,48 @@
 					}
 				}
 				
+				//搜索graphic
+				if ( _searchOverlayerInfoArray.length > 0 )
+				{
+					//请求所有数据，筛选其中的overlay数据
+					AppEvent.dispatch( AppEvent.DATA_FETCH_ALL, null, dataAllFetchedHandler );
+					
+					function dataAllFetchedHandler( dataTable:Hashtable ):void
+					{
+						for each ( var overlayObj:Object in _searchOverlayerInfoArray )
+						{
+							var overlayName:String = overlayObj.name;
+							
+							//检查checkbox是否选中
+							var selected:Boolean = false;
+							for ( var i:uint = 0; i < layerGroupBuffer.numElements; i++ )
+							{
+								if ( layerGroupBuffer.getElementAt( i ) is CheckBox )
+								{
+									var checkBox:CheckBox = layerGroupBuffer.getElementAt( i ) as CheckBox;
+									if ( checkBox.name == "overlay" && checkBox.id == overlayName )
+									{
+										selected = checkBox.selected;
+										break;
+									}
+								}
+							}
+							if ( !selected )
+							{
+								continue;
+							}
+							
+							var graphicProvider:ArrayCollection = dataTable.find( overlayName ) as ArrayCollection;
+							if ( graphicProvider && graphicProvider.length > 0 )
+							{
+								for each ( var graphic:Graphic in graphicProvider )
+								{
+									
+								}
+							}
+						}
+					}
+				}
 			}
 			
 			private function getSelectedLayerId( tileGroup:TileGroup ):Array
